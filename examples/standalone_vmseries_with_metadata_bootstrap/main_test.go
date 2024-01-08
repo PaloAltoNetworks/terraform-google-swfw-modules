@@ -1,10 +1,10 @@
 package standalone_vmseries_with_metadata_bootstrap
 
 import (
-	"testing"
 	"log"
+	"testing"
 
-	"github.com/PaloAltoNetworks/terraform-modules-vmseries-tests-skeleton/pkg/testskeleton"
+	"github.com/PaloAltoNetworks/terraform-modules-swfw-tests-skeleton/pkg/testskeleton"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
@@ -21,8 +21,8 @@ func CreateTerraformOptions(t *testing.T) *terraform.Options {
 		TerraformDir: ".",
 		VarFiles:     []string{"example.tfvars"},
 		Vars: map[string]interface{}{
-			"name_prefix":    varsInfo.NamePrefix,
-			"project": varsInfo.GoogleProjectId,
+			"name_prefix": varsInfo.NamePrefix,
+			"project":     varsInfo.GoogleProjectId,
 		},
 		Logger:               logger.Default,
 		Lock:                 true,
