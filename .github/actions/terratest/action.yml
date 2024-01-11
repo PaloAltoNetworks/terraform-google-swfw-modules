@@ -35,7 +35,7 @@ runs:
     - name: login to GCP
       uses: google-github-actions/auth@v1
       with:
-        workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+        workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ env.GCP_SERVICE_ACCOUNT}}
 
     - name: ${{ inputs.terratest_action }} infrastructure
@@ -43,6 +43,6 @@ runs:
         TPATH: ${{ inputs.path }}
         ACTION: ${{ inputs.terratest_action }}
         PRID: ${{ inputs.pr-id }}
-        PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
+        PROJECT_ID: ${{ env.PROJECT_ID }}
       shell: bash
       run: make $TPATH ACTION=$ACTION
