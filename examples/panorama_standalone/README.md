@@ -5,7 +5,7 @@ show_in_hub: true
 ---
 # Palo Alto Panorama deployment example
 
-The scope of this code is to deploy one or more vpc networks and subnetworks along with one or more panorama instances in a single project and region in Google Cloud. The example deploys panorama to be used in management only mode (without additional logging disks). For option on how to add additional logging disks - please refer to panorama [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/panorama#inputs)
+The scope of this code is to deploy one or more vpc networks and subnetworks along with one or more panorama instances in a single project and region in Google Cloud. The example deploys panorama to be used in management only mode (without additional logging disks). For option on how to add additional logging disks - please refer to panorama [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/panorama#inputs)
 
 
 ## Topology
@@ -15,7 +15,8 @@ The topology consists of :
  - A panorama instance with a Public IP address attached to the created vpc network and subnetwork
  - Firewall rules that allow access to the panorama management interface
 
-![panorama-topology](https://user-images.githubusercontent.com/43091730/230029801-3acea62e-aa3d-46f3-b638-6b09bf5ef35e.png)
+![panorama-topology](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/83826156-689e-4808-83b5-53aa79efb5a4)
+
 
 ## Prerequisites
 
@@ -30,8 +31,8 @@ The topology consists of :
 2. Clone the repository and fill out any modifications to tfvars file (`example.tfvars` - at least `project`, `ssh_keys` and `source_ranges` should be filled in for successful deployment and access to the instance after deployment)
 
 ```
-git clone https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules
-cd terraform-google-vmseries-modules/examples/panorama
+git clone https://github.com/PaloAltoNetworks/terraform-google-swfw-modules
+cd terraform-google-swfw-modules/examples/panorama
 ```
 
 3. Apply the terraform code
@@ -110,8 +111,8 @@ No resources.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | A string to prefix resource namings | `string` | `""` | no |
-| <a name="input_networks"></a> [networks](#input\_networks) | A map containing each network setting.<br><br>Example of variable deployment :<pre>networks = {<br>  "panorama-vpc" = {<br>    vpc_name                        = "firewall-vpc"<br>    create_network                  = true<br>    delete_default_routes_on_create = "false"<br>    mtu                             = "1460"<br>    routing_mode                    = "REGIONAL"<br>    subnetworks = {<br>      "panorama-sub" = {<br>        name              = "panorama-subnet"<br>        create_subnetwork = true<br>        ip_cidr_range     = "172.21.21.0/24"<br>        region            = "us-central1"<br>      }<br>    }<br>    firewall_rules = {<br>      "allow-panorama-ingress" = {<br>        name             = "panorama-mgmt"<br>        source_ranges    = ["1.1.1.1/32", "2.2.2.2/32"]<br>        priority         = "1000"<br>        allowed_protocol = "all"<br>        allowed_ports    = []<br>      }<br>    }<br>  }</pre>For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/vpc#input_networks)<br><br>Multiple keys can be added and will be deployed by the code | `any` | n/a | yes |
-| <a name="input_panoramas"></a> [panoramas](#input\_panoramas) | A map containing each panorama setting.<br><br>Example of variable deployment :<pre>panoramas = {<br>  "panorama-01" = {<br>    panorama_name     = "panorama-01"<br>    panorama_vpc      = "panorama-vpc"<br>    panorama_subnet   = "panorama-subnet"<br>    panorama_version  = "panorama-byol-1000"<br>    ssh_keys          = "admin:PUBLIC-KEY"<br>    attach_public_ip  = true<br>    private_static_ip = "172.21.21.2"<br>  }<br>}</pre>For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/panorama#inputs)<br><br>Multiple keys can be added and will be deployed by the code | `any` | n/a | yes |
+| <a name="input_networks"></a> [networks](#input\_networks) | A map containing each network setting.<br><br>Example of variable deployment :<pre>networks = {<br>  "panorama-vpc" = {<br>    vpc_name                        = "firewall-vpc"<br>    create_network                  = true<br>    delete_default_routes_on_create = "false"<br>    mtu                             = "1460"<br>    routing_mode                    = "REGIONAL"<br>    subnetworks = {<br>      "panorama-sub" = {<br>        name              = "panorama-subnet"<br>        create_subnetwork = true<br>        ip_cidr_range     = "172.21.21.0/24"<br>        region            = "us-central1"<br>      }<br>    }<br>    firewall_rules = {<br>      "allow-panorama-ingress" = {<br>        name             = "panorama-mgmt"<br>        source_ranges    = ["1.1.1.1/32", "2.2.2.2/32"]<br>        priority         = "1000"<br>        allowed_protocol = "all"<br>        allowed_ports    = []<br>      }<br>    }<br>  }</pre>For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)<br><br>Multiple keys can be added and will be deployed by the code | `any` | n/a | yes |
+| <a name="input_panoramas"></a> [panoramas](#input\_panoramas) | A map containing each panorama setting.<br><br>Example of variable deployment :<pre>panoramas = {<br>  "panorama-01" = {<br>    panorama_name     = "panorama-01"<br>    panorama_vpc      = "panorama-vpc"<br>    panorama_subnet   = "panorama-subnet"<br>    panorama_version  = "panorama-byol-1000"<br>    ssh_keys          = "admin:PUBLIC-KEY"<br>    attach_public_ip  = true<br>    private_static_ip = "172.21.21.2"<br>  }<br>}</pre>For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/panorama#inputs)<br><br>Multiple keys can be added and will be deployed by the code | `any` | n/a | yes |
 | <a name="input_project"></a> [project](#input\_project) | The project name to deploy the infrastructure in to. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region into which to deploy the infrastructure in to | `string` | `"us-central1"` | no |
 

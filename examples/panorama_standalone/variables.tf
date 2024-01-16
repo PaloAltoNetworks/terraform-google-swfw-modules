@@ -50,7 +50,7 @@ variable "networks" {
       }
     ```
 
-    For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/vpc#input_networks)
+    For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
 
     Multiple keys can be added and will be deployed by the code
     EOF
@@ -77,7 +77,7 @@ variable "panoramas" {
     }
     ```
   
-    For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/panorama#inputs)
+    For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/panorama#inputs)
 
     Multiple keys can be added and will be deployed by the code
     EOF

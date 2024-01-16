@@ -2,7 +2,7 @@
 # mac specific
 .DS_Store
 .ansible
-.azure/
+.gcp/
 .bash_history
 # don't check storage creds into GH
 .boto

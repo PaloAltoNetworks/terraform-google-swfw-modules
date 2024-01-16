@@ -16,18 +16,18 @@ Contributions are welcome across the entire project:
 
 ### New Contributors
 
-1. Search the [issues](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules.git/issues) to see if there is an existing issue. If not, please open one.
+1. Search the [issues](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules.git/issues) to see if there is an existing issue. If not, please open one.
 
 1. Fork the repository to your personal namespace (only needed to do this once).
 
 1. Clone the repo from your personal namespace.
 
-   `git clone https://github.com/{username}/terraform-google-vmseries-modules.git`
+   `git clone https://github.com/{username}/terraform-google-swfw-modules.git`
    Ensure that `{username}` is _your_ user name.
 
 1. Add the source repository as an upsteam.
 
-   `git remote add upstream https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules.git`
+   `git remote add upstream https://github.com/PaloAltoNetworks/terraform-google-swfw-modules.git`
 
 1. Create a branch which corresponds to the issue ID created in step 1.
 
@@ -55,7 +55,7 @@ Contributions are welcome across the entire project:
 
 ### Existing Contributors
 
-1. Search the [issues](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules.git/issues) to see if there is an existing issue. If not, open an issue (note the issue ID).
+1. Search the [issues](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules.git/issues) to see if there is an existing issue. If not, open an issue (note the issue ID).
 1. Update from the source repository.
 
    `git pull upstream dev`

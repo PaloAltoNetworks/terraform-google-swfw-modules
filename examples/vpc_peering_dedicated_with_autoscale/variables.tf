@@ -37,7 +37,7 @@ variable "service_accounts" {
     }
   }
   ```
-  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/iam_service_account#Inputs)
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
 
   Multiple keys can be added and will be deployed by the code.
 
@@ -83,7 +83,7 @@ variable "networks" {
   }
   ```
 
-  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/vpc#input_networks)
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
 
   Multiple keys can be added and will be deployed by the code.
   EOF
@@ -115,7 +115,7 @@ variable "vpc_peerings" {
     }
   }
   ```
-  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/vpc-peering#inputs)
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
 
   Multiple keys can be added and will be deployed by the code.
   EOF
@@ -279,7 +279,7 @@ variable "lbs_internal" {
     }
   }
   ```
-  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/lb_internal#inputs)
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_internal#inputs)
 
   Multiple keys can be added and will be deployed by the code.
   EOF
@@ -307,7 +307,7 @@ variable "lbs_external" {
     }
   }
   ```
-  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-vmseries-modules/tree/main/modules/lb_external#inputs)
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_external#inputs)
 
   Multiple keys can be added and will be deployed by the code.
   EOF
