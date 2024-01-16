@@ -10,7 +10,8 @@ The Terraform code presented here will deploy Palo Alto Networks VM-Series firew
 
 ## Reference Architecture Design
 
-![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/6574404/942d7e0a-eafb-42fb-ba53-6fefedb4b69d)
+![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/9530fc51-7267-4b74-a996-a522b97f0996)
+
 
 This code implements:
 - a _centralized design_, a hub-and-spoke topology with a shared VPC containing VM-Series deployed in high availability to inspect all inbound, outbound, east-west, and enterprise traffic
@@ -27,7 +28,8 @@ This design model integrates multiple methods to interconnect and control your a
 
 The common firewall option wiht High Availability leverages a single set of VM-Series firewalls that acts as a single entity. The sole set of firewalls operates as a shared resource and may present scale limitations with all traffic flowing through a single set of firewalls due to the performance degradation that occurs when traffic crosses virtual routers. This option is suitable for proof-of-concepts and smaller scale deployments because the number of firewalls is low. However, the technical integration complexity is high.
 
-![VM-Series-Common-Firewall-Option-with-HA](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/43091730/7690846b-2aad-4045-913c-8a5cdb80b16b)
+![VM-Series-Common-Firewall-Option-with-HA](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/549bda0d-a6b8-426b-8480-0c7cf56cc81e)
+
 
 The scope of this code is to deploy an example of the [VM-Series Common Firewall Option](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/gcp-architecture-guide#Design%20Model) architecture with [high availability configuration](https://docs.paloaltonetworks.com/vm-series/10-2/vm-series-deployment/about-the-vm-series-firewall/vm-series-in-high-availability)  within a GCP project.
 
