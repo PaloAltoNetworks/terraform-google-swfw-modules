@@ -17,7 +17,7 @@ This design model integrates multiple methods to interconnect and control your a
 
 The common firewall option with autoscaling leverages a single set autoscale group of VM-Series firewalls. Compared to the standard common firewall option - the autoscaling solved the issue of resource bottleneck given by a single set of firewalls, being able to scale horizontally based on configurable metrics.
 
-![VM-Series-Common-Firewall-Option-With-Autoscaling](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/43091730/ca675535-d8d9-44f1-af75-2558afa4621d)
+![VM-Series-Common-Firewall-Option-With-Autoscaling](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/b4112be1-4189-4197-85e8-0154a3665c05)
 
 The scope of this code is to deploy an example of the [VM-Series Common Firewall Option](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/gcp-architecture-guide#Design%20Model) architecture within a GCP project, but using an autoscaling group of instances instead of a single pair of firewall.
 
