@@ -21,7 +21,7 @@ With default variable values the topology consists of :
  - two external regional network loadbalancer (for inbound traffic)
  - two static routes with intance tag based on each region
 
-![vpc-peering-network-tags](https://user-images.githubusercontent.com/43091730/234361631-651c0eaa-fb4c-46dd-b654-ddb1c5a600f0.png)
+![vpc-peering-network-tags](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/c2ba14e7-9895-48f1-b00d-766f11e0e5e8)
 
 ### Traffic flows details
 
