@@ -15,7 +15,8 @@ The topology consists of :
  - A panorama instance with a Public IP address attached to the created vpc network and subnetwork
  - Firewall rules that allow access to the panorama management interface
 
-![panorama-topology](https://user-images.githubusercontent.com/43091730/230029801-3acea62e-aa3d-46f3-b638-6b09bf5ef35e.png)
+![panorama-topology](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/83826156-689e-4808-83b5-53aa79efb5a4)
+
 
 ## Prerequisites
 
