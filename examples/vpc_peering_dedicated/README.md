@@ -10,7 +10,7 @@ The Terraform code presented here will deploy Palo Alto Networks VM-Series firew
 
 ## Reference Architecture Design
 
-![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/6574404/942d7e0a-eafb-42fb-ba53-6fefedb4b69d)
+![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/9530fc51-7267-4b74-a996-a522b97f0996)
 
 This code implements:
 - a _centralized design_, a hub-and-spoke topology with a shared VPC containing VM-Series to inspect all inbound, outbound, east-west, and enterprise traffic
@@ -27,7 +27,7 @@ This design model integrates multiple methods to interconnect and control your a
 
 The dedicated inbound option separates traffic flows across two separate sets of VM-Series firewalls. One set of VM-Series firewalls is dedicated to inbound traffic flows, allowing for greater flexibility and scaling of inbound traffic loads. The second set of VM-Series firewalls services all outbound, east-west, and enterprise network traffic flows. This deployment choice offers increased scale and operational resiliency and reduces the chances of high bandwidth use from the inbound traffic flows affecting other traffic flows within the deployment.
 
-![gcp-dedicatedinbound](https://user-images.githubusercontent.com/43091730/232493285-372de660-6c10-4957-ae3a-183e891af815.png)
+![gcp-dedicatedinbound](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/9b331a6a-f29b-44d9-9b87-89833e84fa32)
 
 With default variable values the topology consists of :
  - 5 VPC networks :
