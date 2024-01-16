@@ -5,7 +5,7 @@ show_in_hub: false
 
 The common firewall option leverages a single set of VM-Series firewalls. The sole set of firewalls operates as a shared resource and may present scale limitations with all traffic flowing through a single set of firewalls due to the performance degradation that occurs when traffic crosses virtual routers. This option is suitable for proof-of-concepts and smaller scale deployments because the number of firewalls is low. However, the technical integration complexity is high.
 
-![VM-Series-Multi-NIC-Common-Firewall-Option](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/43091730/ff652bc1-977c-4f83-aeb0-641b46f38c4c)
+![VM-Series-Multi-NIC-Common-Firewall-Option](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/017aad21-46c8-4030-853a-f32096da754c)
 
 The scope of this code is to deploy an example of the [VM-Series Common Firewall Option](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/gcp-architecture-guide#Design%20Model) but with a slight modification in the architecture - the VM-Series is directly connected to the spoke VPCs. There are some advantages to this architecture from a routing perspective but there is also a limitation related to the [maximum number of NICs on the VM-Series](https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#max-interfaces) within GCP.
 
