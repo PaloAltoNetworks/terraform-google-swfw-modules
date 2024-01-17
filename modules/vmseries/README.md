@@ -13,14 +13,14 @@ When troubleshooting you can use this module also with a good ol' Linux image. I
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3, < 2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 4.54 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 5.12 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.1 |
 
 ### Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | ~> 4.54 |
+| <a name="provider_google"></a> [google](#provider\_google) | ~> 5.12 |
 | <a name="provider_null"></a> [null](#provider\_null) | ~> 3.1 |
 
 ### Modules

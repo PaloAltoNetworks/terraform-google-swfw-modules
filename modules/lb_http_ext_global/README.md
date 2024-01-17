@@ -38,13 +38,13 @@ Thus if you re-use the same IG for this module (HTTP LB) you need balancing_mode
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3, < 2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 4.54 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 5.12 |
 
 ### Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | ~> 4.54 |
+| <a name="provider_google"></a> [google](#provider\_google) | ~> 5.12 |
 
 ### Modules
 
