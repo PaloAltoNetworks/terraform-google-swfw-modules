@@ -96,8 +96,8 @@ resource "google_compute_instance" "this" {
       dynamic "alias_ip_range" {
         for_each = try(network_interface.value.alias_ip_ranges, [])
         content {
-          ip_cidr_range         = alias_ip_ranges.value.ip_cidr_range
-          subnetwork_range_name = try(alias_ip_ranges.value.subnetwork_range_name, null)
+          ip_cidr_range         = alias_ip_range.value.ip_cidr_range
+          subnetwork_range_name = try(alias_ip_range.value.subnetwork_range_name, null)
         }
       }
     }
