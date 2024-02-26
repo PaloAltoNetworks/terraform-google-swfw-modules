@@ -17,7 +17,7 @@ resource "google_compute_address" "private" {
 
 # Permanent public address, not ephemeral.
 resource "google_compute_address" "public" {
-  count = var.attach_public_ip ? 1 : 0
+  count = var.attach_public_ip && var.reserve_public_ip ? 1 : 0
 
   name    = "${var.name}-public"
   project = var.project
@@ -62,7 +62,7 @@ resource "google_compute_instance" "this" {
     dynamic "access_config" {
       for_each = var.attach_public_ip ? [""] : []
       content {
-        nat_ip = google_compute_address.public[0].address
+        nat_ip = var.reserve_public_ip ? google_compute_address.public[0].address : var.public_static_ip
       }
     }
 

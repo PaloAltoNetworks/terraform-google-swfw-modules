@@ -46,6 +46,12 @@ variable "public_static_ip" {
   default     = null
 }
 
+variable "reserve_public_ip" {
+  description = "Determines if a Public IP needs to be reserved or not. Set this to false, if you have already reserved public ip outside of this module"
+  type        = bool
+  default     = true
+}
+
 variable "log_disks" {
   description = <<-EOF
   List of disks to create and attach to Panorama to store traffic logs.
