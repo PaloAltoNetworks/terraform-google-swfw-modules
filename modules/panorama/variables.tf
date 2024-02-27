@@ -46,8 +46,6 @@ variable "public_static_ip" {
   default     = null
 }
 
-}
-
 variable "log_disks" {
   description = <<-EOF
   List of disks to create and attach to Panorama to store traffic logs.
