@@ -17,7 +17,7 @@ resource "google_compute_address" "private" {
 
 # Permanent public address, not ephemeral.
 resource "google_compute_address" "public" {
-  count = var.attach_public_ip && var.reserve_public_ip ? 1 : 0
+  count = var.attach_public_ip && var.public_static_ip == null ? 1 : 0
 
   name    = "${var.name}-public"
   project = var.project
