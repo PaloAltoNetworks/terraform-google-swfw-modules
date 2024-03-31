@@ -42,11 +42,13 @@ data "google_compute_subnetwork" "this" {
 resource "google_compute_subnetwork" "this" {
   for_each = local.subnetworks_to_create
 
-  name          = each.value.name
-  ip_cidr_range = each.value.ip_cidr_range
-  network       = try(data.google_compute_network.this[0].self_link, google_compute_network.this[0].self_link)
-  region        = each.value.region
-  project       = var.project_id
+  name             = each.value.name
+  ip_cidr_range    = each.value.ip_cidr_range
+  network          = try(data.google_compute_network.this[0].self_link, google_compute_network.this[0].self_link)
+  region           = each.value.region
+  project          = var.project_id
+  stack_type       = each.value.stack_type
+  ipv6_access_type = each.value.stack_type == "IPV4_IPV6" ? "EXTERNAL" : ""
 }
 
 resource "google_compute_firewall" "this" {

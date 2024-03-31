@@ -27,6 +27,7 @@ variable "subnetworks" {
   - `create_subnetwork` : Boolean value to control the creation or reading of the subnetwork. If set to `true` - this will create the subnetwork. If set to `false` - this will read a subnet with provided information.
   - `ip_cidr_range` : A string that contains the subnetwork to create. Only IPv4 format is supported.
   - `region` : Region where to configure or import the subnet.
+  - `stack_type` : IP stack type. IPV4_ONLY and IPV4_IPV6 are supported.
 
   Example:
   ```
@@ -36,6 +37,7 @@ variable "subnetworks" {
       create_subnetwork = true
       ip_cidr_range = "192.168.0.0/24"
       region = "us-east1"
+      stack_type = "IPV4_ONLY"
     }
   }
   ```
@@ -46,7 +48,15 @@ variable "subnetworks" {
     create_subnetwork = optional(bool, true)
     ip_cidr_range     = string
     region            = string
+    stack_type        = optional(string, "IPV4_ONLY")
   }))
+  validation {
+    condition = length(var.subnetworks) > 0 ? alltrue([
+      for subnet in var.subnetworks :
+      contains(["IPV4_ONLY", "IPV4_IPV6"], subnet.stack_type)
+    ]) : true
+    error_message = "stack_type value must be either 'IPV4_ONLY' or 'IPV4_IPV6'."
+  }
 }
 
 variable "firewall_rules" {
