@@ -6,6 +6,14 @@ resource "google_compute_global_forwarding_rule" "http" {
   port_range = "80"
 }
 
+resource "google_compute_global_forwarding_rule" "http6" {
+  count      = var.http_forward && contains(["IPV4_IPV6"], var.ip_version) ? 1 : 0
+  name       = "${var.name}-http6"
+  target     = google_compute_target_http_proxy.default[0].self_link
+  ip_address = google_compute_global_address.default6[0].address
+  port_range = "80"
+}
+
 resource "google_compute_global_forwarding_rule" "https" {
   count      = var.ssl ? 1 : 0
   name       = "${var.name}-https"
@@ -14,9 +22,23 @@ resource "google_compute_global_forwarding_rule" "https" {
   port_range = "443"
 }
 
+resource "google_compute_global_forwarding_rule" "https6" {
+  count      = var.ssl && contains(["IPV4_IPV6"], var.ip_version) ? 1 : 0
+  name       = "${var.name}-https6"
+  target     = google_compute_target_https_proxy.default[0].self_link
+  ip_address = google_compute_global_address.default6[0].address
+  port_range = "443"
+}
+
 resource "google_compute_global_address" "default" {
   name       = "${var.name}-address"
-  ip_version = var.ip_version
+  ip_version = "IPV4"
+}
+
+resource "google_compute_global_address" "default6" {
+  count      = contains(["IPV4_IPV6"], var.ip_version) ? 1 : 0
+  name       = "${var.name}-address6"
+  ip_version = "IPV6"
 }
 
 # HTTP proxy when ssl is false

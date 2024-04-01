@@ -8,8 +8,8 @@ participating groups are equally capable as well.
 ```terraform
 
 module "glb" {
-  source = "../modules/lb_http_ext_global"
-  name   = "my-glb"
+  source                = "../modules/lb_http_ext_global"
+  name                  = "my-glb"
   backend_groups        = module.vmseries.instance_group_self_links
   max_rate_per_instance = 50000
 }
@@ -30,6 +30,22 @@ Invalid value for field 'resource.backends[0].balancingMode': 'UTILIZATION'. Bal
 ```
 
 Thus if you re-use the same IG for this module (HTTP LB) you need balancing_mode=RATE (and specify the max rate - don't worry it's not a circuit breaker). The balancing_mode=UTILIZATION is incompatible with ILB.
+
+## IPv6 Support
+
+The module supports dual-stack (IPv4+IPv6) GLB frontend. IPv6 is terminated on the Load Balancer and IPv4 is used for communication to the backend groups.
+
+```terraform
+
+module "glb" {
+  source                = "../modules/lb_http_ext_global"
+  name                  = "my-glb"
+  backend_groups        = module.vmseries.instance_group_self_links
+  max_rate_per_instance = 50000
+  ip_version            = "IPV4_IPV6"
+}
+
+```
 
 ## Reference
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -56,8 +72,11 @@ No modules.
 |------|------|
 | [google_compute_backend_service.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
 | [google_compute_global_address.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
+| [google_compute_global_address.default6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.http](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_global_forwarding_rule.http6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
 | [google_compute_global_forwarding_rule.https](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_global_forwarding_rule.https6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
 | [google_compute_health_check.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_health_check) | resource |
 | [google_compute_ssl_certificate.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_ssl_certificate) | resource |
 | [google_compute_target_http_proxy.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy) | resource |
@@ -79,7 +98,7 @@ No modules.
 | <a name="input_health_check_name"></a> [health\_check\_name](#input\_health\_check\_name) | Name for the health check. If not provided, defaults to `<var.name>-healthcheck`. | `string` | `null` | no |
 | <a name="input_health_check_port"></a> [health\_check\_port](#input\_health\_check\_port) | TCP port to use for health check. | `number` | `80` | no |
 | <a name="input_http_forward"></a> [http\_forward](#input\_http\_forward) | Set to `false` to disable HTTP port 80 forward | `bool` | `true` | no |
-| <a name="input_ip_version"></a> [ip\_version](#input\_ip\_version) | IP version for the Global address (IPv4 or v6) - Empty defaults to IPV4 | `string` | `""` | no |
+| <a name="input_ip_version"></a> [ip\_version](#input\_ip\_version) | IP version supported by the Load Balancer. Possible values: IPV4 (default) or IPV4\_IPV6. <br>Empty defaults to IPV4. | `string` | `"IPV4"` | no |
 | <a name="input_max_connections_per_instance"></a> [max\_connections\_per\_instance](#input\_max\_connections\_per\_instance) | n/a | `number` | `null` | no |
 | <a name="input_max_rate_per_instance"></a> [max\_rate\_per\_instance](#input\_max\_rate\_per\_instance) | n/a | `number` | `null` | no |
 | <a name="input_max_utilization"></a> [max\_utilization](#input\_max\_utilization) | n/a | `number` | `null` | no |
@@ -97,5 +116,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | n/a |
+| <a name="output_address6"></a> [address6](#output\_address6) | n/a |
 | <a name="output_all"></a> [all](#output\_all) | Intended mainly for `depends_on` but currently succeeds prematurely (while forwarding rules and healtchecks are not yet usable). |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

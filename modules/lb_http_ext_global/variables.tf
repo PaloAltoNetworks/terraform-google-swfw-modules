@@ -1,7 +1,14 @@
 variable "ip_version" {
-  description = "IP version for the Global address (IPv4 or v6) - Empty defaults to IPV4"
+  description = <<-EOF
+  IP version supported by the Load Balancer. Possible values: IPV4 (default) or IPV4_IPV6. 
+  Empty defaults to IPV4.
+  EOF
   type        = string
-  default     = ""
+  default     = "IPV4"
+  validation {
+    condition     = contains(["", "IPV4", "IPV4_IPV6"], var.ip_version)
+    error_message = "ip_version value must be either '', 'IPV4' or 'IPV4_IPV6'."
+  }
 }
 
 variable "name" {
