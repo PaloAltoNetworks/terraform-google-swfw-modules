@@ -241,7 +241,7 @@ resource "google_secret_manager_secret" "delicensing_cfn_pano_creds" {
   project   = var.project_id
   secret_id = local.delicensing_cfn.secret_name
   replication {
-    automatic = true
+    auto {}
   }
 }
 
