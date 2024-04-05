@@ -27,20 +27,17 @@ resource "local_file" "bootstrap_xml" {
   )
 }
 
-resource "local_file" "init_cfg" {
+resource "local_sensitive_file" "init_cfg" {
 
   for_each = { for k, v in var.vmseries : k => v
     if can(v.bootstrap_template_map)
   }
 
   filename = "files/${each.key}/config/init-cfg.txt"
-  content = templatefile("templates/init-cfg.tmpl",
-    {
-      panorama-server = try(each.value.bootstrap_options.panorama-server, var.vmseries_common.bootstrap_options.panorama-server, "")
-      type            = try(each.value.bootstrap_options.type, var.vmseries_common.bootstrap_options.type, "")
-      dns-primary     = try(each.value.bootstrap_options.dns-primary, var.vmseries_common.bootstrap_options.dns-primary, "")
-      dns-secondary   = try(each.value.bootstrap_options.dns-secondary, var.vmseries_common.bootstrap_options.dns-secondary, "")
-  })
+  content = templatefile(
+    "templates/init-cfg.tmpl",
+    { bootstrap_options = merge(var.vmseries_common.bootstrap_options, each.value.bootstrap_options) }
+  )
 }
 
 module "bootstrap" {
@@ -54,8 +51,8 @@ module "bootstrap" {
   service_account = module.iam_service_account[each.value.service_account_key].email
   location        = each.value.location
   files = merge(
-    { for k, v in var.vmseries : "files/${k}/config/bootstrap.xml" => "${k}/config/bootstrap.xml" },
-    { for k, v in var.vmseries : "files/${k}/config/init-cfg.txt" => "${k}/config/init-cfg.txt" },
+    { for k, v in var.vmseries : "files/${k}/config/bootstrap.xml" => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
+    { for k, v in var.vmseries : "files/${k}/config/init-cfg.txt" => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
   )
 }
 
