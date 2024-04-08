@@ -46,16 +46,6 @@ variable "bootstrap_options" {
   EOF
   default     = {}
   type        = map(string)
-  validation {
-    condition = alltrue([
-      for v in keys(var.bootstrap_options) :
-      contains(
-        ["type", "ip-address", "default-gateway", "netmask", "ipv6-address", "ipv6-default-gateway", "hostname", "panorama-server", "panorama-server-2", "tplname", "dgname", "dns-primary", "dns-secondary", "vm-auth-key", "op-command-modes", "op-cmd-dpdk-pkt-io", "plugin-op-commands", "dhcp-send-hostname", "dhcp-send-client-id", "dhcp-accept-server-hostname", "dhcp-accept-server-domain", "vm-series-auto-registration-pin-id", "vm-series-auto-registration-pin-value", "auth-key", "authcodes", "vmseries-bootstrap-gce-storagebucket", "mgmt-interface-swap"],
-        v
-      )
-    ])
-    error_message = "Error in validating bootstrap_options, for details see variable description."
-  }
 }
 
 variable "ssh_keys" {
