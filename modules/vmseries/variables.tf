@@ -114,16 +114,20 @@ variable "scopes" {
 
 variable "vmseries_image" {
   description = <<EOF
-  The image name from which to boot an instance, including the license type and the version.
+  The image name from which to boot an instance, including a license type (bindle/flex) and version.
   To get a list of available official images, please run the following command:
-  `gcloud compute images list --filter="name ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
+  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
   EOF
-  default     = "vmseries-flex-bundle1-1008h8"
+  default     = "vmseries-flex-byol-10112"
   type        = string
 }
 
 variable "custom_image" {
-  description = "The full URI to GCE image resource, the output of `gcloud compute images list --uri`. Overrides official image specified using `vmseries_image`."
+  description = <<EOF
+  The full URI of GCE image resource, as returned in the output of a following command:
+  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
+  Overrides official image specified using `vmseries_image`."
+ EOF
   default     = null
   type        = string
 }
