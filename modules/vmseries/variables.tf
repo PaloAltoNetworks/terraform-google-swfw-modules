@@ -114,11 +114,11 @@ variable "scopes" {
 
 variable "vmseries_image" {
   description = <<EOF
-  The image name from which to boot an instance, including a license type (bindle/flex) and version.
+  The image name from which to boot an instance, including a license type (bundle/flex) and version.
   To get a list of available official images, please run the following command:
   `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
   EOF
-  default     = "vmseries-flex-byol-10112"
+  default     = "vmseries-flex-byol-1029h1"
   type        = string
 }
 

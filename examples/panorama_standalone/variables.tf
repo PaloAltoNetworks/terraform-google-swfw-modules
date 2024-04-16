@@ -4,11 +4,13 @@ variable "project" {
   type        = string
   default     = null
 }
+
 variable "region" {
   description = "The region into which to deploy the infrastructure in to"
   type        = string
   default     = "us-central1"
 }
+
 variable "name_prefix" {
   description = "A string to prefix resource namings"
   type        = string

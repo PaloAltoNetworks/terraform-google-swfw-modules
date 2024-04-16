@@ -63,7 +63,7 @@ No modules.
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | IAM Service Account for running firewall instance (just the email) | `string` | `null` | no |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | Public keys to allow SSH access for, separated by newlines. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | GCP instance tags. | `list(string)` | `[]` | no |
-| <a name="input_vmseries_image"></a> [vmseries\_image](#input\_vmseries\_image) | The image name from which to boot an instance, including a license type (bindle/flex) and version.<br>  To get a list of available official images, please run the following command:<br>  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images` | `string` | `"vmseries-flex-byol-10112"` | no |
+| <a name="input_vmseries_image"></a> [vmseries\_image](#input\_vmseries\_image) | The image name from which to boot an instance, including a license type (bundle/flex) and version.<br>  To get a list of available official images, please run the following command:<br>  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images` | `string` | `"vmseries-flex-byol-1029h1"` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | Zone to deploy instance in. | `string` | n/a | yes |
 
 ### Outputs
