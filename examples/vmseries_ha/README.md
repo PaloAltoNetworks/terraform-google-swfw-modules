@@ -26,7 +26,7 @@ This design model integrates multiple methods to interconnect and control your a
 
 ### Common Option with High Availabikity
 
-The common firewall option wiht High Availability leverages a single set of VM-Series firewalls that acts as a single entity. The sole set of firewalls operates as a shared resource and may present scale limitations with all traffic flowing through a single set of firewalls due to the performance degradation that occurs when traffic crosses virtual routers. This option is suitable for proof-of-concepts and smaller scale deployments because the number of firewalls is low. However, the technical integration complexity is high.
+The common firewall option with High Availability leverages a single set of VM-Series firewalls that acts as a single entity. The sole set of firewalls operates as a shared resource and may present scale limitations with all traffic flowing through a single set of firewalls due to the performance degradation that occurs when traffic crosses virtual routers. This option is suitable for proof-of-concepts and smaller scale deployments because the number of firewalls is low. However, the technical integration complexity is high.
 
 ![VM-Series-Common-Firewall-Option-with-HA](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/549bda0d-a6b8-426b-8480-0c7cf56cc81e)
 
