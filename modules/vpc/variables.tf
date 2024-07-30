@@ -27,7 +27,8 @@ variable "subnetworks" {
   - `create_subnetwork` : Boolean value to control the creation or reading of the subnetwork. If set to `true` - this will create the subnetwork. If set to `false` - this will read a subnet with provided information.
   - `ip_cidr_range` : A string that contains the subnetwork to create. Only IPv4 format is supported.
   - `region` : Region where to configure or import the subnet.
-  - `stack_type` : IP stack type. IPV4_ONLY and IPV4_IPV6 are supported.
+  - `stack_type` : IP stack type. IPV4_ONLY (default) and IPV4_IPV6 are supported.
+  - `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack.
 
   Example:
   ```
@@ -49,6 +50,7 @@ variable "subnetworks" {
     ip_cidr_range     = string
     region            = string
     stack_type        = optional(string, "IPV4_ONLY")
+    ipv6_access_type  = optional(string, "")
   }))
   validation {
     condition = length(var.subnetworks) > 0 ? alltrue([
@@ -56,6 +58,13 @@ variable "subnetworks" {
       contains(["IPV4_ONLY", "IPV4_IPV6"], subnet.stack_type)
     ]) : true
     error_message = "stack_type value must be either 'IPV4_ONLY' or 'IPV4_IPV6'."
+  }
+  validation {
+    condition = length(var.subnetworks) > 0 ? alltrue([
+      for subnet in var.subnetworks :
+      contains(["", "INTERNAL", "EXTERNAL"], subnet.ipv6_access_type)
+    ]) : true
+    error_message = "ipv6_access_type value must be either '', 'INTERNAL' or 'EXTERNAL'."
   }
 }
 
@@ -80,13 +89,20 @@ variable "firewall_rules" {
   Example :
   ```
   firewall_rules = {
-    firewall-rule-1 = {
-      name = "first-rule"
-      source_ranges = ["10.10.10.0/24", "1.1.1.0/24"]
-      priority = "2000"
-      target_tags = ["vmseries-firewalls"]
+    firewall-rule-v4 = {
+      name             = "allow-range-ipv4"
+      source_ranges    = ["10.10.10.0/24", "1.1.1.0/24"]
+      priority         = "2000"
+      target_tags      = ["vmseries-firewalls"]
       allowed_protocol = "TCP"
-      allowed_ports = ["443", "22"]
+      allowed_ports    = ["443", "22"]
+    }
+    firewall-rule-v6 = {
+      name             = "allow-range-ipv6"
+      source_ranges    = ["::/0"]
+      priority         = "1000"
+      allowed_protocol = "all"
+      allowed_ports    = []
     }
   }
   ```
@@ -160,4 +176,23 @@ variable "routing_mode" {
     condition     = var.routing_mode == "REGIONAL" || var.routing_mode == "GLOBAL"
     error_message = "Routing mode must be either 'REGIONAL' or 'GLOBAL'."
   }
+}
+
+variable "enable_ula_internal_ipv6" {
+  description = <<-EOF
+  Enable ULA internal IPv6 on this network.
+  Enabling this feature will assign a /48 subnet from Google defined ULA prefix fd20::/20.
+  EOF
+  type        = bool
+  default     = false
+}
+
+variable "internal_ipv6_range" {
+  description = <<-EOF
+  When enabling ULA internal IPv6 you can optionally specify the /48 range. 
+  The input must be a valid /48 ULA IPv6 address within the range fd20::/20. 
+  Operation will fail if the speficied /48 is already in use by another resource.
+  EOF
+  type        = string
+  default     = ""
 }

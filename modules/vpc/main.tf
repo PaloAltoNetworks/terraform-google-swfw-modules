@@ -29,6 +29,8 @@ resource "google_compute_network" "this" {
   mtu                             = var.mtu
   auto_create_subnetworks         = false
   routing_mode                    = var.routing_mode
+  enable_ula_internal_ipv6        = var.enable_ula_internal_ipv6
+  internal_ipv6_range             = var.internal_ipv6_range
 }
 
 data "google_compute_subnetwork" "this" {
@@ -48,7 +50,7 @@ resource "google_compute_subnetwork" "this" {
   region           = each.value.region
   project          = var.project_id
   stack_type       = each.value.stack_type
-  ipv6_access_type = each.value.stack_type == "IPV4_IPV6" ? "EXTERNAL" : ""
+  ipv6_access_type = each.value.ipv6_access_type
 }
 
 resource "google_compute_firewall" "this" {
