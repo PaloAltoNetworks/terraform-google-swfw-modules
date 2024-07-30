@@ -171,7 +171,7 @@ routes = {
 
 vmseries_common = {
   ssh_keys            = "admin:<YOUR_SSH_KEY>"
-  vmseries_image      = "vmseries-flex-byol-1022h2"
+  vmseries_image      = "vmseries-flex-byol-1029h1"
   machine_type        = "n2-standard-4"
   min_cpu_platform    = "Intel Cascade Lake"
   service_account_key = "sa-vmseries-01"

@@ -46,16 +46,6 @@ variable "bootstrap_options" {
   EOF
   default     = {}
   type        = map(string)
-  validation {
-    condition = alltrue([
-      for v in keys(var.bootstrap_options) :
-      contains(
-        ["type", "ip-address", "default-gateway", "netmask", "ipv6-address", "ipv6-default-gateway", "hostname", "panorama-server", "panorama-server-2", "tplname", "dgname", "dns-primary", "dns-secondary", "vm-auth-key", "op-command-modes", "op-cmd-dpdk-pkt-io", "plugin-op-commands", "dhcp-send-hostname", "dhcp-send-client-id", "dhcp-accept-server-hostname", "dhcp-accept-server-domain", "vm-series-auto-registration-pin-id", "vm-series-auto-registration-pin-value", "auth-key", "authcodes", "vmseries-bootstrap-gce-storagebucket", "mgmt-interface-swap"],
-        v
-      )
-    ])
-    error_message = "Error in validating bootstrap_options, for details see variable description."
-  }
 }
 
 variable "ssh_keys" {
@@ -124,16 +114,20 @@ variable "scopes" {
 
 variable "vmseries_image" {
   description = <<EOF
-  The image name from which to boot an instance, including the license type and the version.
+  The image name from which to boot an instance, including a license type (bundle/flex) and version.
   To get a list of available official images, please run the following command:
-  `gcloud compute images list --filter="name ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
+  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
   EOF
-  default     = "vmseries-flex-bundle1-1008h8"
+  default     = "vmseries-flex-byol-1029h1"
   type        = string
 }
 
 variable "custom_image" {
-  description = "The full URI to GCE image resource, the output of `gcloud compute images list --uri`. Overrides official image specified using `vmseries_image`."
+  description = <<EOF
+  The full URI of GCE image resource, as returned in the output of a following command:
+  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
+  Overrides official image specified using `vmseries_image`."
+ EOF
   default     = null
   type        = string
 }

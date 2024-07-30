@@ -1,12 +1,3 @@
-%{ if panorama-server != "" ~}
-panorama-server=${panorama-server}
-%{ endif ~}
-%{ if type != "" ~}
-type=${type}
-%{ endif ~}
-%{ if dns-primary != "" ~}
-dns-primary=${dns-primary}
-%{ endif ~}
-%{ if dns-secondary != "" ~}
-dns-secondary=${dns-secondary}
-%{ endif ~}
+%{ for k, v in bootstrap_options ~}
+${k}=${v}
+%{ endfor ~}
