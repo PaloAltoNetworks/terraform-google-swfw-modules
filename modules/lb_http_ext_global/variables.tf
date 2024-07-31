@@ -1,7 +1,11 @@
 variable "ip_version" {
-  description = "IP version for the Global address (IPv4 or v6) - Empty defaults to IPV4"
+  description = "IP version for the Global address: IPV4, IPV6 or IPV4_IPV6. Empty defaults to IPV4"
   type        = string
   default     = ""
+  validation {
+    condition     = contains(["", "IPV4", "IPV6", "IPV4_IPV6"], var.ip_version)
+    error_message = "ip_version value must be either '', 'IPV4', 'IPV6 'or 'IPV4_IPV6'."
+  }
 }
 
 variable "name" {
