@@ -29,6 +29,8 @@ resource "google_compute_network" "this" {
   mtu                             = var.mtu
   auto_create_subnetworks         = false
   routing_mode                    = var.routing_mode
+  enable_ula_internal_ipv6        = var.enable_ula_internal_ipv6
+  internal_ipv6_range             = var.internal_ipv6_range
 }
 
 data "google_compute_subnetwork" "this" {
@@ -42,11 +44,13 @@ data "google_compute_subnetwork" "this" {
 resource "google_compute_subnetwork" "this" {
   for_each = local.subnetworks_to_create
 
-  name          = each.value.name
-  ip_cidr_range = each.value.ip_cidr_range
-  network       = try(data.google_compute_network.this[0].self_link, google_compute_network.this[0].self_link)
-  region        = each.value.region
-  project       = var.project_id
+  name             = each.value.name
+  ip_cidr_range    = each.value.ip_cidr_range
+  network          = try(data.google_compute_network.this[0].self_link, google_compute_network.this[0].self_link)
+  region           = each.value.region
+  project          = var.project_id
+  stack_type       = each.value.stack_type
+  ipv6_access_type = each.value.ipv6_access_type
 }
 
 resource "google_compute_firewall" "this" {
