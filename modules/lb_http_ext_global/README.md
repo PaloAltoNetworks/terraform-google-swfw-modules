@@ -8,10 +8,18 @@ participating groups are equally capable as well.
 ```terraform
 
 module "glb" {
-  source = "../modules/lb_http_ext_global"
-  name   = "my-glb"
+  source                = "../modules/lb_http_ext_global"
+  name                  = "my-glb"
   backend_groups        = module.vmseries.instance_group_self_links
   max_rate_per_instance = 50000
+}
+
+module "glb_dual_stack" {
+  source                = "../modules/lb_http_ext_global"
+  name                  = "my-glb-dual-stack"
+  backend_groups        = module.vmseries.instance_group_self_links
+  max_rate_per_instance = 50000
+  ip_version            = "IPV4_IPV6"
 }
 
 ```
@@ -55,9 +63,12 @@ No modules.
 | Name | Type |
 |------|------|
 | [google_compute_backend_service.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
-| [google_compute_global_address.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
+| [google_compute_global_address.ipv4](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
+| [google_compute_global_address.ipv6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.http](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_global_forwarding_rule.http_v6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
 | [google_compute_global_forwarding_rule.https](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_global_forwarding_rule.https_v6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
 | [google_compute_health_check.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_health_check) | resource |
 | [google_compute_ssl_certificate.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_ssl_certificate) | resource |
 | [google_compute_target_http_proxy.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy) | resource |
@@ -79,7 +90,7 @@ No modules.
 | <a name="input_health_check_name"></a> [health\_check\_name](#input\_health\_check\_name) | Name for the health check. If not provided, defaults to `<var.name>-healthcheck`. | `string` | `null` | no |
 | <a name="input_health_check_port"></a> [health\_check\_port](#input\_health\_check\_port) | TCP port to use for health check. | `number` | `80` | no |
 | <a name="input_http_forward"></a> [http\_forward](#input\_http\_forward) | Set to `false` to disable HTTP port 80 forward | `bool` | `true` | no |
-| <a name="input_ip_version"></a> [ip\_version](#input\_ip\_version) | IP version for the Global address (IPv4 or v6) - Empty defaults to IPV4 | `string` | `""` | no |
+| <a name="input_ip_version"></a> [ip\_version](#input\_ip\_version) | IP version for the Global address: IPV4, IPV6 or IPV4\_IPV6. Empty defaults to IPV4 | `string` | `""` | no |
 | <a name="input_max_connections_per_instance"></a> [max\_connections\_per\_instance](#input\_max\_connections\_per\_instance) | n/a | `number` | `null` | no |
 | <a name="input_max_rate_per_instance"></a> [max\_rate\_per\_instance](#input\_max\_rate\_per\_instance) | n/a | `number` | `null` | no |
 | <a name="input_max_utilization"></a> [max\_utilization](#input\_max\_utilization) | n/a | `number` | `null` | no |
@@ -97,5 +108,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_address"></a> [address](#output\_address) | n/a |
+| <a name="output_address_v6"></a> [address\_v6](#output\_address\_v6) | n/a |
 | <a name="output_all"></a> [all](#output\_all) | Intended mainly for `depends_on` but currently succeeds prematurely (while forwarding rules and healtchecks are not yet usable). |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
