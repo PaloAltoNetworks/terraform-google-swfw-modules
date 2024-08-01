@@ -38,7 +38,6 @@ variable "subnetworks" {
       create_subnetwork = true
       ip_cidr_range = "192.168.0.0/24"
       region = "us-east1"
-      stack_type = "IPV4_ONLY"
     }
   }
   ```
