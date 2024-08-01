@@ -11,7 +11,7 @@ resource "google_compute_global_forwarding_rule" "http" {
   count      = local.ipv4_http ? 1 : 0
   name       = "${var.name}-http"
   target     = google_compute_target_http_proxy.default[0].self_link
-  ip_address = google_compute_global_address.default[0].address
+  ip_address = google_compute_global_address.ipv4[0].address
   port_range = "80"
 }
 
@@ -19,7 +19,7 @@ resource "google_compute_global_forwarding_rule" "http_v6" {
   count      = local.ipv6_http ? 1 : 0
   name       = "${var.name}-http-v6"
   target     = google_compute_target_http_proxy.default[0].self_link
-  ip_address = google_compute_global_address.default_v6[0].address
+  ip_address = google_compute_global_address.ipv6[0].address
   port_range = "80"
 }
 
@@ -27,7 +27,7 @@ resource "google_compute_global_forwarding_rule" "https" {
   count      = local.ipv4_https ? 1 : 0
   name       = "${var.name}-https"
   target     = google_compute_target_https_proxy.default[0].self_link
-  ip_address = google_compute_global_address.default[0].address
+  ip_address = google_compute_global_address.ipv4[0].address
   port_range = "443"
 }
 
@@ -35,13 +35,13 @@ resource "google_compute_global_forwarding_rule" "https_v6" {
   count      = local.ipv6_https ? 1 : 0
   name       = "${var.name}-https-v6"
   target     = google_compute_target_https_proxy.default[0].self_link
-  ip_address = google_compute_global_address.default_v6[0].address
+  ip_address = google_compute_global_address.ipv6[0].address
   port_range = "443"
 }
 
 moved {
   from = google_compute_global_address.default
-  to   = google_compute_global_address.default[0]
+  to   = google_compute_global_address.ipv4[0]
 }
 
 resource "google_compute_global_address" "ipv4" {

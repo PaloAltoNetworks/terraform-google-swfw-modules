@@ -1,9 +1,9 @@
 output "address" {
-  value = try(google_compute_global_address.default[0].address, null)
+  value = try(google_compute_global_address.ipv4[0].address, null)
 }
 
 output "address_v6" {
-  value = try(google_compute_global_address.default_v6[0].address, null)
+  value = try(google_compute_global_address.ipv6[0].address, null)
 }
 
 output "all" {
