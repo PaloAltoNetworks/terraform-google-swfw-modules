@@ -50,7 +50,7 @@ resource "google_compute_global_address" "default" {
   ip_version = "IPV4"
 }
 
-resource "google_compute_global_address" "default_v6" {
+resource "google_compute_global_address" "ipv6" {
   count      = local.ipv6 ? 1 : 0
   name       = "${var.name}-address-v6"
   ip_version = "IPV6"
