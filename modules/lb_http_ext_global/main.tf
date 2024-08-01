@@ -44,7 +44,7 @@ moved {
   to   = google_compute_global_address.default[0]
 }
 
-resource "google_compute_global_address" "default" {
+resource "google_compute_global_address" "ipv4" {
   count      = local.ipv4 ? 1 : 0
   name       = "${var.name}-address"
   ip_version = "IPV4"
