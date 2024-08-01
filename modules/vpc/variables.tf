@@ -28,7 +28,7 @@ variable "subnetworks" {
   - `ip_cidr_range` : A string that contains the subnetwork to create. Only IPv4 format is supported.
   - `region` : Region where to configure or import the subnet.
   - `stack_type` : IP stack type. IPV4_ONLY (default) and IPV4_IPV6 are supported.
-  - `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack.
+  - `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack. Possible values are: EXTERNAL, INTERNAL.
 
   Example:
   ```
@@ -49,23 +49,9 @@ variable "subnetworks" {
     create_subnetwork = optional(bool, true)
     ip_cidr_range     = string
     region            = string
-    stack_type        = optional(string, "IPV4_ONLY")
-    ipv6_access_type  = optional(string, "")
+    stack_type        = optional(string)
+    ipv6_access_type  = optional(string)
   }))
-  validation {
-    condition = length(var.subnetworks) > 0 ? alltrue([
-      for subnet in var.subnetworks :
-      contains(["IPV4_ONLY", "IPV4_IPV6"], subnet.stack_type)
-    ]) : true
-    error_message = "stack_type value must be either 'IPV4_ONLY' or 'IPV4_IPV6'."
-  }
-  validation {
-    condition = length(var.subnetworks) > 0 ? alltrue([
-      for subnet in var.subnetworks :
-      contains(["", "INTERNAL", "EXTERNAL"], subnet.ipv6_access_type)
-    ]) : true
-    error_message = "ipv6_access_type value must be either '', 'INTERNAL' or 'EXTERNAL'."
-  }
 }
 
 variable "firewall_rules" {
