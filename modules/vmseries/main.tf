@@ -9,6 +9,17 @@ locals {
     }
     if try(v.public_ip, null) != null || local.create_public_ip[k]
   }
+  create_public_ipv6 = {
+    for k, v in var.network_interfaces : k => try(v.create_public_ipv6, false)
+  }
+  ipv6_access_configs = {
+    for k, v in var.network_interfaces : k => {
+      external_ipv6               = try(v.public_ipv6, null) != null ? v.public_ipv6 : local.create_public_ipv6[k]
+      external_ipv6_prefix_length = try(v.public_ipv6, null) != null ? try(v.public_ipv6_prefix_length, null) : google_compute_address.public_v6[k].prefix_length
+      public_ptr_domain_name      = try(v.public_ipv6_ptr_domain_name, null)
+    }
+    if try(v.public_ipv6, null) != null || local.create_public_ipv6[k]
+  }
 }
 
 data "google_compute_image" "vmseries" {
@@ -50,6 +61,18 @@ resource "google_compute_address" "public" {
   region       = data.google_compute_subnetwork.this[each.key].region
 }
 
+resource "google_compute_address" "public_v6" {
+  for_each = { for k, v in var.network_interfaces : k => v if local.create_public_ipv6[k] && try(v.public_ipv6, null) == null }
+
+  name               = try(each.value.public_ipv6_name, "${var.name}-${each.key}-public-v6")
+  address_type       = "EXTERNAL"
+  ip_version         = "IPV6"
+  ipv6_endpoint_type = "VM"
+  subnetwork         = each.value.subnetwork
+  project            = var.project
+  region             = data.google_compute_subnetwork.this[each.key].region
+}
+
 resource "google_compute_instance" "this" {
 
   name                      = var.name
@@ -82,6 +105,7 @@ resource "google_compute_instance" "this" {
     for_each = var.network_interfaces
 
     content {
+      stack_type = try(network_interface.value.stack_type, "IPV4_ONLY")
       network_ip = google_compute_address.private[network_interface.key].address
       subnetwork = network_interface.value.subnetwork
 
@@ -98,6 +122,16 @@ resource "google_compute_instance" "this" {
         content {
           ip_cidr_range         = alias_ip_range.value.ip_cidr_range
           subnetwork_range_name = try(alias_ip_range.value.subnetwork_range_name, null)
+        }
+      }
+
+      dynamic "ipv6_access_config" {
+        for_each = try(local.ipv6_access_configs[network_interface.key] != null, false) ? ["one"] : []
+        content {
+          external_ipv6               = try(local.ipv6_access_configs[network_interface.key].external_ipv6, null)
+          external_ipv6_prefix_length = try(local.ipv6_access_configs[network_interface.key].external_ipv6_prefix_length, null)
+          network_tier                = "PREMIUM"
+          public_ptr_domain_name      = try(local.ipv6_access_configs[network_interface.key].public_ptr_domain_name, null)
         }
       }
     }
