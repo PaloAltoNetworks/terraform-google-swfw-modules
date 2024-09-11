@@ -18,6 +18,7 @@ variable "network_interfaces" {
   List of the network interface specifications.
   Available options:
   - `subnetwork`                  - (Required|string) Self-link of a subnetwork to create interface in.
+  - `stack_type`                  - (Optional|string) IP stack to use: IPV4_ONLY (default) or IPV4_IPV6.
   - `private_ip_name`             - (Optional|string) Name for a private IPv4 address to reserve.
   - `private_ip`                  - (Optional|string) Private IPv4 address to reserve.
   - `create_public_ip`            - (Optional|boolean) Whether to reserve public IPv4 address for the interface. Ignored if `public_ip` is provided. Defaults to 'false'.
