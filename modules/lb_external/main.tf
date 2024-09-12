@@ -20,9 +20,9 @@ resource "google_compute_address" "this" {
   address_type       = "EXTERNAL"
   region             = var.region
   project            = var.project
-  ip_version         = try(each.value.ip_version, null)
-  ipv6_endpoint_type = try(each.value.ip_version, null) == "IPV6" ? "NETLB" : null
-  subnetwork         = try(each.value.ip_version, null) == "IPV6" ? var.subnetwork : null
+  ip_version         = try(each.value.ip_version, "IPV4")
+  ipv6_endpoint_type = try(each.value.ip_version, "IPV4") == "IPV6" ? "NETLB" : null
+  subnetwork         = try(each.value.ip_version, "IPV4") == "IPV6" ? var.subnetwork : null
 }
 
 # Create forwarding rule for each specified rule
@@ -50,14 +50,14 @@ resource "google_compute_forwarding_rule" "rule" {
   #   If false set value to the value of `port_range`. If `port_range` isn't specified, then set the value to `null`.
   port_range = lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? null : lookup(each.value, "port_range", null)
 
-  ip_address = try(each.value.ip_address, each.value.ip_version == "IPV4" ? (
+  ip_address = try(each.value.ip_address, try(each.value.ip_version, "IPV4") == "IPV4" ? (
     google_compute_address.this[each.key].address
     ) : (
     "${google_compute_address.this[each.key].address}/${google_compute_address.this[each.key].prefix_length}"
   ))
   ip_protocol = lookup(each.value, "ip_protocol", "TCP")
-  ip_version  = lookup(each.value, "ip_version", null)
-  subnetwork  = lookup(each.value, "ip_version", null) == "IPV6" ? var.subnetwork : null
+  ip_version  = lookup(each.value, "ip_version", "IPV4")
+  subnetwork  = lookup(each.value, "ip_version", "IPV4") == "IPV6" ? var.subnetwork : null
 }
 
 # Create `google_compute_target_pool` if required by `var.rules`
