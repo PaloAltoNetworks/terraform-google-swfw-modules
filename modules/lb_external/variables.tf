@@ -27,6 +27,12 @@ variable "rules" {
   EOF
 }
 
+variable "subnetwork" {
+  description = "Subnetwork for an IPv6 address creation. Required only for IPv6 load balancer rules."
+  type        = string
+  default     = null
+}
+
 variable "instances" {
   description = "List of links to the instances. Expected to be empty when using an autoscaler, as the autoscaler inserts entries to the target pool dynamically. The nic0 of each instance gets the traffic. Even when this list is shifted or re-ordered, it doesn't re-create any resources and such modifications often proceed without any noticeable downtime."
   type        = list(string)

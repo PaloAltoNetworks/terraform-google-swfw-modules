@@ -61,6 +61,7 @@ No modules.
 | <a name="input_region"></a> [region](#input\_region) | GCP region to deploy to. If unset the default provider region is used. | `string` | `null` | no |
 | <a name="input_rules"></a> [rules](#input\_rules) | Map of objects, the keys are names of the external forwarding rules, each of the objects has the following attributes:<br><br>- `port_range`: (Required) The port your service is listening on. Can be a number (80) or a range (8080-8089, or even 1-65535).<br>- `ip_address`: (Optional) A public IP address on which to listen, must be in the same region as the LB and must be IPv4. If empty, automatically generates a new non-ephemeral IP on a PREMIUM tier.<br>- `ip_protocol`: (Optional) The IP protocol for the frontend forwarding rule: TCP, UDP, ESP, ICMP, or L3\_DEFAULT. Default is TCP.<br>- `all_ports`: (Optional) Allows all ports to be forwarded to the Backend Service | `any` | n/a | yes |
 | <a name="input_session_affinity"></a> [session\_affinity](#input\_session\_affinity) | Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.<br>Valid values are: NONE (default), CLIENT\_IP, CLIENT\_IP\_PROTO, CLIENT\_IP\_PORT\_PROTO (only available for backend service based rules). | `string` | `"NONE"` | no |
+| <a name="input_subnetwork"></a> [subnetwork](#input\_subnetwork) | Subnetwork for an IPv6 address creation. Required only for IPv6 load balancer rules. | `string` | `null` | no |
 
 ### Outputs
 

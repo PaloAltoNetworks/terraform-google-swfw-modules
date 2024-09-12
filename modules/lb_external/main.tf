@@ -16,10 +16,13 @@ locals {
 resource "google_compute_address" "this" {
   for_each = { for k, v in var.rules : k => v if !can(v.ip_address) }
 
-  name         = each.key
-  address_type = "EXTERNAL"
-  region       = var.region
-  project      = var.project
+  name               = each.key
+  address_type       = "EXTERNAL"
+  region             = var.region
+  project            = var.project
+  ip_version         = try(each.value.ip_version, null)
+  ipv6_endpoint_type = try(each.value.ip_version, null) == "IPV6" ? "NETLB" : null
+  subnetwork         = try(each.value.ip_version, null) == "IPV6" ? var.subnetwork : null
 }
 
 # Create forwarding rule for each specified rule
@@ -47,8 +50,14 @@ resource "google_compute_forwarding_rule" "rule" {
   #   If false set value to the value of `port_range`. If `port_range` isn't specified, then set the value to `null`.
   port_range = lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? null : lookup(each.value, "port_range", null)
 
-  ip_address  = try(each.value.ip_address, google_compute_address.this[each.key].address)
+  ip_address = try(each.value.ip_address, each.value.ip_version == "IPV4" ? (
+    google_compute_address.this[each.key].address
+    ) : (
+    "${google_compute_address.this[each.key].address}/${google_compute_address.this[each.key].prefix_length}"
+  ))
   ip_protocol = lookup(each.value, "ip_protocol", "TCP")
+  ip_version  = lookup(each.value, "ip_version", null)
+  subnetwork  = lookup(each.value, "ip_version", null) == "IPV6" ? var.subnetwork : null
 }
 
 # Create `google_compute_target_pool` if required by `var.rules`
@@ -102,7 +111,8 @@ resource "google_compute_region_backend_service" "this" {
   dynamic "backend" {
     for_each = var.backend_instance_groups
     content {
-      group = backend.value
+      group          = backend.value
+      balancing_mode = "CONNECTION"
     }
   }
 
