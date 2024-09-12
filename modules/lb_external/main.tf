@@ -102,7 +102,8 @@ resource "google_compute_region_backend_service" "this" {
   dynamic "backend" {
     for_each = var.backend_instance_groups
     content {
-      group = backend.value
+      group          = backend.value
+      balancing_mode = "CONNECTION"
     }
   }
 
