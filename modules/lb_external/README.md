@@ -8,6 +8,12 @@
   - Can only use the nic0 (the base interface) of an instance.
   - Cannot serve as a next hop in a GCP custom routing table entry.
 
+## Limitation
+
+### Supported Module Version with Regards to the Changed Provider's Default Values
+
+- Module versions `<=2.0.6` supports `terraform-provider-google` version `<6.0`. If you are using `terraform-provider-google` version `6.0` and above choose module version `2.0.7` and above. This limitation is related to the [change](https://github.com/hashicorp/terraform-provider-google/commit/267f964bd4f2d9b48e8771c2a8397de3f6655ef7) in the default value of `balancing_mode` introduced in the `terraform-provider-google` version `6.0` 
+
 ## Reference
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
