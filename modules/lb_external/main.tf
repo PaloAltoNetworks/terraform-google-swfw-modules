@@ -20,7 +20,7 @@ resource "google_compute_address" "this" {
   address_type       = "EXTERNAL"
   region             = var.region
   project            = var.project
-  ip_version         = try(each.value.ip_version, "IPV4")
+  ip_version         = try(each.value.ip_version, null)
   ipv6_endpoint_type = try(each.value.ip_version, "IPV4") == "IPV6" ? "NETLB" : null
   subnetwork         = try(each.value.ip_version, "IPV4") == "IPV6" ? var.subnetwork : null
 }
@@ -56,8 +56,10 @@ resource "google_compute_forwarding_rule" "rule" {
     "${google_compute_address.this[each.key].address}/${google_compute_address.this[each.key].prefix_length}"
   ))
   ip_protocol = lookup(each.value, "ip_protocol", "TCP")
-  ip_version  = lookup(each.value, "ip_version", "IPV4")
-  subnetwork  = lookup(each.value, "ip_version", "IPV4") == "IPV6" ? var.subnetwork : null
+  # Provider recreates resource if `ip_version` changes.
+  # Use `null` as a default value to prevent existing LB re-creation when `ip_version` parameter is introduced.
+  ip_version = lookup(each.value, "ip_version", null)
+  subnetwork = lookup(each.value, "ip_version", "IPV4") == "IPV6" ? var.subnetwork : null
 }
 
 # Create `google_compute_target_pool` if required by `var.rules`
