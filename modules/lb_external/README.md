@@ -8,6 +8,12 @@
   - Can only use the nic0 (the base interface) of an instance.
   - Cannot serve as a next hop in a GCP custom routing table entry.
 
+## Limitation
+
+### Supported Module Version with Regards to the Changed Provider's Default Values
+
+- Module versions `<=2.0.6` supports `terraform-provider-google` version `<6.0`. If you are using `terraform-provider-google` version `6.0` and above choose module version `2.0.7` and above. This limitation is related to the [change](https://github.com/hashicorp/terraform-provider-google/commit/267f964bd4f2d9b48e8771c2a8397de3f6655ef7) in the default value of `balancing_mode` introduced in the `terraform-provider-google` version `6.0` 
+
 ## Reference
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
@@ -59,8 +65,9 @@ No modules.
 | <a name="input_network_tier"></a> [network\_tier](#input\_network\_tier) | The networking tier used for configuring this address. If this field is not specified, it is assumed to be PREMIUM. Possible values are PREMIUM and STANDARD. | `string` | `"PREMIUM"` | no |
 | <a name="input_project"></a> [project](#input\_project) | The project to deploy to. If unset the default provider project is used. | `string` | `""` | no |
 | <a name="input_region"></a> [region](#input\_region) | GCP region to deploy to. If unset the default provider region is used. | `string` | `null` | no |
-| <a name="input_rules"></a> [rules](#input\_rules) | Map of objects, the keys are names of the external forwarding rules, each of the objects has the following attributes:<br><br>- `port_range`: (Required) The port your service is listening on. Can be a number (80) or a range (8080-8089, or even 1-65535).<br>- `ip_address`: (Optional) A public IP address on which to listen, must be in the same region as the LB and must be IPv4. If empty, automatically generates a new non-ephemeral IP on a PREMIUM tier.<br>- `ip_protocol`: (Optional) The IP protocol for the frontend forwarding rule: TCP, UDP, ESP, ICMP, or L3\_DEFAULT. Default is TCP.<br>- `all_ports`: (Optional) Allows all ports to be forwarded to the Backend Service | `any` | n/a | yes |
+| <a name="input_rules"></a> [rules](#input\_rules) | Map of objects, the keys are names of the external forwarding rules, each of the objects has the following attributes:<br><br>- `port_range` : (Required) The port your service is listening on. Can be a number (80) or a range (8080-8089, or even 1-65535).<br>- `ip_version` : (Optional) The IP version that will be used by this Load Balancer rule. Possible values are: IPV4 (default), IPV6.<br>- `ip_address` : (Optional) An existing public IP address on which to listen, must be in the same region as the LB. IP version must correspond `ip_version`. <br>                 In case of IPv6 address specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.<br>                 If empty, a new non-ephemeral IP address is created on the PREMIUM tier.<br>- `ip_protocol`: (Optional) The IP protocol for the frontend forwarding rule: TCP, UDP, ESP, ICMP, or L3\_DEFAULT. Default is TCP.<br>- `all_ports`  : (Optional) Allows all ports to be forwarded to the Backend Service. | `any` | n/a | yes |
 | <a name="input_session_affinity"></a> [session\_affinity](#input\_session\_affinity) | Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.<br>Valid values are: NONE (default), CLIENT\_IP, CLIENT\_IP\_PROTO, CLIENT\_IP\_PORT\_PROTO (only available for backend service based rules). | `string` | `"NONE"` | no |
+| <a name="input_subnetwork"></a> [subnetwork](#input\_subnetwork) | Subnetwork for an IPv6 address creation. Required only for IPv6 load balancer rules. | `string` | `null` | no |
 
 ### Outputs
 
