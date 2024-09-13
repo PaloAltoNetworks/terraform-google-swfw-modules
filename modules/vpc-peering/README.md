@@ -47,6 +47,7 @@ No modules.
 | <a name="input_peer_import_subnet_routes_with_public_ip"></a> [peer\_import\_subnet\_routes\_with\_public\_ip](#input\_peer\_import\_subnet\_routes\_with\_public\_ip) | Import subnet routes with public IP setting for 'peer->local' direction. | `bool` | `false` | no |
 | <a name="input_peer_network"></a> [peer\_network](#input\_peer\_network) | Self-link or id of the second network (peer) in pair. | `string` | n/a | yes |
 | <a name="input_peer_peering_name"></a> [peer\_peering\_name](#input\_peer\_peering\_name) | Name for 'peer->local' direction peering resource. If not specified defaults to `<name_prefix><peer network name>-<local network name>`. | `string` | `null` | no |
+| <a name="input_stack_type"></a> [stack\_type](#input\_stack\_type) | Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`. | `string` | `null` | no |
 
 ### Outputs
 

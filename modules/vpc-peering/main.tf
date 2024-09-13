@@ -13,6 +13,7 @@ resource "google_compute_network_peering" "local" {
 
   export_subnet_routes_with_public_ip = var.local_export_subnet_routes_with_public_ip
   import_subnet_routes_with_public_ip = var.local_import_subnet_routes_with_public_ip
+  stack_type                          = var.stack_type
 }
 
 resource "google_compute_network_peering" "peer" {
@@ -25,4 +26,5 @@ resource "google_compute_network_peering" "peer" {
 
   export_subnet_routes_with_public_ip = var.peer_export_subnet_routes_with_public_ip
   import_subnet_routes_with_public_ip = var.peer_import_subnet_routes_with_public_ip
+  stack_type                          = var.stack_type
 }

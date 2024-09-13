@@ -26,6 +26,12 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "stack_type" {
+  description = "Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`."
+  default     = null
+  type        = string
+}
+
 variable "local_export_custom_routes" {
   description = "Export custom routes setting for 'local->peer' direction."
   default     = false
