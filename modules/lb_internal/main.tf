@@ -23,16 +23,18 @@ resource "google_compute_region_backend_service" "this" {
   dynamic "backend" {
     for_each = var.backends
     content {
-      group    = backend.value
-      failover = false
+      group          = backend.value
+      failover       = false
+      balancing_mode = "CONNECTION"
     }
   }
 
   dynamic "backend" {
     for_each = var.failover_backends
     content {
-      group    = backend.value
-      failover = true
+      group          = backend.value
+      failover       = true
+      balancing_mode = "CONNECTION"
     }
   }
 
@@ -55,6 +57,13 @@ resource "google_compute_region_backend_service" "this" {
       failover_ratio                       = var.failover_ratio
     }
   }
+
+  # For provider >=v6 `iap { enabled = false }` block is required for convergence.
+  # For provider <=v5 `iap { enabled = false }` is not complete (has missing arguments).
+  # To overcome issues we are ignore `iap { }` block.
+  lifecycle {
+    ignore_changes = [iap]
+  }
 }
 
 resource "google_compute_forwarding_rule" "this" {
@@ -63,6 +72,7 @@ resource "google_compute_forwarding_rule" "this" {
   region  = var.region
 
   load_balancing_scheme = "INTERNAL"
+  ip_version            = var.ip_version
   ip_address            = var.ip_address
   ip_protocol           = var.ip_protocol
   all_ports             = var.all_ports
