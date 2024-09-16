@@ -53,7 +53,11 @@ resource "google_compute_address" "private" {
 }
 
 resource "google_compute_address" "private_v6" {
-  for_each = { for k, v in var.network_interfaces : k => v if try(v.stack_type, "IPV4_ONLY") == "IPV4_IPV6" && try(v.create_private_ipv6, true) == true }
+  for_each = { for k, v in var.network_interfaces :
+    k => v if try(v.stack_type, "IPV4_ONLY") == "IPV4_IPV6"
+    && try(v.create_private_ipv6, true) == true
+    && local.create_public_ipv6[k] == false
+  }
 
   name         = try(each.value.private_ipv6_name, "${var.name}-${each.key}-private-v6")
   address_type = "INTERNAL"
