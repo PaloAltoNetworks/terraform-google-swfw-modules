@@ -14,8 +14,8 @@ locals {
   }
   ipv6_access_configs = {
     for k, v in var.network_interfaces : k => {
-      external_ipv6               = try(v.public_ipv6, null) != null ? v.public_ipv6 : local.create_public_ipv6[k]
-      external_ipv6_prefix_length = try(v.public_ipv6, null) != null ? try(v.public_ipv6_prefix_length, null) : google_compute_address.public_v6[k].prefix_length
+      external_ipv6               = try(split("/", v.public_ipv6)[0], google_compute_address.public_v6[k].address, null)
+      external_ipv6_prefix_length = try(split("/", v.public_ipv6)[1], google_compute_address.public_v6[k].prefix_length, null)
       public_ptr_domain_name      = try(v.public_ipv6_ptr_domain_name, null)
     }
     if try(v.public_ipv6, null) != null || local.create_public_ipv6[k]
@@ -47,6 +47,17 @@ resource "google_compute_address" "private" {
   name         = try(each.value.private_ip_name, "${var.name}-${each.key}-private")
   address_type = "INTERNAL"
   address      = try(each.value.private_ip, null)
+  project      = var.project
+  subnetwork   = each.value.subnetwork
+  region       = data.google_compute_subnetwork.this[each.key].region
+}
+
+resource "google_compute_address" "private_v6" {
+  for_each = { for k, v in var.network_interfaces : k => v if try(v.stack_type, "IPV4_ONLY") == "IPV4_IPV6" && try(v.create_private_ipv6, false) == true }
+
+  name         = try(each.value.private_ipv6_name, "${var.name}-${each.key}-private-v6")
+  address_type = "INTERNAL"
+  ip_version   = "IPV6"
   project      = var.project
   subnetwork   = each.value.subnetwork
   region       = data.google_compute_subnetwork.this[each.key].region
@@ -105,9 +116,10 @@ resource "google_compute_instance" "this" {
     for_each = var.network_interfaces
 
     content {
-      stack_type = try(network_interface.value.stack_type, "IPV4_ONLY")
-      network_ip = google_compute_address.private[network_interface.key].address
-      subnetwork = network_interface.value.subnetwork
+      stack_type   = try(network_interface.value.stack_type, "IPV4_ONLY")
+      network_ip   = google_compute_address.private[network_interface.key].address
+      ipv6_address = try(google_compute_address.private_v6[network_interface.key].address, null)
+      subnetwork   = network_interface.value.subnetwork
 
       dynamic "access_config" {
         for_each = try(local.access_configs[network_interface.key] != null, false) ? ["one"] : []

@@ -27,8 +27,10 @@ variable "network_interfaces" {
   - `public_ptr_domain_name`      - (Optional|string) Existing public IPv4 address PTR name to use.
   - `alias_ip_ranges`             - (Optional|list) List of objects that define additional IP ranges for an interface, as specified [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#ip_cidr_range)
   - `create_public_ipv6`          - (Optional|boolean) Whether to reserve public IPv6 address for the interface. Ignored if `public_ipv6` is provided. Defaults to 'false'.
+  - `private_ipv6_name`           - (Optional|string) Name for a private IPv6 address to reserve. Is relevant when a VPC has IPv6 ULA range.
+  - `create_private_ipv6`         - (Optional|boolean) Whether to reserve private IPv6 address for the interface. Is relevant when a VPC has IPv6 ULA range. If not specified or is 'false' (default) an ephemeral IPv6 address is assigned to the interface.
   - `public_ipv6_name`            - (Optional|string) Name for a public IPv6 address to reserve.
-  - `public_ipv6`                 - (Optional|string) Existing public IPv6 address to use.
+  - `public_ipv6`                 - (Optional|string) Existing public IPv6 address to use. Specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.
   - `public_ipv6_ptr_domain_name` - (Optional|string) Existing public IPv6 address PTR name to use.
   EOF
   type        = list(any)
