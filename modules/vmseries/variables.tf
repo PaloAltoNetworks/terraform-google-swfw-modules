@@ -17,14 +17,21 @@ variable "network_interfaces" {
   description = <<-EOF
   List of the network interface specifications.
   Available options:
-  - `subnetwork`             - (Required|string) Self-link of a subnetwork to create interface in.
-  - `private_ip_name`        - (Optional|string) Name for a private address to reserve.
-  - `private_ip`             - (Optional|string) Private address to reserve.
-  - `create_public_ip`       - (Optional|boolean) Whether to reserve public IP for the interface. Ignored if `public_ip` is provided. Defaults to 'false'.
-  - `public_ip_name`         - (Optional|string) Name for a public address to reserve.
-  - `public_ip`              - (Optional|string) Existing public IP to use.
-  - `public_ptr_domain_name` - (Optional|string) Existing public PTR name to use.
-  - `alias_ip_ranges`        - (Optional|list) List of objects that define additional IP ranges for an interface, as specified [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#ip_cidr_range)
+  - `subnetwork`                  - (Required|string) Self-link of a subnetwork to create interface in.
+  - `stack_type`                  - (Optional|string) IP stack to use: IPV4_ONLY (default) or IPV4_IPV6.
+  - `private_ip_name`             - (Optional|string) Name for a private IPv4 address to reserve.
+  - `private_ip`                  - (Optional|string) Private IPv4 address to reserve.
+  - `create_public_ip`            - (Optional|boolean) Whether to reserve public IPv4 address for the interface. Ignored if `public_ip` is provided. Defaults to 'false'.
+  - `public_ip_name`              - (Optional|string) Name for a public IPv4 address to reserve.
+  - `public_ip`                   - (Optional|string) Existing public IPv4 address to use.
+  - `public_ptr_domain_name`      - (Optional|string) Existing public IPv4 address PTR name to use.
+  - `alias_ip_ranges`             - (Optional|list) List of objects that define additional IP ranges for an interface, as specified [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#ip_cidr_range)
+  - `create_public_ipv6`          - (Optional|boolean) Whether to reserve public IPv6 address for the interface. Ignored if `public_ipv6` is provided. Defaults to 'false'.
+  - `private_ipv6_name`           - (Optional|string) Name for a private IPv6 address to reserve. Is relevant when a VPC has IPv6 ULA range.
+  - `create_private_ipv6`         - (Optional|boolean) Whether to reserve private IPv6 address for the interface. Is relevant when a VPC has IPv6 ULA range. If 'false' an ephemeral IPv6 address is assigned to the interface. Default is 'true'.
+  - `public_ipv6_name`            - (Optional|string) Name for a public IPv6 address to reserve.
+  - `public_ipv6`                 - (Optional|string) Existing public IPv6 address to use. Specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.
+  - `public_ipv6_ptr_domain_name` - (Optional|string) Existing public IPv6 address PTR name to use.
   EOF
   type        = list(any)
 }
