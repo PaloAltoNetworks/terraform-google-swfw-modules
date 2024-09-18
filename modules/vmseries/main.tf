@@ -14,8 +14,8 @@ locals {
   }
   ipv6_access_configs = {
     for k, v in var.network_interfaces : k => {
-      external_ipv6               = try(split("/", v.public_ipv6)[0], google_compute_address.public_v6[k].address, null)
-      external_ipv6_prefix_length = try(split("/", v.public_ipv6)[1], google_compute_address.public_v6[k].prefix_length, null)
+      external_ipv6               = try(split("/", v.public_ipv6)[0], google_compute_address.public_ipv6[k].address, null)
+      external_ipv6_prefix_length = try(split("/", v.public_ipv6)[1], google_compute_address.public_ipv6[k].prefix_length, null)
       public_ptr_domain_name      = try(v.public_ipv6_ptr_domain_name, null)
     }
     if try(v.public_ipv6, null) != null || local.create_public_ipv6[k]
@@ -59,7 +59,7 @@ resource "google_compute_address" "private_ipv6" {
     && local.create_public_ipv6[k] == false
   }
 
-  name         = try(each.value.private_ipv6_name, "${var.name}-${each.key}-private-v6")
+  name         = try(each.value.private_ipv6_name, "${var.name}-${each.key}-private-ipv6")
   address_type = "INTERNAL"
   ip_version   = "IPV6"
   project      = var.project
@@ -76,10 +76,10 @@ resource "google_compute_address" "public" {
   region       = data.google_compute_subnetwork.this[each.key].region
 }
 
-resource "google_compute_address" "public_v6" {
+resource "google_compute_address" "public_ipv6" {
   for_each = { for k, v in var.network_interfaces : k => v if local.create_public_ipv6[k] && try(v.public_ipv6, null) == null }
 
-  name               = try(each.value.public_ipv6_name, "${var.name}-${each.key}-public-v6")
+  name               = try(each.value.public_ipv6_name, "${var.name}-${each.key}-public-ipv6")
   address_type       = "EXTERNAL"
   ip_version         = "IPV6"
   ipv6_endpoint_type = "VM"
