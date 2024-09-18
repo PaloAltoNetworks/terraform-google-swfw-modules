@@ -42,8 +42,20 @@ variable "subnetwork" {
   type = string
 }
 
+variable "ip_version" {
+  description = "(Optional) The IP version that will be used by this Load Balancer. Possible values are: IPV4 (default), IPV6."
+  type        = string
+  default     = null
+}
+
 variable "ip_address" {
-  default = null
+  description = <<-EOF
+    (Optional) An existing private IP address on which LB listens. IP version must correspond `ip_version`.
+    In case of IPv6 address specify address with a netmask, for example: fd20:6db:d1b6:1000:0:1::/96.
+    If empty, a new ephemeral IP address is created on the PREMIUM tier.
+  EOF
+  type        = string
+  default     = null
 }
 
 variable "ip_protocol" {

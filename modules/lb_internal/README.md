@@ -1,5 +1,13 @@
 # Internally-Facing Regional TCP/UDP Load Balancer on GCP
 
+This module creates an Internal Regional Passthrough Network Load Balancer that can be used to distribute outgoing traffic across VM-Series firewalls. 
+
+## Limitations
+
+### Supported Module Version with Regards to the Changed Provider's Default Values
+
+- Module versions `<=2.0.6` support `terraform-provider-google` versions `<6.0`. If you are using `terraform-provider-google` version `6.0` and above choose module version `2.0.7` and above. This limitation is related to the [change](https://github.com/hashicorp/terraform-provider-google/commit/267f964bd4f2d9b48e8771c2a8397de3f6655ef7) in the default value of `balancing_mode` introduced in the `terraform-provider-google` version `6.0` 
+
 ## Reference
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
@@ -43,8 +51,9 @@ No modules.
 | <a name="input_failover_ratio"></a> [failover\_ratio](#input\_failover\_ratio) | (Optional) The value of the field must be in [0, 1]. If the ratio of the healthy VMs in the primary backend is at or below this number, traffic arriving at the load-balanced IP will be directed to the failover\_backends. In case where 'failoverRatio' is not set or all the VMs in the backup backend are unhealthy, the traffic will be directed back to the primary backend in the `force` mode, where traffic will be spread to the healthy VMs with the best effort, or to all VMs when no VM is healthy. This field is only used with l4 load balancing. | `number` | `null` | no |
 | <a name="input_health_check"></a> [health\_check](#input\_health\_check) | (Optional) Name of either the global google\_compute\_health\_check or google\_compute\_region\_health\_check to use. Conflicts with health\_check\_port. | `string` | `null` | no |
 | <a name="input_health_check_port"></a> [health\_check\_port](#input\_health\_check\_port) | (Optional) Port number for TCP healthchecking, default 22. This setting is ignored when `health_check` is provided. | `number` | `22` | no |
-| <a name="input_ip_address"></a> [ip\_address](#input\_ip\_address) | n/a | `any` | `null` | no |
+| <a name="input_ip_address"></a> [ip\_address](#input\_ip\_address) | (Optional) An existing private IP address on which LB listens. IP version must correspond `ip_version`.<br>In case of IPv6 address specify address with a netmask, for example: fd20:6db:d1b6:1000:0:1::/96.<br>If empty, a new ephemeral IP address is created on the PREMIUM tier. | `string` | `null` | no |
 | <a name="input_ip_protocol"></a> [ip\_protocol](#input\_ip\_protocol) | The IP protocol for the frontend forwarding rule, valid values are TCP and UDP. | `string` | `"TCP"` | no |
+| <a name="input_ip_version"></a> [ip\_version](#input\_ip\_version) | (Optional) The IP version that will be used by this Load Balancer. Possible values are: IPV4 (default), IPV6. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the load balancer (that is, both the forwarding rule and the backend service) | `string` | n/a | yes |
 | <a name="input_network"></a> [network](#input\_network) | n/a | `any` | `null` | no |
 | <a name="input_ports"></a> [ports](#input\_ports) | Which port numbers are forwarded to the backends (up to 5 ports). Conflicts with all\_ports. | `list(number)` | `[]` | no |
