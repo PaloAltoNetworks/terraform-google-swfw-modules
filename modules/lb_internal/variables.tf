@@ -54,6 +54,7 @@ variable "ip_address" {
     In case of IPv6 address specify address with a netmask, for example: fd20:6db:d1b6:1000:0:1::/96.
     If empty, a new ephemeral IP address is created on the PREMIUM tier.
   EOF
+  type        = string
   default     = null
 }
 
