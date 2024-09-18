@@ -52,7 +52,7 @@ resource "google_compute_address" "private" {
   region       = data.google_compute_subnetwork.this[each.key].region
 }
 
-resource "google_compute_address" "private_v6" {
+resource "google_compute_address" "private_ipv6" {
   for_each = { for k, v in var.network_interfaces :
     k => v if try(v.stack_type, "IPV4_ONLY") == "IPV4_IPV6"
     && try(v.create_private_ipv6, true) == true
