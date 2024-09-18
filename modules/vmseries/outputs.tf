@@ -18,7 +18,7 @@ output "private_ips" {
   value = { for k, v in google_compute_instance.this.network_interface : k => v.network_ip }
 }
 
-output "ipv6_private_ips" {
+output "private_ipv6_ips" {
   value = { for k, v in google_compute_instance.this.network_interface : k => v.ipv6_address }
 }
 
