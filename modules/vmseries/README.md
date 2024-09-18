@@ -32,7 +32,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [google_compute_address.private](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
-| [google_compute_address.private_v6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
+| [google_compute_address.private_ipv6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
 | [google_compute_address.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
 | [google_compute_address.public_v6](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
 | [google_compute_instance.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
