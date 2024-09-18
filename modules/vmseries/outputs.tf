@@ -28,5 +28,6 @@ output "public_ips" {
 
 output "ipv6_public_ips" {
   value = { for k, v in google_compute_instance.this.network_interface :
-  k => "${v.ipv6_access_config[0].external_ipv6}/${v.ipv6_access_config[0].external_ipv6_prefix_length}" if length(v.ipv6_access_config) != 0 }
+    k => "${v.ipv6_access_config[0].external_ipv6}/${v.ipv6_access_config[0].external_ipv6_prefix_length}" if length(v.ipv6_access_config) != 0
+  }
 }
