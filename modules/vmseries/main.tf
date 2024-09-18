@@ -122,7 +122,7 @@ resource "google_compute_instance" "this" {
     content {
       stack_type   = try(network_interface.value.stack_type, "IPV4_ONLY")
       network_ip   = google_compute_address.private[network_interface.key].address
-      ipv6_address = try(google_compute_address.private_v6[network_interface.key].address, null)
+      ipv6_address = try(google_compute_address.private_ipv6[network_interface.key].address, null)
       subnetwork   = network_interface.value.subnetwork
 
       dynamic "access_config" {
