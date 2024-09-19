@@ -236,8 +236,8 @@ WARNING:
 To increase the performance of the tunnel, consider installing NumPy. For instructions,
 please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
 
-<USERNAME>@spoke1-vm:~$ping 8.8.8.8
-<USERNAME>@spoke1-vm:~$ping 192.168.2.2
+<USERNAME>@spoke1-vm:~$ping ipv4.google.com
+<USERNAME>@spoke1-vm:~$ping6 ipv6.google.com
 ```
 
 ## Reference
