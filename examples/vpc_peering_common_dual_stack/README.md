@@ -64,7 +64,7 @@ As of September 2024 there is a cloud provider [limitation](https://cloud.google
 
 To enable routing from Spoke-1 and Spoke-2 VPCs a default policy based route is used to send outbound traffic to the Internal Load Balancer and then VM-Series.
 
-As of September 2024 there is a `terraform-provider-google` limitation that is allowing `google_network_connectivity_policy_based_route` resources only for IPv4 protocol version (Error: expected filter.0.protocol_version to be one of ["IPV4"], got IPV6). To overcome this limitation a `local-exec` provisioner running `gcloud beta network-connectivity policy-based-routes create ..` is used to configure policy based routes.  
+As of September 2024 `terraform-provider-google` is allowing `google_network_connectivity_policy_based_route` resources only for IPv4 protocol version. To overcome this limitation a `local-exec` provisioner running `gcloud beta network-connectivity policy-based-routes create <...>` is used to manage policy based routes.  
 
 ## Prerequisites
 
@@ -202,7 +202,7 @@ Configuration committed successfully
 
 ## Check access via web UI
 
-Use a web browser to access `https://<MGMT_PUBLIC_IP>` and login with admin and your previously configured password.
+Use a web browser to access `https://<MGMT_PUBLIC_IPV4_ADDRESS>` and login with admin and your previously configured password.
 
 ## Configuration adjustment
 
