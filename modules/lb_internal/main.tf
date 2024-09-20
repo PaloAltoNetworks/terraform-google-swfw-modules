@@ -58,11 +58,13 @@ resource "google_compute_region_backend_service" "this" {
     }
   }
 
-  # For provider >=v6 `iap { enabled = false }` block is required for convergence.
-  # For provider <=v5 `iap { enabled = false }` is not complete (has missing arguments).
-  # To overcome issues we are ignore `iap { }` block.
   lifecycle {
+    # For provider >=v6 `iap { enabled = false }` block is required for convergence.
+    # For provider <=v5 `iap { enabled = false }` is not complete (has missing arguments).
+    # To overcome issues we are ignore `iap { }` block.
     ignore_changes = [iap]
+    
+    create_before_destroy = true
   }
 }
 
