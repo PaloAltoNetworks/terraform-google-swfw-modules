@@ -1,4 +1,4 @@
-package vpc_peering_common
+package vpc_peering_common_dual_stack
 
 import (
 	"log"
