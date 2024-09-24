@@ -134,7 +134,7 @@ resource "null_resource" "no_policy_route_from_vmseries" {
       "--ip-protocol=ALL",
       "--protocol-version=IPv6",
       "--network=${module.vpc[var.policy_routes_trust_vpc_network_key].network.id}",
-      "--next-hop-other-routes DEFAULT_ROUTING",
+      "--next-hop-other-routes=DEFAULT_ROUTING",
       "--description=Disable_PBR_and_use_DEFAULT_ROUTING_for_packets_from_VM-Series",
       "--project ${var.project}"
     ])
