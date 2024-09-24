@@ -66,12 +66,15 @@ To enable routing from Spoke-1 and Spoke-2 VPCs a default policy based route is 
 
 As of September 2024 `terraform-provider-google` is allowing `google_network_connectivity_policy_based_route` resources only for IPv4 protocol version. To overcome this limitation a `local-exec` provisioner running `gcloud beta network-connectivity policy-based-routes create <...>` is used to manage policy based routes.  
 
+>**Note**: `local-exec` requires `gcloud` beta components. To install the components run `gcloud components install beta`.
+
 ## Prerequisites
 
 The following steps should be followed before deploying the Terraform code presented here.
 
 1. Prepare [VM-Series licenses](https://support.paloaltonetworks.com/)
-2. Configure the terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
+2. Configure the Terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
+3. Install `gcloud` beta components: `gcloud components install beta`
 
 ## Usage
 
@@ -81,7 +84,7 @@ The following steps should be followed before deploying the Terraform code prese
 
 ```
 git clone https://github.com/PaloAltoNetworks/terraform-google-swfw-modules
-cd terraform-google-swfw-modules/examples/vpc-peering-common
+cd terraform-google-swfw-modules/examples/vpc_peering_common_dual_stack
 ```
 
 3. Copy the `example.tfvars` to `terraform.tfvars`.

@@ -109,7 +109,7 @@ resource "null_resource" "policy_routes" {
       "--protocol-version=IPv6",
       "--network=${module.vpc[each.value.vpc_network_key].network.id}",
       "--next-hop-ilb-ip=${split("/", module.lb_internal[each.value.lb_internal_key].address)[0]}",
-      "--description=\"Policy-based route for IPv6 outbound connectivity\"",
+      "--description=Policy-based_route_for_IPv6_outbound_connectivity",
       "--project ${var.project}"
     ])
     interpreter = ["bash", "-c"]
@@ -135,15 +135,13 @@ resource "null_resource" "no_policy_route_from_vmseries" {
       "--protocol-version=IPv6",
       "--network=${module.vpc[var.policy_routes_trust_vpc_network_key].network.id}",
       "--next-hop-other-routes DEFAULT_ROUTING",
-      "--description=\"Disable PBR (use DEFAULT_ROUTING) for packets from VM-Series\"",
+      "--description=Disable_PBR_and_use_DEFAULT_ROUTING_for_packets_from_VM-Series",
       "--project ${var.project}"
     ])
-    interpreter = ["bash", "-c"]
   }
   provisioner "local-exec" {
-    when        = destroy
-    command     = "gcloud beta network-connectivity policy-based-routes delete ${self.triggers.name} --project ${self.triggers.project} --quiet || true"
-    interpreter = ["bash", "-c"]
+    when    = destroy
+    command = "gcloud beta network-connectivity policy-based-routes delete ${self.triggers.name} --project ${self.triggers.project} --quiet || true"
   }
 }
 
