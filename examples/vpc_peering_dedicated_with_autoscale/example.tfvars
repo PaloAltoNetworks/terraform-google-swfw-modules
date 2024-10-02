@@ -252,14 +252,29 @@ autoscale = {
     max_vmseries_replicas = 4
     create_pubsub_topic   = true
     bootstrap_options = {
+      # TODO: Modify the values below as per deployment requirements
       type                        = "dhcp-client"
       dhcp-send-hostname          = "yes"
       dhcp-send-client-id         = "yes"
       dhcp-accept-server-hostname = "yes"
       dhcp-accept-server-domain   = "yes"
       mgmt-interface-swap         = "enable"
-      panorama-server             = "1.1.1.1"
       ssh-keys                    = "admin:<your_ssh_key>" # Replace this value with client data
+
+      # Panorama based bootstrap.
+      panorama-server   = "1.1.1.1"
+      panorama-server-2 = "2.2.2.2"
+      tplname           = "example-template"
+      dgname            = "example-device-group"
+      vm-auth-key       = "example-123456789"
+
+      ## SCM based bootstrap.
+      # panorama-server                       = "cloud"
+      # dgname                                = "example-scm-folder"
+      # vm-series-auto-registration-pin-id    = "example-pin-id"
+      # vm-series-auto-registration-pin-value = "example-pin-value"
+      # authcode                              = "D123456"
+      # plugin-op-commands                    = "advance-routing:enable"
     }
     network_interfaces = [
       {
