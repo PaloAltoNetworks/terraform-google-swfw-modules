@@ -48,7 +48,7 @@ With default variable values the topology consists of :
 
 ## IPv/IPv6 Dual Stack
 
-This example implements end-to-end IPv6 connectivity (alongside with IPv4 connectivity/ in dual stack fashion) for data VPCs:
+This example implements end-to-end IPv6 connectivity (alongside with IPv4 connectivity, in dual stack fashion) for data VPCs:
  - Untrust (outside) VPC
  - Trust (inside/security) VPC
  - Spoke-1 VPC
