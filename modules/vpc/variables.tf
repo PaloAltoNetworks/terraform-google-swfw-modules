@@ -50,6 +50,13 @@ variable "subnetworks" {
     region            = string
     stack_type        = optional(string)
     ipv6_access_type  = optional(string)
+    log_config = optional(object({
+      aggregation_interval = optional(string)
+      flow_sampling        = optional(string)
+      metadata             = optional(string)
+      metadata_fields      = optional(list(string))
+      filter_expr          = optional(string)
+    }))
   }))
 }
 

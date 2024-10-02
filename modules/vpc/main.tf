@@ -51,6 +51,17 @@ resource "google_compute_subnetwork" "this" {
   project          = var.project_id
   stack_type       = each.value.stack_type
   ipv6_access_type = each.value.ipv6_access_type
+  dynamic "log_config" {
+    for_each = each.value.log_config != null ? [each.value.log_config] : []
+
+    content {
+      aggregation_interval = log_config.value.aggregation_interval
+      flow_sampling        = log_config.value.flow_sampling
+      metadata             = log_config.value.metadata
+      metadata_fields      = log_config.value.metadata_fields
+      filter_expr          = log_config.value.filter_expr
+    }
+  }
 }
 
 resource "google_compute_firewall" "this" {
