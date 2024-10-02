@@ -172,11 +172,38 @@ variable "routes" {
 }
 
 variable "policy_routes" {
+  description = <<-EOF
+  A map containing Policy-Based Routes that are used to route outgoing IPv6 traffic to ILB. 
+  Note that policy routes support ILB only as a next-hop.
 
+  Example :
+
+  ```
+  routes = {
+    spoke1-vpc-default-ipv6 = {
+      name              = "spoke1-vpc-default-ipv6"
+      destination_range = "::/0"
+      vpc_network_key   = "fw-spoke1-vpc"
+      lb_internal_key   = "internal-lb-ipv6"
+    }
+    spoke2-vpc-default-ipv6 = {
+      name              = "spoke2-vpc-default-ipv6"
+      destination_range = "::/0"
+      vpc_network_key   = "fw-spoke2-vpc"
+      lb_internal_key   = "internal-lb-ipv6"
+    }
+  }
+  ```
+
+  Multiple keys can be added and will be deployed by the code.
+  EOF
+  type        = map(any)
+  default     = {}
 }
 
 variable "policy_routes_trust_vpc_network_key" {
-
+  description = "Trust VPC network_key that is used to configure a DEFAULT_ROUTING PBR that prevents network loops."
+  type        = string
 }
 
 #vmseries
