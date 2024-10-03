@@ -10,7 +10,7 @@ The Terraform code presented here will deploy Palo Alto Networks VM-Series firew
 
 ## Reference Architecture Design
 
-![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/9530fc51-7267-4b74-a996-a522b97f0996)
+![simple](https://github.com/user-attachments/assets/427a318e-5288-456f-ab3f-72a7cad73ba2)
 
 This code implements:
 - a _centralized design_, a hub-and-spoke topology with a shared VPC containing VM-Series to inspect all inbound, outbound, east-west, and enterprise traffic
