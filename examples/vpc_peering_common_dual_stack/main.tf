@@ -109,7 +109,7 @@ resource "null_resource" "policy_routes" {
       "--protocol-version=IPv6",
       "--network=${module.vpc[each.value.vpc_network_key].network.id}",
       "--next-hop-ilb-ip=${split("/", module.lb_internal[each.value.lb_internal_key].address)[0]}",
-      "--description=Policy-based_route_for_IPv6_outbound_connectivity",
+      "--description=Policy-based-route-for-IPv6-outbound-connectivity",
       "--project ${var.project}"
     ])
     interpreter = ["bash", "-c"]
@@ -121,10 +121,10 @@ resource "null_resource" "policy_routes" {
   }
 }
 
-resource "null_resource" "no_policy_route_from_vmseries" {
+resource "null_resource" "pbr_override_vmseries" {
   triggers = {
     project = var.project
-    name    = "${var.name_prefix}no-pbr-from-vmseries"
+    name    = "${var.name_prefix}pbr-override-vmseries"
   }
   provisioner "local-exec" {
     command = join(" ", [
@@ -135,7 +135,7 @@ resource "null_resource" "no_policy_route_from_vmseries" {
       "--protocol-version=IPv6",
       "--network=${module.vpc[var.policy_routes_trust_vpc_network_key].network.id}",
       "--next-hop-other-routes=DEFAULT_ROUTING",
-      "--description=Disable_PBR_and_use_DEFAULT_ROUTING_for_packets_from_VM-Series",
+      "--description=Use-DEFAULT_ROUTING-for-packets-coming-from-VM-Series",
       "--project ${var.project}"
     ])
   }
