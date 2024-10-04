@@ -10,7 +10,7 @@ The Terraform code presented here will deploy Palo Alto Networks VM-Series firew
 
 ## Reference Architecture Design
 
-![simple](https://github.com/user-attachments/assets/427a318e-5288-456f-ab3f-72a7cad73ba2)
+![simple](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/9530fc51-7267-4b74-a996-a522b97f0996)
 
 This code implements:
 - a _centralized design_, a hub-and-spoke topology with a shared VPC containing VM-Series to inspect all inbound, outbound, east-west, and enterprise traffic
@@ -27,8 +27,7 @@ This design model integrates multiple methods to interconnect and control your a
 
 The common firewall option leverages a single set of VM-Series firewalls. The sole set of firewalls operates as a shared resource and may present scale limitations with all traffic flowing through a single set of firewalls due to the performance degradation that occurs when traffic crosses virtual routers. This option is suitable for proof-of-concepts and smaller scale deployments because the number of firewalls is low. However, the technical integration complexity is high.
 
-![VM-Series-Common-Firewall-Option](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/assets/2110772/8ed0d553-469c-49e0-9b59-9c025e5ec3db)
-
+![VM-Series-Common-Firewall-Option-Dual-Stack](https://github.com/user-attachments/assets/427a318e-5288-456f-ab3f-72a7cad73ba2)
 
 The scope of this code is to deploy an example of the [VM-Series Common Firewall Option](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/gcp-architecture-guide#Design%20Model) architecture within a GCP project.
 
@@ -46,7 +45,7 @@ With default variable values the topology consists of :
  - one internal network loadbalancer (for outbound/east-west traffic)
  - one external regional network loadbalancer (for inbound traffic)
 
-## IPv/IPv6 Dual Stack
+## IPv4/IPv6 Dual Stack
 
 This example implements end-to-end IPv6 connectivity (alongside with IPv4 connectivity, in dual stack fashion) for data VPCs:
  - Untrust (outside) VPC
@@ -54,17 +53,19 @@ This example implements end-to-end IPv6 connectivity (alongside with IPv4 connec
  - Spoke-1 VPC
  - Spoke-2 VPC
 
-Untrust VPC is assigned with IPv6 adresses from an external IPv6 address range, while other VPCs (Trust, Spoke-1, Spoke-2) are utilizing private IPv6 address space (IPv6 ULA range).
+Untrust VPC is assigned with IPv6 adresses from an external IPv6 address range, while other VPCs (Trust, Spoke-1, Spoke-2) are utilizing private IPv6 ULA address range.
 
 Management VPC connectivity is IPv4 only.
 
-## IPv6 Routing
+>**Note**: VM-Series must run PAN-OS version `>=11` to provide IPv6 support.
+
+### IPv6 Routing
 
 As of September 2024 there is a cloud provider [limitation](https://cloud.google.com/vpc/docs/static-routes#static-route-next-hops) that a static IPv6 route can't have a passthrough Network Load Balancer as the next hop.
 
-To enable routing from Spoke-1 and Spoke-2 VPCs a default policy based route is used to send outbound traffic to the Internal Load Balancer and then VM-Series.
+To enable outbound routing from Spoke-1 and Spoke-2 VPCs a policy based route is used to forward traffic to the Internal Load Balancer and then VM-Series.
 
-As of September 2024 `terraform-provider-google` is allowing `google_network_connectivity_policy_based_route` resources only for IPv4 protocol version. To overcome this limitation a `local-exec` provisioner running `gcloud beta network-connectivity policy-based-routes create <...>` is used to manage policy based routes.  
+As of September 2024 `terraform-provider-google` supports `google_network_connectivity_policy_based_route` resources only for IPv4 protocol version. To overcome this limitation a `local-exec` provisioner running `gcloud beta network-connectivity policy-based-routes create <...>` is used to manage policy based routes.  
 
 >**Note**: `local-exec` requires `gcloud` beta components. To install the components run `gcloud components install beta`.
 
