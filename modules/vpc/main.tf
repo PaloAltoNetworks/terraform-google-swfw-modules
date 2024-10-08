@@ -51,6 +51,7 @@ resource "google_compute_subnetwork" "this" {
   project          = var.project_id
   stack_type       = each.value.stack_type
   ipv6_access_type = each.value.ipv6_access_type
+
   dynamic "log_config" {
     for_each = each.value.log_config != null ? [each.value.log_config] : []
 
