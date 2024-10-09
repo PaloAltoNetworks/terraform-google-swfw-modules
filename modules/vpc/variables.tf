@@ -67,12 +67,14 @@ variable "subnetworks" {
   validation {
     condition = alltrue([
       for subnet in var.subnetworks :
-      subnet.log_config != null ? (
-        (subnet.log_config.aggregation_interval != null && can(regex("^INTERVAL_(5_SEC|30_SEC|1_MIN|5_MIN|10_MIN|15_MIN)$", subnet.log_config.aggregation_interval)) ? true : false) &&
-        (subnet.log_config.metadata != null && can(regex("^(EXCLUDE_ALL_METADATA|INCLUDE_ALL_METADATA|CUSTOM_METADATA)$", subnet.log_config.metadata)) ? true : false)
-      ) : true
+      subnet.log_config != null ? (anytrue([
+        (subnet.log_config.aggregation_interval != null && can(regex("^INTERVAL_(5_SEC|30_SEC|1_MIN|5_MIN|10_MIN|15_MIN)$", subnet.log_config.aggregation_interval)) ? true : false),
+        (subnet.log_config.metadata != null && can(regex("^(EXCLUDE_ALL_METADATA|INCLUDE_ALL_METADATA|CUSTOM_METADATA)$", subnet.log_config.metadata)) ? true : false),
+        (subnet.log_config.flow_sampling != null && can(subnet.log_config.flow_sampling >= 0 && subnet.log_config.flow_sampling <= 1) ? true : false),
+        (subnet.log_config.filter_expr != null ? true : false)
+      ])) : true
     ])
-    error_message = "If log_config is specified, aggregation_interval must be one of INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, INTERVAL_15_MIN, and metadata must be one of EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, or CUSTOM_METADATA."
+    error_message = "If log_config is specified, at least one of the following must be specified : aggregation_interval, metadata, flow_sampling, filter_expr."
   }
 }
 
