@@ -29,6 +29,12 @@ variable "subnetworks" {
   - `region` : Region where to configure or import the subnet.
   - `stack_type` : IP stack type. IPV4_ONLY (default) and IPV4_IPV6 are supported.
   - `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack. Possible values are: EXTERNAL, INTERNAL.
+  - `log_config` : (Optional) A map containing the logging configuration for the subnetwork.
+    - `aggregation_interval` : (Optional) The interval at which logs are aggregated for the subnetwork. Possible values are: `INTERVAL_5_SEC`, `INTERVAL_30_SEC`, `INTERVAL_1_MIN`, `INTERVAL_5_MIN`, `INTERVAL_10_MIN`, `INTERVAL_15_MIN`.
+    - `flow_sampling` : (Optional) The value of the field must be in [0, 1]. Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported.
+    - `metadata` : (Optional) Configures whether metadata fields should be added to the reported VPC flow logs. Default value is `INCLUDE_ALL_METADATA`. Possible values are: `EXCLUDE_ALL_METADATA`, `INCLUDE_ALL_METADATA`, `CUSTOM_METADATA`.
+    - `metadata_fields` : (Optional) List of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and `metadata` is set to `CUSTOM_METADATA`.
+    - `filter_expr` : (Optional) Export filter used to define which VPC flow logs should be logged, as as CEL expression.
 
   Example:
   ```
@@ -50,7 +56,26 @@ variable "subnetworks" {
     region            = string
     stack_type        = optional(string)
     ipv6_access_type  = optional(string)
+    log_config = optional(object({
+      aggregation_interval = optional(string)
+      flow_sampling        = optional(string)
+      metadata             = optional(string)
+      metadata_fields      = optional(list(string))
+      filter_expr          = optional(string)
+    }))
   }))
+  validation {
+    condition = alltrue([
+      for subnet in var.subnetworks :
+      subnet.log_config != null ? (anytrue([
+        (subnet.log_config.aggregation_interval != null && can(regex("^INTERVAL_(5_SEC|30_SEC|1_MIN|5_MIN|10_MIN|15_MIN)$", subnet.log_config.aggregation_interval)) ? true : false),
+        (subnet.log_config.metadata != null && can(regex("^(EXCLUDE_ALL_METADATA|INCLUDE_ALL_METADATA|CUSTOM_METADATA)$", subnet.log_config.metadata)) ? true : false),
+        (subnet.log_config.flow_sampling != null && can(subnet.log_config.flow_sampling >= 0 && subnet.log_config.flow_sampling <= 1) ? true : false),
+        (subnet.log_config.filter_expr != null ? true : false)
+      ])) : true
+    ])
+    error_message = "If log_config is specified, at least one of the following must be specified : aggregation_interval, metadata, flow_sampling, filter_expr."
+  }
 }
 
 variable "firewall_rules" {
