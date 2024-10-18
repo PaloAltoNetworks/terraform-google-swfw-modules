@@ -68,42 +68,36 @@ module "autoscale" {
   name                             = "${var.name_prefix}${each.value.name}"
   region                           = var.region
   project_id                       = var.project
+  image                            = "projects/paloaltonetworksgcp-public/global/images/${try(each.value.image, var.autoscale_common.image)}"
   regional_mig                     = try(var.autoscale_regional_mig, true)
   zones                            = try(each.value.zones, {})
-  image                            = "https://www.googleapis.com/compute/v1/projects/paloaltonetworksgcp-public/global/images/${try(each.value.image, var.autoscale_common.image)}"
+  service_account_email            = try(module.iam_service_account[each.value.service_account_key].email, module.iam_service_account[var.autoscale_common.service_account_key].email)
   named_ports                      = try(each.value.named_ports, var.autoscale_common.named_ports)
   machine_type                     = try(each.value.machine_type, var.autoscale_common.machine_type)
-  min_cpu_platform                 = try(each.value.min_cpu_platform, var.autoscale_common.min_cpu_platform, "Intel Cascade Lake")
-  disk_type                        = try(each.value.disk_type, var.autoscale_common.disk_type, "pd-ssd")
-  service_account_email            = try(module.iam_service_account[each.value.service_account_key].email, module.iam_service_account[var.autoscale_common.service_account_key].email)
+  min_cpu_platform                 = try(each.value.min_cpu_platform, var.autoscale_common.min_cpu_platform)
+  disk_type                        = try(each.value.disk_type, var.autoscale_common.disk_type)
   scopes                           = try(each.value.scopes, var.autoscale_common.scopes, [])
   tags                             = try(each.value.tags, var.autoscale_common.tags, [])
-  update_policy_type               = try(each.value.update_policy_type, var.autoscale_common.update_policy_type, "OPPORTUNISTIC")
+  update_policy_type               = try(each.value.update_policy_type, var.autoscale_common.update_policy_type)
   min_vmseries_replicas            = try(each.value.min_vmseries_replicas, var.autoscale_common.min_vmseries_replicas)
   max_vmseries_replicas            = try(each.value.max_vmseries_replicas, var.autoscale_common.max_vmseries_replicas)
-  cooldown_period                  = try(each.value.cooldown_period, var.autoscale_common.cooldown_period, 480)
-  scale_in_control_time_window_sec = try(each.value.scale_in_control_time_window_sec, var.autoscale_common.scale_in_control_time_window_sec, 1800)
-  scale_in_control_replicas_fixed  = try(each.value.scale_in_control_replicas_fixed, var.autoscale_common.scale_in_control_replicas_fixed, 1)
+  cooldown_period                  = try(each.value.cooldown_period, var.autoscale_common.cooldown_period)
+  scale_in_control_time_window_sec = try(each.value.scale_in_control_time_window_sec, var.autoscale_common.scale_in_control_time_window_sec)
+  scale_in_control_replicas_fixed  = try(each.value.scale_in_control_replicas_fixed, var.autoscale_common.scale_in_control_replicas_fixed)
   create_pubsub_topic              = try(each.value.create_pubsub_topic, var.autoscale_common.create_pubsub_topic)
-  autoscaler_metrics = try(each.value.autoscaler_metrics, var.autoscale_common.autoscaler_metrics,
-    {
-      "custom.googleapis.com/VMSeries/panSessionUtilization" = {
-        target = 70
-      }
-      "custom.googleapis.com/VMSeries/panSessionThroughputKbps" = {
-        target = 700000
-      }
-  })
+  autoscaler_metrics               = try(each.value.autoscaler_metrics, var.autoscale_common.autoscaler_metrics)
 
   network_interfaces = [for v in each.value.network_interfaces :
     {
       subnetwork       = module.vpc[v.vpc_network_key].subnetworks[v.subnetwork_key].self_link
       create_public_ip = try(v.create_public_ip, false)
       public_ip        = try(v.public_ip, null)
-  }]
+    }
+  ]
+
   metadata = merge(
-    try(each.value.bootstrap_options, {}),
-    try(var.autoscale_common.bootstrap_options, {})
+    try(var.autoscale_common.bootstrap_options, {}),
+    try(each.value.bootstrap_options, {})
   )
 }
 

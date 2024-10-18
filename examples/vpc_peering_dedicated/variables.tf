@@ -4,18 +4,20 @@ variable "project" {
   type        = string
   default     = null
 }
+
 variable "region" {
   description = "The region into which to deploy the infrastructure in to."
   type        = string
   default     = "us-central1"
 }
+
 variable "name_prefix" {
   description = "A string to prefix resource namings."
   type        = string
   default     = "example-"
 }
 
-#Service Account
+# Service Account
 
 variable "service_accounts" {
   description = <<-EOF
@@ -46,7 +48,7 @@ variable "service_accounts" {
   default     = {}
 }
 
-#Bootstrap bucket
+# Bootstrap bucket
 
 variable "bootstrap_buckets" {
   description = <<-EOF
@@ -73,7 +75,7 @@ variable "bootstrap_buckets" {
   default     = {}
 }
 
-#VPC
+# VPC
 
 variable "networks" {
   description = <<-EOF
@@ -171,7 +173,7 @@ variable "routes" {
   default     = {}
 }
 
-#vmseries
+# VM-Series
 
 variable "vmseries_common" {
   description = <<-EOF
@@ -193,9 +195,10 @@ variable "vmseries_common" {
   }
   ``` 
 
-  Bootstrap options can be moved between vmseries individual instance variable (`vmseries`) and this common vmserie variable (`vmseries_common`).
+  Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
   EOF
 }
+
 variable "vmseries" {
   description = <<-EOF
   A map containing each individual vmseries setting.
@@ -271,7 +274,7 @@ variable "vmseries" {
   EOF
 }
 
-#Load Balancers
+# Load Balancers
 
 variable "lbs_internal" {
   description = <<-EOF
@@ -298,6 +301,7 @@ variable "lbs_internal" {
   type        = map(any)
   default     = {}
 }
+
 variable "lbs_global_http" {
   description = <<-EOF
   A map containing each Global HTTP loadbalancer setting.
@@ -324,7 +328,7 @@ variable "lbs_global_http" {
   default     = {}
 }
 
-#Spoke VPCs Linux VMs
+# Spoke VPCs Linux VMs
 
 variable "linux_vms" {
   description = <<-EOF

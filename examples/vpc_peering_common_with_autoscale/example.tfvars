@@ -213,9 +213,19 @@ autoscale_common = {
     "https://www.googleapis.com/auth/logging.write",
     "https://www.googleapis.com/auth/monitoring.write",
   ]
-  tags               = ["vmseries-autoscale"]
-  update_policy_type = "OPPORTUNISTIC"
-  cooldown_period    = 480
+  tags                             = ["vmseries-autoscale"]
+  update_policy_type               = "OPPORTUNISTIC"
+  cooldown_period                  = 480
+  scale_in_control_time_window_sec = 1800
+  scale_in_control_replicas_fixed  = 1
+  autoscaler_metrics = {
+    "custom.googleapis.com/VMSeries/panSessionUtilization" = {
+      target = 70
+    }
+    "custom.googleapis.com/VMSeries/panSessionThroughputKbps" = {
+      target = 700000
+    }
+  }
 }
 
 autoscale = {
@@ -239,14 +249,6 @@ autoscale = {
     min_vmseries_replicas = 2
     max_vmseries_replicas = 4
     create_pubsub_topic   = true
-    autoscaler_metrics = {
-      "custom.googleapis.com/VMSeries/panSessionUtilization" = {
-        target = 70
-      }
-      "custom.googleapis.com/VMSeries/panSessionThroughputKbps" = {
-        target = 700000
-      }
-    }
     bootstrap_options = {
       type                        = "dhcp-client"
       dhcp-send-hostname          = "yes"
