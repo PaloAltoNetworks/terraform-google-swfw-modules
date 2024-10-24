@@ -175,7 +175,7 @@ module "vmseries" {
   ssh_keys              = try(each.value.ssh_keys, var.vmseries_common.ssh_keys)
   vmseries_image        = try(each.value.vmseries_image, var.vmseries_common.vmseries_image)
   machine_type          = try(each.value.machine_type, var.vmseries_common.machine_type)
-  min_cpu_platform      = try(each.value.min_cpu_platform, var.vmseries_common.min_cpu_platform, "Intel Cascade Lake")
+  min_cpu_platform      = try(each.value.min_cpu_platform, var.vmseries_common.min_cpu_platform)
   tags                  = try(each.value.tags, var.vmseries_common.tags, [])
   service_account       = try(module.iam_service_account[each.value.service_account_key].email, module.iam_service_account[var.vmseries_common.service_account_key].email)
   scopes                = try(each.value.scopes, var.vmseries_common.scopes, [])
@@ -184,11 +184,13 @@ module "vmseries" {
   bootstrap_options = try(
     merge(
       { vmseries-bootstrap-gce-storagebucket = "${module.bootstrap[each.value.bootstrap_bucket_key].bucket_name}/${each.key}/" },
-    var.vmseries_common.bootstrap_options),
+      var.vmseries_common.bootstrap_options
+    ),
     merge(
-      try(each.value.bootstrap_options, {}),
-      try(var.vmseries_common.bootstrap_options, {})
-  ))
+      try(var.vmseries_common.bootstrap_options, {}),
+      try(each.value.bootstrap_options, {})
+    )
+  )
 
   named_ports = try(each.value.named_ports, [])
 
@@ -201,7 +203,8 @@ module "vmseries" {
       public_ip          = try(v.public_ip, null)
       create_public_ipv6 = try(v.create_public_ipv6, false)
       public_ipv6        = try(v.public_ipv6, null)
-  }]
+    }
+  ]
 }
 
 data "google_compute_image" "my_image" {

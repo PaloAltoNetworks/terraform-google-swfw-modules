@@ -4,18 +4,20 @@ variable "project" {
   type        = string
   default     = null
 }
+
 variable "region" {
   description = "The region into which to deploy the infrastructure in to."
   type        = string
   default     = "us-central1"
 }
+
 variable "name_prefix" {
   description = "A string to prefix resource namings."
   type        = string
   default     = "example-"
 }
 
-#Service Account
+# Service Account
 
 variable "service_accounts" {
   description = <<-EOF
@@ -46,7 +48,7 @@ variable "service_accounts" {
   default     = {}
 }
 
-#VPC
+# VPC
 
 variable "networks" {
   description = <<-EOF
@@ -146,7 +148,7 @@ variable "routes" {
   default     = {}
 }
 
-#Autoscale
+# Autoscale
 variable "autoscale_regional_mig" {
   description = <<-EOF
   Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
@@ -155,10 +157,11 @@ variable "autoscale_regional_mig" {
   type        = bool
   default     = true
 }
+
 variable "autoscale_common" {
   description = <<-EOF
   A map containing common vmseries autoscale setting.
-  Bootstrap options can be moved between vmseries autoscale individual instances variable (`autoscale`) and this common vmseries autoscale variable (`autoscale_common`).
+  Majority of settings can be moved between this common and individual autoscale setup (ie. `var.autoscale`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
 
   Example of variable deployment :
 
@@ -259,7 +262,7 @@ variable "autoscale" {
   default     = {}
 }
 
-#Load Balancers
+# Load Balancers
 
 variable "lbs_internal" {
   description = <<-EOF
@@ -286,6 +289,7 @@ variable "lbs_internal" {
   type        = map(any)
   default     = {}
 }
+
 variable "lbs_external" {
   description = <<-EOF
   A map containing each external loadbalancer setting.
@@ -315,7 +319,7 @@ variable "lbs_external" {
   default     = {}
 }
 
-#Spoke VPCs Linux VMs
+# Spoke VPCs Linux VMs
 
 variable "linux_vms" {
   description = <<-EOF
