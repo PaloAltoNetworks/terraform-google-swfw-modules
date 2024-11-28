@@ -57,7 +57,7 @@ networks = {
     }
     firewall_rules = {
       allow-mgmt-ingress = {
-        name             = "allow-mgmt-vpc"
+        name             = "allow-mgmt-ingress"
         source_ranges    = ["1.1.1.1/32"] # Modify this value as per deployment requirements. Replace 1.1.1.1/32 with your own source IP address for management purposes.
         priority         = "1000"
         allowed_protocol = "all"
