@@ -101,7 +101,7 @@ variable "networks" {
       firewall_rules = {
         allow-mgmt-ingress = {
           name             = "allow-mgmt-ingress"
-          source_ranges    = ["10.10.10.0/24", "1.1.1.1/32"] # Set your own management source IP range.
+          source_ranges    = ["10.10.10.0/24"]
           priority         = "1000"
           allowed_protocol = "all"
           allowed_ports    = []
