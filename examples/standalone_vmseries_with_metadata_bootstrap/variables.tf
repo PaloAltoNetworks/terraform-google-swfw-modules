@@ -62,7 +62,7 @@ variable "vmseries" {
       "fw-vmseries-01" = {
         name             = "fw-vmseries-01"
         zone             = "us-central1-b"
-        vmseries_image   = "vmseries-flex-byol-1029h1"
+        vmseries_image   = "vmseries-flex-byol-10210h9"
         ssh_keys         = "admin:<YOUR_SSH_KEY>"
         machine_type     = "n2-standard-4"
         min_cpu_platform = "Intel Cascade Lake"
@@ -117,7 +117,7 @@ variable "vmseries_common" {
   ```
   vmseries_common = {
     ssh_keys            = "admin:AAAABBBB..."
-    vmseries_image      = "vmseries-flex-byol-1029h1"
+    vmseries_image      = "vmseries-flex-byol-10210h9"
     machine_type        = "n2-standard-4"
     min_cpu_platform    = "Intel Cascade Lake"
     service_account_key = "sa-vmseries-01"
