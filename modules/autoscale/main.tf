@@ -164,6 +164,7 @@ resource "google_compute_region_autoscaler" "regional" {
         name   = metric.key
         type   = try(metric.value.type, "GAUGE")
         target = metric.value.target
+        filter = try(metric.value.filter, null)
       }
     }
 
@@ -375,3 +376,4 @@ resource "google_project_iam_member" "delicensing_cfn_invoker" {
   role    = "roles/run.invoker"
   member  = "serviceAccount:${data.google_compute_default_service_account.main.email}"
 }
+
