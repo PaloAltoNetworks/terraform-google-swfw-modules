@@ -221,9 +221,11 @@ autoscale_common = {
   autoscaler_metrics = {
     "custom.googleapis.com/VMSeries/panSessionUtilization" = {
       target = 70
+      filter = "resource.type = \"gce_instance\""
     }
     "custom.googleapis.com/VMSeries/panSessionThroughputKbps" = {
       target = 700000
+      filter = "resource.type = \"gce_instance\""
     }
   }
 }
@@ -340,3 +342,4 @@ lbs_external = {
     http_health_check_request_path = "/php/login.php"
   }
 }
+
