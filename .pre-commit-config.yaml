@@ -1,10 +1,10 @@
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.68.1 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+    rev: v1.96.2 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
-        args: ['--args=--lockfile=false', '--args=--indent=3']
+        args: ["--args=--lockfile=false", "--args=--indent=3"]
       - id: terraform_tflint
         args: [
             # --args=--module, # TODO enable it after ensuring `terraform init`
@@ -20,13 +20,16 @@ repos:
             --args=--only=terraform_workspace_remote,
           ]
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: '2.2.125'
+    rev: "2.2.125"
     hooks:
-    - id: checkov
-      verbose: true
-      args: [
-        --compact,
-        --quiet,
-        --skip-check, "CKV_GCP_26,CKV_GCP_32,CKV_GCP_35,CKV_GCP_36,CKV_GCP_39,CKV_GCP_40,CKV_GCP_76,CKV_GCP_62,CKV_GCP_37,CKV_GCP_38,CKV_GCP_74,CKV_GCP_83,CKV2_GHA_1,CKV_SECRET_6",
-        --soft-fail-on, "CKV_GCP_37,CKV_GCP_38,CKV_GCP_74,CKV_GCP_83,CKV2_GHA_1",
-      ]
+      - id: checkov
+        verbose: true
+        args:
+          [
+            --compact,
+            --quiet,
+            --skip-check,
+            "CKV_GCP_26,CKV_GCP_32,CKV_GCP_35,CKV_GCP_36,CKV_GCP_39,CKV_GCP_40,CKV_GCP_76,CKV_GCP_62,CKV_GCP_37,CKV_GCP_38,CKV_GCP_74,CKV_GCP_83,CKV2_GHA_1,CKV_SECRET_6",
+            --soft-fail-on,
+            "CKV_GCP_37,CKV_GCP_38,CKV_GCP_74,CKV_GCP_83,CKV2_GHA_1",
+          ]
