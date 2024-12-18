@@ -62,7 +62,9 @@ panorama_public_ips = {
 
 ## Post build
 
-Connect to the panorama instance(s) via SSH using your associated private key and set a password :
+### Connect to Panorama directly via SSH
+
+Connect to the Panorama instance(s) via SSH using your associated private key and set a password:
 
 ```
 ssh admin@x.x.x.x -i /PATH/TO/YOUR/KEY/id_rsa
@@ -79,9 +81,47 @@ admin@Panorama# commit
 Configuration committed successfully
 ```
 
-## Check access via web UI
+#### Check access via web UI
 
 Use a web browser to access https://x.x.x.x and login with admin and your previously configured password
+
+### Connect to Panorama via GCP IAP
+
+>**Note**: This connection method is required when Panorama doesn't have a public IP address attached to the network interface and there is no IP connectivity from the management workstation to the Panorama's private IP address.
+
+>**Note**: First time access provisioning takes some time. Please run the following command once again if it gets stuck while connecting.
+
+```
+gcloud compute ssh --zone "<ZONE>" "admin@<PANORAMA_VM_INSTANCE_NAME>" --tunnel-through-iap --project "<PROJECT_ID>" -- -i /PATH/TO/YOUR/KEY/id_rsa
+
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+Welcome admin.
+admin@Panorama> configure
+Entering configuration mode
+[edit]                                                                                                                                                                                  
+admin@Panorama# set mgt-config users admin password
+Enter password   : 
+Confirm password : 
+
+[edit]                                                                                                                                                                                  
+admin@Panorama# commit
+Configuration committed successfully
+```
+
+#### Check access via web UI
+
+Start IAP TCP forwarding:
+
+```
+gcloud compute start-iap-tunnel <PANORAMA_VM_INSTANCE_NAME> 443 --local-host-port=localhost:4443 --zone=<ZONE> --project <PROJECT_ID>
+```
+
+Use a web browser to access https://localhost:4443 and login with admin and your previously configured password.
+
+>**Note**: Because IAP TCP forwarding is using multiple source IP addresses, you might see a connection reset right after successful Panorama login. In that case, reestablish IAP TCP forwarding and try logging in again.
 
 ## Reference
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

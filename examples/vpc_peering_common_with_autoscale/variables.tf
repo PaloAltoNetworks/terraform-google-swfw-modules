@@ -74,8 +74,8 @@ variable "networks" {
       }
       firewall_rules = {
         allow-mgmt-ingress = {
-          name = "allow-mgmt-vpc"
-          source_ranges = ["10.10.10.0/24", "1.1.1.1/32"] # Replace 1.1.1.1/32 with your own souurce IP address for management purposes.
+          name = "allow-mgmt-ingress"
+          source_ranges = ["10.10.10.0/24"]
           priority = "1000"
           allowed_protocol = "all"
           allowed_ports = []
@@ -167,7 +167,7 @@ variable "autoscale_common" {
 
   ```
   autoscale_common = {
-    image            = "vmseries-flex-byol-1110"
+    image            = "vmseries-flex-byol-1114h7"
     machine_type     = "n2-standard-4"
     min_cpu_platform = "Intel Cascade Lake"
     disk_type        = "pd-ssd"

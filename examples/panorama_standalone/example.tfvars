@@ -22,11 +22,18 @@ networks = {
     }
     firewall_rules = {
       "allow-panorama-ingress" = {
-        name             = "panorama-mgmt"
-        source_ranges    = ["1.1.1.1/32", "2.2.2.2/32"]
+        name             = "allow-panorama-ingress"
+        source_ranges    = ["172.21.21.0/24"] # Set your own management source IP range. 
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
+      }
+      "allow-cloudiap-ingress" = {
+        name             = "allow-cloudiap-ingress"
+        source_ranges    = ["35.235.240.0/20"] # 35.235.240.0/20 corresponds to Cloud IAP. 
+        priority         = "1000"
+        allowed_protocol = "tcp"
+        allowed_ports    = [22, 443]
       }
     }
   }
@@ -42,7 +49,7 @@ panoramas = {
     subnetwork_key    = "panorama-sub"
     panorama_version  = "panorama-byol-1000"
     ssh_keys          = "admin:<ssh-rsa AAAA...>"
-    attach_public_ip  = true
+    attach_public_ip  = false
     private_static_ip = "172.21.21.2"
   }
 }
