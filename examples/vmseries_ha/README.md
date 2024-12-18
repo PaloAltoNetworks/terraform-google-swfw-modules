@@ -55,6 +55,14 @@ The following steps should be followed before deploying the Terraform code prese
 1. Prepare [VM-Series licenses](https://support.paloaltonetworks.com/)
 2. Configure the terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
 
+## Bootstrap
+
+With default settings, firewall instances will get the initial configuration from generated `init-cfg.txt` and `bootstrap.xml` files placed in Cloud Storage.
+
+The `example.tfvars` file also contains commented out sample settings that can be used to register the firewalls to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections and adjust `vmseries_common.bootstrap_options` and `vmseries.<fw-name>.bootstrap_options` parameters accordingly.
+
+> SCM bootstrap is supported on PAN-OS version 11.0 and above.
+
 ## Usage
 
 1. Access Google Cloud Shell or any other environment that has access to your GCP project
@@ -85,10 +93,10 @@ terraform apply
 
 4. Check the output plan and confirm the apply.
 
-5. Check the successful application and outputs of the resulting infrastructure:
+5. Check the successful application and outputs of the resulting infrastructure (number of resources can vary based on how many instances are defined in tfvars):
 
 ```
-Apply complete! Resources: 96 added, 0 changed, 0 destroyed. (Number of resources can vary based on how many instances you push through tfvars)
+Apply complete! Resources: 96 added, 0 changed, 0 destroyed.
 
 Outputs:
 
