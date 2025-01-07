@@ -58,7 +58,7 @@ networks = {
     firewall_rules = {
       allow-mgmt-ingress = {
         name             = "allow-mgmt-ingress"
-        source_ranges    = ["10.10.10.0/28"] # Set your own management source IP range.
+        source_ranges    = ["1.1.1.1/32"] # Set your own management source IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
@@ -229,7 +229,7 @@ vmseries = {
         vpc_network_key  = "fw-mgmt-vpc"
         subnetwork_key   = "fw-mgmt-sub"
         private_ip       = "10.10.10.2"
-        create_public_ip = false
+        create_public_ip = true
       },
       {
         vpc_network_key = "fw-spoke1-vpc"
@@ -290,7 +290,7 @@ vmseries = {
         vpc_network_key  = "fw-mgmt-vpc"
         subnetwork_key   = "fw-mgmt-sub"
         private_ip       = "10.10.10.3"
-        create_public_ip = false
+        create_public_ip = true
       },
       {
         vpc_network_key = "fw-spoke1-vpc"

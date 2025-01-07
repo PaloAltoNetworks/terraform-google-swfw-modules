@@ -23,7 +23,7 @@ networks = {
     firewall_rules = {
       "allow-panorama-ingress" = {
         name             = "allow-panorama-ingress"
-        source_ranges    = ["172.21.21.0/24"] # Set your own management source IP range. 
+        source_ranges    = ["172.21.21.0/24", "1.1.1.1/32"] # Set your own management source IP range. 
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
@@ -49,7 +49,7 @@ panoramas = {
     subnetwork_key    = "panorama-sub"
     panorama_version  = "panorama-byol-1000"
     ssh_keys          = "admin:<ssh-rsa AAAA...>"
-    attach_public_ip  = false
+    attach_public_ip  = true
     private_static_ip = "172.21.21.2"
   }
 }
