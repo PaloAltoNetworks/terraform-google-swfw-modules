@@ -57,8 +57,8 @@ networks = {
     }
     firewall_rules = {
       allow-mgmt-ingress = {
-        name             = "allow-mgmt-vpc"
-        source_ranges    = ["1.1.1.1/32"] # Modify this value as per deployment requirements. Replace 1.1.1.1/32 with your own source IP address for management purposes.
+        name             = "allow-mgmt-ingress"
+        source_ranges    = ["1.1.1.1/32"] # Set your own management source IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
@@ -84,14 +84,14 @@ networks = {
     firewall_rules = {
       allow-untrust-ingress-ipv4-1 = {
         name             = "allow-untrust-vpc-ipv4-1"
-        source_ranges    = ["0.0.0.0/0"] # Allow connections via Network Load Balancer from any source IP. Change to a more specific IPv6 range if required.
+        source_ranges    = ["35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22"] # Add app client IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
       }
       allow-untrust-ingress-ipv6-1 = {
         name             = "allow-untrust-vpc-ipv6-1"
-        source_ranges    = ["::/0"] # Allow connections via Network Load Balancer from any source IP. Change to a more specific IPv6 range if required.
+        source_ranges    = ["2600:1901:8001::/48"] # Add app client source IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
@@ -271,7 +271,7 @@ policy_routes_trust_vpc_network_key = "fw-trust-vpc"
 
 vmseries_common = {
   ssh_keys            = "admin:<your_ssh_key>" # Modify this value as per deployment requirements
-  vmseries_image      = "vmseries-flex-byol-1114"
+  vmseries_image      = "vmseries-flex-byol-1114h7"
   machine_type        = "n2-standard-4"
   min_cpu_platform    = "Intel Cascade Lake"
   service_account_key = "sa-vmseries-01"

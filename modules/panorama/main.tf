@@ -50,6 +50,7 @@ resource "google_compute_instance" "this" {
   metadata = merge({
     serial-port-enable = true
     ssh-keys           = var.ssh_keys
+    enable-oslogin     = false
   }, var.metadata)
 
   service_account {

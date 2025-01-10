@@ -125,7 +125,7 @@ variable "vmseries_image" {
   To get a list of available official images, please run the following command:
   `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
   EOF
-  default     = "vmseries-flex-byol-1029h1"
+  default     = "vmseries-flex-byol-10210h9"
   type        = string
 }
 
