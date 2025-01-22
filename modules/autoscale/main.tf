@@ -24,7 +24,7 @@ resource "google_compute_instance_template" "main" {
       subnetwork = network_interface.value.subnetwork
 
       dynamic "access_config" {
-        for_each = try(network_interface.value.create_public_ip, false) ? ["one"] : []
+        for_each = coalesce(network_interface.value.create_public_ip, false) ? ["one"] : []
         content {}
       }
     }
