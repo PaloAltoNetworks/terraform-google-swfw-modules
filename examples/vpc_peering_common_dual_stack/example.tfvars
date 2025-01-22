@@ -4,7 +4,6 @@ region      = "us-east1"     # Modify this value as per deployment requirements
 name_prefix = ""             # Modify this value as per deployment requirements
 
 # Service accounts
-
 service_accounts = {
   sa-vmseries-01 = {
     service_account_id = "sa-vmseries-01"
@@ -39,7 +38,6 @@ bootstrap_buckets = {
 }
 
 # VPC
-
 networks = {
   fw-mgmt-vpc = {
     vpc_name                        = "fw-mgmt-vpc"
@@ -205,7 +203,6 @@ networks = {
 }
 
 # VPC Peerings
-
 vpc_peerings = {
   trust-to-spoke1 = {
     local_network_key = "fw-trust-vpc"
@@ -268,7 +265,6 @@ policy_routes = {
 policy_routes_trust_vpc_network_key = "fw-trust-vpc"
 
 # VM-Series
-
 vmseries_common = {
   ssh_keys            = "admin:<your_ssh_key>" # Modify this value as per deployment requirements
   vmseries_image      = "vmseries-flex-byol-1114h7"
@@ -280,14 +276,14 @@ vmseries_common = {
     type                = "dhcp-client"
     mgmt-interface-swap = "enable"
 
-    ## Panorama based bootstrap.
+    ## Uncomment for Panorama based bootstrap.
     # panorama-server   = "1.1.1.1"
     # panorama-server-2 = "2.2.2.2"
     # tplname           = "example-template"
     # dgname            = "example-device-group"
     # vm-auth-key       = "example-123456789"
 
-    ## SCM based bootstrap.
+    ## Uncomment for SCM based bootstrap.
     # panorama-server                       = "cloud"
     # dgname                                = "example-scm-folder"
     # vm-series-auto-registration-pin-id    = "example-pin-id"

@@ -4,6 +4,7 @@ variable "project" {
   type        = string
   default     = null
 }
+
 variable "name_prefix" {
   description = "A string to prefix resource namings"
   type        = string

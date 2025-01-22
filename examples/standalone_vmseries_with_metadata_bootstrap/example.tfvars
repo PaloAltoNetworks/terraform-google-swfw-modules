@@ -54,14 +54,14 @@ vmseries = {
       dns-primary                 = "8.8.8.8"
       dns-secondary               = "8.8.4.4"
 
-      ## Panorama based bootstrap.
+      ## Uncomment for Panorama based bootstrap.
       # panorama-server   = "1.1.1.1"
       # panorama-server-2 = "2.2.2.2"
       # tplname           = "example-template"
       # dgname            = "example-device-group"
       # vm-auth-key       = "example-123456789"
 
-      ## SCM based bootstrap.
+      ## Uncomment for SCM based bootstrap.
       # panorama-server                       = "cloud"
       # dgname                                = "example-scm-folder"
       # vm-series-auto-registration-pin-id    = "example-pin-id"

@@ -4,7 +4,6 @@ region      = "us-east1" # Modify this value as per deployment requirements
 name_prefix = ""
 
 # Service accounts
-
 service_accounts = {
   sa-vmseries-01 = {
     service_account_id = "sa-vmseries-01"
@@ -39,7 +38,6 @@ bootstrap_buckets = {
 }
 
 # VPC
-
 networks = {
   fw-mgmt-vpc = {
     vpc_name                        = "fw-mgmt-vpc"
@@ -164,7 +162,6 @@ networks = {
 }
 
 # VPC Peerings
-
 vpc_peerings = {
   trust-to-spoke1 = {
     local_network_key = "fw-trust-vpc"
@@ -197,7 +194,6 @@ vpc_peerings = {
 }
 
 # Static routes
-
 routes = {
   fw-default-trust = {
     name              = "fw-default-trust"
@@ -219,14 +215,14 @@ vmseries_common = {
     type                = "dhcp-client"
     mgmt-interface-swap = "enable"
 
-    ## Panorama based bootstrap.
+    ## Uncomment for Panorama based bootstrap.
     # panorama-server   = "1.1.1.1"
     # panorama-server-2 = "2.2.2.2"
     # tplname           = "example-template"
     # dgname            = "example-device-group"
     # vm-auth-key       = "example-123456789"
 
-    ## SCM based bootstrap.
+    ## Uncomment for SCM based bootstrap.
     # panorama-server                       = "cloud"
     # dgname                                = "example-scm-folder"
     # vm-series-auto-registration-pin-id    = "example-pin-id"
@@ -450,7 +446,6 @@ vmseries = {
 }
 
 # Spoke Linux VMs
-
 linux_vms = {
   spoke1-vm = {
     linux_machine_type = "n2-standard-4"
@@ -487,7 +482,6 @@ linux_vms = {
 }
 
 # Internal Network Loadbalancer
-
 lbs_internal = {
   internal-lb = {
     name              = "internal-lb"
@@ -500,7 +494,6 @@ lbs_internal = {
 }
 
 # Global HTTP Loadbalancer
-
 lbs_global_http = {
   global-http = {
     name                  = "global-http"

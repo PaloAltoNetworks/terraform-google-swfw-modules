@@ -12,7 +12,6 @@ variable "name_prefix" {
 }
 
 # Service Account
-
 variable "service_accounts" {
   description = <<-EOF
   A map containing each service account setting.
@@ -43,7 +42,6 @@ variable "service_accounts" {
 }
 
 # Bootstrap bucket
-
 variable "bootstrap_buckets" {
   description = <<-EOF
   A map containing each bootstrap bucket setting.
@@ -70,7 +68,6 @@ variable "bootstrap_buckets" {
 }
 
 # VPC
-
 variable "networks" {
   description = <<-EOF
   A map containing each network setting.
@@ -179,10 +176,34 @@ variable "routes" {
 }
 
 # VM-Series
-
 variable "vmseries_common" {
+  type = object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+  default     = {}
   description = <<-EOF
-  A map containing common vmseries setting.
+  A map containing common vmseries settings.
 
   Example of variable deployment :
 
@@ -205,8 +226,44 @@ variable "vmseries_common" {
 }
 
 variable "vmseries" {
+  type = map(object({
+    name   = string
+    region = string
+    zone   = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  }))
+  default     = {}
   description = <<-EOF
-  A map containing each individual vmseries setting for vmseries instances.
+  A map containing each individual vmseries setting.
 
   Example of variable deployment :
 
@@ -226,15 +283,15 @@ variable "vmseries" {
       ]
       bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
       bootstrap_options = {
-        panorama-server = "1.1.1.1" # Modify this value as per deployment requirements
-        dns-primary     = "8.8.8.8" # Modify this value as per deployment requirements
-        dns-secondary   = "8.8.4.4" # Modify this value as per deployment requirements
+        panorama-server = "1.1.1.1"
+        dns-primary     = "8.8.8.8"
+        dns-secondary   = "8.8.4.4"
       }
       bootstrap_template_map = {
         trust_gcp_router_ip   = "10.10.12.1"
         untrust_gcp_router_ip = "10.10.11.1"
         private_network_cidr  = "192.168.0.0/16"
-        untrust_loopback_ip   = "1.1.1.1/32" # This is placeholder IP - you must replace it on the vmseries config with the LB public IP address (Region-1) after the infrastructure is deployed
+        untrust_loopback_ip   = "1.1.1.1/32" # This is placeholder IP - you must replace it on the vmseries config with the LB public IP address after the infrastructure is deployed
         trust_loopback_ip     = "10.10.12.5/32"
       }
       named_ports = [
@@ -278,7 +335,6 @@ variable "vmseries" {
 }
 
 # Load Balancers
-
 variable "lbs_internal" {
   description = <<-EOF
   A map containing each internal loadbalancer setting .
@@ -337,7 +393,6 @@ variable "lbs_external" {
 }
 
 # Spoke VPCs Linux VMs
-
 variable "linux_vms" {
   description = <<-EOF
   A map containing each Linux VM configuration in region_1 that will be placed in spoke VPC network for testing purposes.
