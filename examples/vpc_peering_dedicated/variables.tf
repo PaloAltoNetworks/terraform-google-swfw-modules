@@ -181,6 +181,7 @@ variable "vmseries_common" {
     service_account_key = optional(string)
     scopes              = optional(list(string))
     bootstrap_options = optional(object({
+      type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
       plugin-op-commands                    = optional(string)
       panorama-server                       = optional(string)
@@ -240,6 +241,7 @@ variable "vmseries" {
     service_account     = optional(string)
     scopes              = optional(list(string))
     bootstrap_options = optional(object({
+      type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
       plugin-op-commands                    = optional(string)
       panorama-server                       = optional(string)

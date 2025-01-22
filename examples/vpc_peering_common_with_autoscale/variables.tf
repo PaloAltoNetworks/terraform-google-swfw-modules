@@ -181,6 +181,7 @@ variable "autoscale_common" {
       type   = string
     })))
     bootstrap_options = optional(object({
+      type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
       plugin-op-commands                    = optional(string)
       panorama-server                       = optional(string)
@@ -263,6 +264,7 @@ variable "autoscale" {
       port = number
     })))
     bootstrap_options = optional(object({
+      type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
       plugin-op-commands                    = optional(string)
       panorama-server                       = optional(string)
