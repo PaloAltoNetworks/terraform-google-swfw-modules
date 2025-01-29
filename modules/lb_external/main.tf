@@ -33,6 +33,9 @@ resource "google_compute_forwarding_rule" "rule" {
   project = var.project
   region  = local.region
 
+  # The networking tier used for configuring this address. 
+  network_tier = var.network_tier
+
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) != `L3_DEFAULT` if true then use `google_compute_target_pool` as backend
   target = lookup(each.value, "ip_protocol", "TCP") != "L3_DEFAULT" ? google_compute_target_pool.this[0].self_link : null
 
