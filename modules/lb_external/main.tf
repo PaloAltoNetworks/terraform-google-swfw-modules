@@ -23,6 +23,7 @@ resource "google_compute_address" "this" {
   ip_version         = try(each.value.ip_version, null)
   ipv6_endpoint_type = try(each.value.ip_version, "IPV4") == "IPV6" ? "NETLB" : null
   subnetwork         = try(each.value.ip_version, "IPV4") == "IPV6" ? var.subnetwork : null
+  network_tier       = var.network_tier
 }
 
 # Create forwarding rule for each specified rule
