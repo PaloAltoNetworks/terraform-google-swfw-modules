@@ -66,7 +66,7 @@ vmseries = {
       # dgname                                = "example-scm-folder"
       # vm-series-auto-registration-pin-id    = "example-pin-id"
       # vm-series-auto-registration-pin-value = "example-pin-value"
-      # authcode                              = "D123456"
+      # authcodes                             = "D123456"
       # plugin-op-commands                    = "advance-routing:enable"
     }
     named_ports = [
