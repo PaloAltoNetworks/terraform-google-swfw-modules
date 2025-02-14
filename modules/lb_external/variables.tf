@@ -23,7 +23,7 @@ variable "rules" {
   - `ip_version` : (Optional) The IP version that will be used by this Load Balancer rule. Possible values are: IPV4 (default), IPV6.
   - `ip_address` : (Optional) An existing public IP address on which to listen, must be in the same region as the LB. IP version must correspond `ip_version`. 
                    In case of IPv6 address specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.
-                   If empty, a new non-ephemeral IP address is created on the tier speciefied by `network_tier`.
+                   If empty, a new non-ephemeral IP address is created on the tier specified by `network_tier`.
   - `ip_protocol`: (Optional) The IP protocol for the frontend forwarding rule: TCP, UDP, ESP, ICMP, or L3_DEFAULT. Default is TCP.
   - `all_ports`  : (Optional) Allows all ports to be forwarded to the Backend Service.
 
