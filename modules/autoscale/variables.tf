@@ -47,7 +47,14 @@ variable "network_interfaces" {
   - `subnetwork`       - (Required|string) Self-link of a subnetwork to create interface in.
   - `create_public_ip` - (Optional|boolean) Whether to reserve public IP for the interface.
   EOF
-  type        = list(any)
+  type = list(
+    object(
+      {
+        subnetwork       = string
+        create_public_ip = optional(bool, false)
+      }
+    )
+  )
 }
 
 variable "machine_type" {
