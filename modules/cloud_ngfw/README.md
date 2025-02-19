@@ -1,0 +1,12 @@
+# Palo Alto Networks Cloud NGFW Module
+
+A terraform module for deploying a fully managed Cloud NGFW in Google Cloud Platform along with associated policy and rules to handle traffic via firewall endpoints.
+
+## Usage
+
+For usage please refer to any reference architecture example.
+
+## Reference
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
