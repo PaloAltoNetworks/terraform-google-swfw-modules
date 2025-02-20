@@ -1,5 +1,5 @@
 variable "service_account_id" {
-  default = "The google_service_account.account_id of the created IAM account, unique string per project."
+  description =  "The ID of the created IAM account, unique string per project."
   type    = string
 }
 
