@@ -31,7 +31,6 @@ variable "labels" {
 }
 
 variable "vpn_config" {
-  type        = any
   description = <<-EOF
   VPN configuration from GCP to on-prem or from GCP to GCP.
   If you'd like secrets to be randomly generated set `shared_secret` to empty string ("").
@@ -95,4 +94,63 @@ variable "vpn_config" {
   }
   ```
   EOF
+  type = object(
+    {
+      router_asn         = string
+      keepalive_interval = optional(number, 20)
+      router_advertise_config = object(
+        {
+          ip_ranges = string
+          mode      = string
+          groups    = list(string)
+        }
+      )
+      instances = object(
+        {
+          name = string,
+          peer_external_gateway = object(
+            {
+              redundancy_type = string
+              interfaces = list(
+                object(
+                  {
+                    id         = number
+                    ip_address = string
+                  }
+                )
+              )
+            }
+          )
+          tunnels = map(
+            object(
+              {
+                bgp_peer = object(
+                  {
+                    address = string
+                    asn     = number
+                  }
+                )
+                bgp_peer_options = optional(
+                  object(
+                    {
+                      ip_address          = string
+                      route_priority      = optional(number)
+                      advertise_mode      = optional(string)
+                      advertise_groups    = optional(string)
+                      advertise_ip_ranges = optional(map(string))
+                    }
+                  )
+                )
+                bgp_session_range               = string
+                ike_version                     = optional(number, 2)
+                vpn_gateway_interface           = number
+                peer_external_gateway_interface = number
+                shared_secret                   = string
+              }
+            )
+          )
+        }
+      )
+    }
+  )
 }
