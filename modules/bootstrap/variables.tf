@@ -39,6 +39,6 @@ variable "folders" {
   A default value (empty list) will result in the creation of a single bootstrap package folder set in the bucket top-level directory.
   EOF
   default     = []
-  type        = list(any)
+  type        = list(string)
 }
 
