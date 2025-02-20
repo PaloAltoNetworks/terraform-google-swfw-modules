@@ -5,8 +5,8 @@ variable "name" {
 
 variable "project" {
   description = "The ID of the project in which the resource belongs. If it is not provided, the provider project is used"
-  default = null
-  type    = string
+  default     = null
+  type        = string
 }
 
 variable "zone" {
@@ -34,7 +34,36 @@ variable "network_interfaces" {
   - `public_ipv6`                 - (Optional|string) Existing public IPv6 address to use. Specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.
   - `public_ipv6_ptr_domain_name` - (Optional|string) Existing public IPv6 address PTR name to use.
   EOF
-  type        = list(any)
+  type = list(
+    object(
+      {
+        subnetwork             = string
+        stack_type             = optional(string, "IPV4_ONLY")
+        private_ip_name        = optional(string)
+        private_ip             = optional(string)
+        create_public_ip       = optional(bool, false)
+        public_ip_name         = optional(string)
+        public_ip              = optional(string)
+        public_ptr_domain_name = optional(string)
+        alias_ip_ranges = optional(
+          list(
+            object(
+              {
+                ip_cidr_range         = string
+                subnetwork_range_name = string
+              }
+            )
+          )
+        )
+        create_public_ipv6          = optional(bool, false)
+        private_ipv6_name           = optional(string)
+        create_private_ipv6         = optional(bool, false)
+        public_ipv6_name            = optional(string)
+        public_ipv6                 = optional(string)
+        public_ipv6_ptr_domain_name = optional(string)
+      }
+    )
+  )
 }
 
 variable "bootstrap_options" {
