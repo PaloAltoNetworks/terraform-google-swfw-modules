@@ -40,7 +40,7 @@ variable "failover_backends" {
 
 variable "subnetwork" {
   description = "This field identifies the subnetwork that the load balanced IP should belong to for this Forwarding Rule."
-  type = string
+  type        = string
 }
 
 variable "ip_version" {
@@ -79,8 +79,8 @@ variable "ports" {
 
 variable "network" {
   description = "This field identifies the network that the load balanced IP should belong to for this Forwarding Rule. If the subnetwork is specified, the network of the subnetwork will be used"
-  type = string
-  default = null
+  type        = string
+  default     = null
 }
 
 variable "session_affinity" {
