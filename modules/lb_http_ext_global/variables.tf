@@ -50,7 +50,7 @@ variable "timeout_sec" {
 }
 
 variable "balancing_mode" {
-  description = ""
+  description = "Specifies the balancing mode for this backend. For global HTTP(S) or TCP/SSL load balancing, the default is UTILIZATION. Valid values are UTILIZATION, RATE (for HTTP(S)) and CONNECTION (for TCP/SSL). Default is RATE"
   default     = "RATE"
   type        = string
 }
