@@ -147,6 +147,7 @@ variable "service_account" {
 }
 
 variable "scopes" {
+  description = "A list of service scopes. Both OAuth2 URLs and gcloud short names are supported. To allow full access to all Cloud APIs, use the cloud-platform scope. Defaults to the necessary VMSeries needed GCP APIs"
   default = [
     "https://www.googleapis.com/auth/compute.readonly",
     "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
