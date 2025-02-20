@@ -93,7 +93,7 @@ variable "deletion_protection" {
 
 variable "labels" {
   description = "See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)"
-  type        = map(any)
+  type        = map(string)
   default     = {}
 }
 
