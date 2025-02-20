@@ -74,7 +74,7 @@ variable "max_rate_per_instance" {
 }
 
 variable "max_utilization" {
-  description = ""
+  description = "Used when balancingMode is UTILIZATION. This ratio defines the CPU utilization target for the group. Valid range is [0.0, 1.0]"
   default     = null
   type        = number
 }
