@@ -78,6 +78,7 @@ variable "ports" {
 }
 
 variable "network" {
+  description = "This field identifies the network that the load balanced IP should belong to for this Forwarding Rule. If the subnetwork is specified, the network of the subnetwork will be used"
   default = null
 }
 
