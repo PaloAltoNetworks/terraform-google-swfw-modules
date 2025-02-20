@@ -68,7 +68,7 @@ variable "max_connections_per_instance" {
 }
 
 variable "max_rate_per_instance" {
-  description = ""
+  description = "The max requests per second (RPS) that a single backend instance can handle. This is used to calculate the capacity of the group. Can be used in either balancing mode. For RATE mode, either maxRate or maxRatePerInstance must be set."
   default     = null
   type        = number
 }
