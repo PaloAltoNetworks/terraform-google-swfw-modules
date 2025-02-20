@@ -4,6 +4,8 @@ variable "service_account_id" {
 }
 
 variable "display_name" {
+  description = "The display name for the service account"
+  type = string
   default = "Palo Alto Networks Firewall Service Account"
 }
 
