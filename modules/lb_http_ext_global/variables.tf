@@ -62,7 +62,7 @@ variable "capacity_scaler" {
 }
 
 variable "max_connections_per_instance" {
-  description = ""
+  description = "The max number of simultaneous connections that a single backend instance can handle. This is used to calculate the capacity of the group. Can be used in either CONNECTION or UTILIZATION balancing modes. For CONNECTION mode, either maxConnections or maxConnectionsPerInstance must be set."
   default     = null
   type        = number
 }
