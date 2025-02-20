@@ -205,7 +205,7 @@ variable "disk_type" {
 variable "labels" {
   description = "GCP instance lables."
   default     = {}
-  type        = map(any)
+  type        = map(string)
 }
 
 variable "tags" {
