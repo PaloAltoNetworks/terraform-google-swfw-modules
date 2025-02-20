@@ -39,6 +39,7 @@ variable "failover_backends" {
 }
 
 variable "subnetwork" {
+  description = "This field identifies the subnetwork that the load balanced IP should belong to for this Forwarding Rule."
   type = string
 }
 
