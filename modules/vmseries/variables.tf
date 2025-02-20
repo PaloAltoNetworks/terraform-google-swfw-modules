@@ -199,6 +199,7 @@ variable "deletion_protection" {
 variable "disk_type" {
   description = "Boot disk type. See [provider documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#type) for available values."
   default     = "pd-standard"
+  type        = string
 }
 
 variable "labels" {
