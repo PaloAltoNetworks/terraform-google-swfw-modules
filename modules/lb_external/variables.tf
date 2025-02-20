@@ -44,7 +44,8 @@ variable "instances" {
 
 variable "backend_instance_groups" {
   description = "List of backend instance groups"
-  default     = []
+  type = map(string)
+  default     = {}
 }
 
 variable "session_affinity" {
