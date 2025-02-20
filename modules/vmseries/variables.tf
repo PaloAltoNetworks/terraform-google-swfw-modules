@@ -130,6 +130,14 @@ variable "named_ports" {
   Practically, tcp port 80 named "http" works even when not defined here, but it's not a documented provider's behavior.
   EOF
   default     = []
+  type = list(
+    object(
+      {
+        name = string
+        port = string
+      }
+    )
+  )
 }
 
 variable "service_account" {
