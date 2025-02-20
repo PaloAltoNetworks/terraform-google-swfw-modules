@@ -25,9 +25,20 @@ variable "rules" {
                    In case of IPv6 address specify address with a netmask, for example: 2600:1900:4020:bd2:8000:1::/96.
                    If empty, a new non-ephemeral IP address is created on the tier specified by `network_tier`.
   - `ip_protocol`: (Optional) The IP protocol for the frontend forwarding rule: TCP, UDP, ESP, ICMP, or L3_DEFAULT. Default is TCP.
-  - `all_ports`  : (Optional) Allows all ports to be forwarded to the Backend Service.
+  - `all_ports`  : (Optional) Allows all ports to be forwarded to the Backend Service. Default is True
 
   EOF
+  type = map(
+    object(
+      {
+        port_range  = string,
+        ip_version  = optional(string, "IPV4")
+        ip_address  = optional(string, "")
+        ip_protocol = optional(string, "TCP")
+        all_ports   = optional(bool, true)
+      }
+    )
+  )
 }
 
 variable "subnetwork" {
@@ -44,7 +55,7 @@ variable "instances" {
 
 variable "backend_instance_groups" {
   description = "List of backend instance groups"
-  type = map(string)
+  type        = map(string)
   default     = {}
 }
 
@@ -66,9 +77,9 @@ variable "connection_tracking_policy" {
   More information about supported configurations in conjunction with `session_affinity` is available in [Backend service-based external Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-tracking) documentation.
   EOF
   default     = null
-  type        = object(
+  type = object(
     {
-      mode = optional(string, "PER_CONNECTION"),
+      mode                              = optional(string, "PER_CONNECTION"),
       persistence_on_unhealthy_backends = optional(string, "DEFAULT_FOR_PROTOCOL")
     }
   )
