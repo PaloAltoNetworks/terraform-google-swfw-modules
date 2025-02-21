@@ -162,8 +162,8 @@ resource "google_compute_region_autoscaler" "regional" {
       for_each = var.autoscaler_metrics
       content {
         name   = metric.key
-        type   = try(metric.value.type, "GAUGE")
         target = metric.value.target
+        type   = coalesce(metric.value.type, "GAUGE")
         filter = try(metric.value.filter, null)
       }
     }

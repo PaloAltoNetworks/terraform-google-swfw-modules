@@ -177,8 +177,9 @@ variable "autoscale_common" {
     scale_in_control_replicas_fixed  = optional(number)
     scale_in_control_time_window_sec = optional(number)
     autoscaler_metrics = optional(map(object({
-      target = string
-      type   = string
+      target = optional(string)
+      type   = optional(string)
+      filter = optional(string)
     })))
     bootstrap_options = optional(object({
       type                                  = optional(string)
@@ -252,6 +253,7 @@ variable "autoscale" {
     autoscaler_metrics = optional(map(object({
       target = optional(string)
       type   = optional(string)
+      filter = optional(string)
     })))
     network_interfaces = list(object({
       vpc_network_key  = string
