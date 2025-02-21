@@ -4,7 +4,6 @@ region      = "us-east4"
 name_prefix = ""
 
 # Service accounts
-
 service_accounts = {
   sa-vmseries-01 = {
     service_account_id = "sa-vmseries-01"
@@ -31,7 +30,6 @@ service_accounts = {
 }
 
 # VPC
-
 networks = {
   fw-mgmt-vpc = {
     vpc_name                        = "fw-mgmt-vpc"
@@ -156,7 +154,6 @@ networks = {
 }
 
 # VPC Peerings
-
 vpc_peerings = {
   trust-to-spoke1 = {
     local_network_key = "fw-trust-vpc"
@@ -252,14 +249,29 @@ autoscale = {
     max_vmseries_replicas = 4
     create_pubsub_topic   = true
     bootstrap_options = {
+      # TODO: Modify the values below as per deployment requirements
       type                        = "dhcp-client"
       dhcp-send-hostname          = "yes"
       dhcp-send-client-id         = "yes"
       dhcp-accept-server-hostname = "yes"
       dhcp-accept-server-domain   = "yes"
       mgmt-interface-swap         = "enable"
-      panorama-server             = "1.1.1.1"
       ssh-keys                    = "admin:<your_ssh_key>" # Replace this value with client data
+
+      # Uncomment for Panorama based bootstrap.
+      panorama-server   = "1.1.1.1"
+      panorama-server-2 = "2.2.2.2"
+      tplname           = "example-template"
+      dgname            = "example-device-group"
+      vm-auth-key       = "example-123456789"
+
+      ## Uncomment for SCM based bootstrap.
+      # panorama-server                       = "cloud"
+      # dgname                                = "example-scm-folder"
+      # vm-series-auto-registration-pin-id    = "example-pin-id"
+      # vm-series-auto-registration-pin-value = "example-pin-value"
+      # authcodes                             = "D123456"
+      # plugin-op-commands                    = "advance-routing:enable"
     }
     network_interfaces = [
       {

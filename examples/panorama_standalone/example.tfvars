@@ -4,7 +4,6 @@ region      = "us-central1"
 name_prefix = ""
 
 # VPC
-
 networks = {
   "panorama-vpc" = {
     vpc_name                        = "firewall-vpc"
@@ -40,7 +39,6 @@ networks = {
 }
 
 # Panorama
-
 panoramas = {
   "panorama-01" = {
     zone              = "us-central1-a"
