@@ -19,6 +19,7 @@ To prevent the malicious traffic, a Cloud NGFW endpoint is created and associate
 
 With the default variable values - the topology consists of:
   - A VPC network with one subnet
+  - A service account used by the Linux VMs
   - One client VM instance named "client-vm"
   - One web server VM instance named "web-server-vm"
   - A Cloud NGFW endpoint associated with the VPC network and zone
@@ -65,7 +66,7 @@ terraform apply
 5. Check the successful application and outptus of the resulting infrastructure:
 
 ```
-Apply complete! Resources: 15 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 21 added, 0 changed, 0 destroyed.
 ```
 
 ## Post-deployment
@@ -114,6 +115,7 @@ Now you can also check the logs in Cloud Console Network Security -> Cloud NGFW 
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
+`iam_service_account` | - | ../../modules/iam_service_account | 
 `vpc` | - | ../../modules/vpc | 
 `cloud_nat` | 5.3.0 | terraform-google-modules/cloud-nat/google | 
 `ngfw` | - | ../../modules/cloud_ngfw | 
@@ -144,6 +146,7 @@ Name | Type | Description
 --- | --- | ---
 [`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
+[`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
 
 
 
@@ -515,6 +518,7 @@ map(object({
     private_ip              = string
     scopes                  = list(string)
     metadata_startup_script = optional(string, null)
+    service_account_key     = string
   }))
 ```
 
@@ -540,5 +544,46 @@ A string to prefix resource namings.
 Type: string
 
 Default value: `example-`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_accounts
+
+A map containing each service account setting.
+
+Example of variable deployment :
+  ```
+service_accounts = {
+  "sa-vmseries-01" = {
+    service_account_id = "sa-vmseries-01"
+    display_name       = "VM-Series SA"
+    roles = [
+      "roles/compute.networkViewer",
+      "roles/logging.logWriter",
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer",
+      "roles/viewer"
+    ]
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: 
+
+```hcl
+map(object({
+    service_account_id = string
+    display_name       = string
+    roles              = list(string)
+  }))
+```
+
+
+Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
