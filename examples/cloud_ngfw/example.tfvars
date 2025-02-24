@@ -1,8 +1,8 @@
 # General
-project     = "hgu-ngfwtest-84612"
-org_id      = "453273208284"
+project     = "<YOUR_PROJECT_ID>"
+org_id      = "<YOUR_ORG_ID>"
 region      = "us-central1" # Modify this value as per deployment requirements
-name_prefix = "hgu-test-"
+name_prefix = ""
 
 service_accounts = {
   sa-linux-01 = {
