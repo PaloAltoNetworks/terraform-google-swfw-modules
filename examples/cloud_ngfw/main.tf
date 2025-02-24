@@ -1,3 +1,14 @@
+module "iam_service_account" {
+  source = "../../modules/iam_service_account"
+
+  for_each = var.service_accounts
+
+  service_account_id = "${var.name_prefix}${each.value.service_account_id}"
+  display_name       = "${var.name_prefix}${each.value.display_name}"
+  roles              = each.value.roles
+  project_id         = var.project
+}
+
 module "vpc" {
   source = "../../modules/vpc"
 
@@ -70,6 +81,11 @@ resource "google_compute_instance" "linux_vm" {
   metadata_startup_script = each.value.metadata_startup_script
   metadata = {
     enable-oslogin = true
+  }
+
+  service_account {
+    email  = module.iam_service_account[each.value.service_account_key].email
+    scopes = each.value.scopes
   }
 
 }

@@ -4,6 +4,19 @@ org_id      = "453273208284"
 region      = "us-central1" # Modify this value as per deployment requirements
 name_prefix = "hgu-test-"
 
+service_accounts = {
+  sa-linux-01 = {
+    service_account_id = "sa-linux-01"
+    display_name       = "Linux VMs SA"
+    roles = [
+      "roles/compute.networkViewer",
+      "roles/logging.logWriter",
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer",
+      "roles/viewer"
+    ]
+  }
+}
 
 # VPC
 
@@ -54,6 +67,7 @@ linux_vms = {
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
+    service_account_key     = "sa-linux-01"
     metadata_startup_script = <<SCRIPT
     #! /bin/bash 
     apt-get update 
@@ -61,12 +75,13 @@ linux_vms = {
     SCRIPT
   },
   web-server-vm = {
-    linux_machine_type = "f1-micro"
-    zone               = "us-central1-a"
-    linux_disk_size    = "50" # Modify this value as per deployment requirements
-    vpc_network_key    = "fw-hosts-vpc"
-    subnetwork_key     = "fw-hosts-sub"
-    private_ip         = "10.0.0.20"
+    linux_machine_type  = "f1-micro"
+    zone                = "us-central1-a"
+    linux_disk_size     = "50" # Modify this value as per deployment requirements
+    vpc_network_key     = "fw-hosts-vpc"
+    subnetwork_key      = "fw-hosts-sub"
+    private_ip          = "10.0.0.20"
+    service_account_key = "sa-linux-01"
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]

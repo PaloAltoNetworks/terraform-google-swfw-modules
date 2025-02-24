@@ -15,6 +15,41 @@ variable "org_id" {
   type        = string
 }
 
+# Service Account
+
+variable "service_accounts" {
+  description = <<-EOF
+  A map containing each service account setting.
+
+  Example of variable deployment :
+    ```
+  service_accounts = {
+    "sa-vmseries-01" = {
+      service_account_id = "sa-vmseries-01"
+      display_name       = "VM-Series SA"
+      roles = [
+        "roles/compute.networkViewer",
+        "roles/logging.logWriter",
+        "roles/monitoring.metricWriter",
+        "roles/monitoring.viewer",
+        "roles/viewer"
+      ]
+    }
+  }
+  ```
+  For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
+
+  Multiple keys can be added and will be deployed by the code.
+
+  EOF
+  type = map(object({
+    service_account_id = string
+    display_name       = string
+    roles              = list(string)
+  }))
+  default = {}
+}
+
 variable "networks" {
   description = <<-EOF
   A map containing each network setting.
@@ -335,5 +370,6 @@ variable "linux_vms" {
     private_ip              = string
     scopes                  = list(string)
     metadata_startup_script = optional(string, null)
+    service_account_key     = string
   }))
 }
