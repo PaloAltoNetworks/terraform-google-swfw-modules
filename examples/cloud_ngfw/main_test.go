@@ -1,4 +1,4 @@
-package vmseries_ha
+package cloud_ngfw
 
 import (
 	"log"
@@ -23,7 +23,6 @@ func CreateTerraformOptions(t *testing.T) *terraform.Options {
 		Vars: map[string]interface{}{
 			"name_prefix": varsInfo.NamePrefix,
 			"project":     varsInfo.GoogleProjectId,
-			"org_id":      varsInfo.GoogleOrgId,
 		},
 		Logger:               logger.Default,
 		Lock:                 true,
