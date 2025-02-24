@@ -19,7 +19,7 @@ module "vpc" {
   }, {})
 }
 
-module "cloud-nat" {
+module "cloud_nat" {
   source  = "terraform-google-modules/cloud-nat/google"
   version = "5.3.0"
 
