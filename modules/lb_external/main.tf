@@ -1,3 +1,4 @@
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_config
 data "google_client_config" "this" {}
 
 locals {
@@ -13,6 +14,7 @@ locals {
 }
 
 # Create external IP addresses if non-specified
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address
 resource "google_compute_address" "this" {
   for_each = { for k, v in var.rules : k => v if !can(v.ip_address) }
 
@@ -27,6 +29,7 @@ resource "google_compute_address" "this" {
 }
 
 # Create forwarding rule for each specified rule
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_forwarding_rule
 resource "google_compute_forwarding_rule" "rule" {
   for_each = var.rules
 
@@ -65,6 +68,7 @@ resource "google_compute_forwarding_rule" "rule" {
 }
 
 # Create `google_compute_target_pool` if required by `var.rules`
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_pool
 resource "google_compute_target_pool" "this" {
   count = local.target_pool_needed ? 1 : 0
 
@@ -83,6 +87,7 @@ resource "google_compute_target_pool" "this" {
 }
 
 # Create `google_compute_http_health_check` if required by `var.rules`
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_http_health_check
 resource "google_compute_http_health_check" "this" {
   count = var.create_health_check && local.target_pool_needed ? 1 : 0
 
@@ -98,6 +103,7 @@ resource "google_compute_http_health_check" "this" {
 }
 
 # Create `google_compute_region_backend_service` if require by `var.rules`
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_backend_service
 resource "google_compute_region_backend_service" "this" {
   provider = google-beta
 
@@ -132,6 +138,7 @@ resource "google_compute_region_backend_service" "this" {
 }
 
 # Create `google_compute_region_backend_service` if require by `var.rules`
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_health_check
 resource "google_compute_region_health_check" "this" {
   count = var.create_health_check && local.backend_service_needed ? 1 : 0
 
