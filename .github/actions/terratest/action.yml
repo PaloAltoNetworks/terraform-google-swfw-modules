@@ -43,5 +43,6 @@ runs:
         ACTION: ${{ inputs.terratest_action }}
         PRID: ${{ inputs.pr-id }}
         PROJECT_ID: ${{ env.PROJECT_ID }}
+        ORG_ID: ${{ env.ORG_ID }}
       shell: bash
       run: make $TPATH ACTION=$ACTION
