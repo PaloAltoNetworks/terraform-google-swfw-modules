@@ -5,7 +5,9 @@ locals {
   inverted_filenames = merge(local.bootstrap_filenames, local.inverted_files)
   # invert local.filenames map
   filenames = { for k, v in local.inverted_filenames : v => k }
+  folders   = length(var.folders) == 0 ? [""] : var.folders
 }
+
 resource "random_string" "randomstring" {
   length    = 10
   min_lower = 10
@@ -22,11 +24,6 @@ resource "google_storage_bucket" "this" {
     enabled = true
   }
 }
-
-locals {
-  folders = length(var.folders) == 0 ? [""] : var.folders
-}
-
 
 resource "google_storage_bucket_object" "config_empty" {
   for_each = toset(local.folders)
