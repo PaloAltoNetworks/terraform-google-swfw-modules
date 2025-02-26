@@ -8,12 +8,14 @@ locals {
   folders   = length(var.folders) == 0 ? [""] : var.folders
 }
 
+# https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string
 resource "random_string" "randomstring" {
   length    = 10
   min_lower = 10
   special   = false
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket
 resource "google_storage_bucket" "this" {
   name                        = join("", [var.name_prefix, random_string.randomstring.result])
   force_destroy               = true
@@ -25,6 +27,7 @@ resource "google_storage_bucket" "this" {
   }
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "config_empty" {
   for_each = toset(local.folders)
 
@@ -33,6 +36,7 @@ resource "google_storage_bucket_object" "config_empty" {
   bucket  = google_storage_bucket.this.name
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "content_empty" {
   for_each = toset(local.folders)
 
@@ -41,6 +45,7 @@ resource "google_storage_bucket_object" "content_empty" {
   bucket  = google_storage_bucket.this.name
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "license_empty" {
   for_each = toset(local.folders)
 
@@ -49,6 +54,7 @@ resource "google_storage_bucket_object" "license_empty" {
   bucket  = google_storage_bucket.this.name
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "software_empty" {
   for_each = toset(local.folders)
 
@@ -57,6 +63,7 @@ resource "google_storage_bucket_object" "software_empty" {
   bucket  = google_storage_bucket.this.name
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "file" {
   for_each = local.filenames
 
@@ -65,8 +72,10 @@ resource "google_storage_bucket_object" "file" {
   bucket = google_storage_bucket.this.name
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_default_service_account
 data "google_compute_default_service_account" "this" {}
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam_member_remove
 resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.this.name
   role   = "roles/storage.objectViewer"
