@@ -4,12 +4,6 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "files" {
-  description = "Map of all files to copy to bucket. The keys are local paths, the values are remote paths. For example `{\"dir/my.txt\" = \"config/init-cfg.txt\"}`"
-  default     = {}
-  type        = map(string)
-}
-
 variable "service_account" {
   description = "Optional IAM Service Account (just an email) that will be granted read-only access to this bucket"
   default     = null
@@ -20,7 +14,6 @@ variable "location" {
   description = "Location in which the GCS Bucket will be deployed. Available locations can be found under https://cloud.google.com/storage/docs/locations."
   type        = string
 }
-
 
 variable "bootstrap_files_dir" {
   description = <<-EOF

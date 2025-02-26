@@ -1,11 +1,8 @@
 locals {
-  bootstrap_filenames = var.bootstrap_files_dir != null ? { for f in fileset(var.bootstrap_files_dir, "**") : f => "${var.bootstrap_files_dir}/${f}" } : {}
-  # invert var.files map 
-  inverted_files     = { for k, v in var.files : v => k }
-  inverted_filenames = merge(local.bootstrap_filenames, local.inverted_files)
-  # invert local.filenames map
-  filenames = { for k, v in local.inverted_filenames : v => k }
-  folders   = length(var.folders) == 0 ? [""] : var.folders
+  bootstrap_config_filenames   = var.bootstrap_files_dir != null ? { for file in fileset("${var.bootstrap_files_dir}/config", "**") : file => "${var.bootstrap_files_dir}/config/${file}" } : {}
+  bootstrap_content_filenames  = var.bootstrap_files_dir != null ? { for file in fileset("${var.bootstrap_files_dir}/content", "**") : file => "${var.bootstrap_files_dir}/content/${file}" } : {}
+  bootstrap_software_filenames = var.bootstrap_files_dir != null ? { for file in fileset("${var.bootstrap_files_dir}/software", "**") : file => "${var.bootstrap_files_dir}/software/${file}" } : {}
+  bootstrap_license_filenames  = var.bootstrap_files_dir != null ? { for file in fileset("${var.bootstrap_files_dir}/license", "**") : file => "${var.bootstrap_files_dir}/license/${file}" } : {}
 }
 
 # https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string
@@ -28,48 +25,43 @@ resource "google_storage_bucket" "this" {
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
-resource "google_storage_bucket_object" "config_empty" {
-  for_each = toset(local.folders)
+resource "google_storage_bucket_object" "config_directory" {
+  for_each = local.bootstrap_config_filenames != {} ? local.bootstrap_config_filenames : { "empty" : " " }
 
-  name    = each.value != "" ? "${each.value}/config/" : "config/"
-  content = "config/"
+  name    = each.value != " " ? "/config/${each.key}" : "config/"
+  source  = each.value != " " ? each.value : null
+  content = each.value != " " ? null : " "
   bucket  = google_storage_bucket.this.name
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
-resource "google_storage_bucket_object" "content_empty" {
-  for_each = toset(local.folders)
+resource "google_storage_bucket_object" "content_directory" {
+  for_each = local.bootstrap_content_filenames != {} ? local.bootstrap_content_filenames : { "empty" : " " }
 
-  name    = each.value != "" ? "${each.value}/content/" : "content/"
-  content = "content/"
+  name    = each.value != " " ? "/content/${each.key}" : "content/"
+  source  = each.value != " " ? each.value : null
+  content = each.value != " " ? null : " "
   bucket  = google_storage_bucket.this.name
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
-resource "google_storage_bucket_object" "license_empty" {
-  for_each = toset(local.folders)
+resource "google_storage_bucket_object" "license_directory" {
+  for_each = local.bootstrap_license_filenames != {} ? local.bootstrap_license_filenames : { "empty" : " " }
 
-  name    = each.value != "" ? "${each.value}/license/" : "license/"
-  content = "license/"
+  name    = each.value != " " ? "/license/${each.key}" : "license/"
+  source  = each.value != " " ? each.value : null
+  content = each.value != " " ? null : " "
   bucket  = google_storage_bucket.this.name
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
-resource "google_storage_bucket_object" "software_empty" {
-  for_each = toset(local.folders)
+resource "google_storage_bucket_object" "software_directory" {
+  for_each = local.bootstrap_software_filenames != {} ? local.bootstrap_software_filenames : { "empty" : " " }
 
-  name    = each.value != "" ? "${each.value}/software/" : "software/"
-  content = "software/"
+  name    = each.value != " " ? "/software/${each.key}" : "software/"
+  source  = each.value != " " ? each.value : null
+  content = each.value != " " ? null : " "
   bucket  = google_storage_bucket.this.name
-}
-
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
-resource "google_storage_bucket_object" "file" {
-  for_each = local.filenames
-
-  name   = each.value
-  source = each.key
-  bucket = google_storage_bucket.this.name
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_default_service_account
