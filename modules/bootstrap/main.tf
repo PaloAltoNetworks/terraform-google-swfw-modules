@@ -67,7 +67,7 @@ resource "google_storage_bucket_object" "software_directory" {
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_default_service_account
 data "google_compute_default_service_account" "this" {}
 
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam_member_remove
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam#google_storage_bucket_iam_member-1
 resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.this.name
   role   = "roles/storage.objectViewer"
