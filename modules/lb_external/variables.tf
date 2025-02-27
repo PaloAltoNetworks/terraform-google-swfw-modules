@@ -78,7 +78,7 @@ variable "connection_tracking_policy" {
   More information about supported configurations in conjunction with `session_affinity` is available in [Backend service-based external Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-tracking) documentation.
   EOF
 
-  default     = {}
+  default = null
   type = object(
     {
       mode                              = optional(string, "PER_CONNECTION"),
@@ -88,8 +88,8 @@ variable "connection_tracking_policy" {
   )
 
   validation {
-    condition = var.connection_tracking_policy.idle_timeout_sec >= 600 && var.connection_tracking_policy.idle_timeout_sec <= 57600 ? true : false
-    error_message = "idle_timeout_sec should be bigger than 600 seconds (10 min) and less than 57600 seconds (16 hours). Declared value: ${var.connection_tracking_policy.idle_timeout_sec}"
+    condition     = var.connection_tracking_policy == null ? true : (var.connection_tracking_policy.idle_timeout_sec >= 600 && var.connection_tracking_policy.idle_timeout_sec <= 57600 ? true : false)
+    error_message = "idle_timeout_sec should be bigger than 600 seconds (10 min) and less than 57600 seconds (16 hours)."
   }
 }
 
