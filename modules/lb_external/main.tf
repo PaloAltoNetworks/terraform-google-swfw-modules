@@ -47,7 +47,7 @@ resource "google_compute_forwarding_rule" "rule" {
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) == `L3_DEFAULT`.
   #   If true then set `all_ports` to `true`.
   #   If false set value to the value of `all_ports`. If `all_ports` isn't specified, then set the value to `null`.
-  all_ports = lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? true : lookup(each.value, "all_ports", null)
+  all_ports = lookup(each.value, "all_ports", null) != null ? (lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? true : null ) : null
 
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) == `L3_DEFAULT`.
   #   If true then set `port_range` to `null`.
