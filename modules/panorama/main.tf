@@ -63,7 +63,7 @@ resource "google_compute_instance" "this" {
     dynamic "access_config" {
       for_each = var.attach_public_ip ? [""] : []
       content {
-        nat_ip = try(var.public_static_ip, google_compute_address.public[0].address)
+        nat_ip = var.public_static_ip != null ? var.public_static_ip : google_compute_address.public[0].address
       }
     }
 
