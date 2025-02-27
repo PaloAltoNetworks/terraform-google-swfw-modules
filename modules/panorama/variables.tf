@@ -167,3 +167,9 @@ variable "scopes" {
   type        = list(string)
   default     = []
 }
+
+variable "enable_serial_port" {
+  description = "Enable Serial Port access in the instance. Default: True"
+  type        = bool
+  default     = true
+}

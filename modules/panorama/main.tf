@@ -48,7 +48,7 @@ resource "google_compute_instance" "this" {
   allow_stopping_for_update = true
 
   metadata = merge({
-    serial-port-enable = true
+    serial-port-enable = var.enable_serial_port
     ssh-keys           = var.ssh_keys
     enable-oslogin     = false
   }, var.metadata)
