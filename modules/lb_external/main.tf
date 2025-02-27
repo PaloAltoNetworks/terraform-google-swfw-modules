@@ -44,6 +44,9 @@ resource "google_compute_forwarding_rule" "rule" {
   backend_service       = lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? google_compute_region_backend_service.this[0].self_link : null
   load_balancing_scheme = "EXTERNAL"
 
+  # Check if `all_ports` is specified
+  #   If true then use its value
+  #   If false check `ip_protocol`
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) == `L3_DEFAULT`.
   #   If true then set `all_ports` to `true`.
   #   If false set value to the value of `all_ports`. If `all_ports` isn't specified, then set the value to `null`.
