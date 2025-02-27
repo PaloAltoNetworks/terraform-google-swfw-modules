@@ -42,9 +42,9 @@ resource "google_compute_region_backend_service" "this" {
   dynamic "connection_tracking_policy" {
     for_each = var.connection_tracking_policy != null ? ["this"] : []
     content {
-      tracking_mode                                = try(var.connection_tracking_policy.mode, null)
-      idle_timeout_sec                             = try(var.connection_tracking_policy.idle_timeout_sec, null)
-      connection_persistence_on_unhealthy_backends = try(var.connection_tracking_policy.persistence_on_unhealthy_backends, null)
+      tracking_mode                                = var.connection_tracking_policy.mode
+      idle_timeout_sec                             = var.connection_tracking_policy.idle_timeout_sec
+      connection_persistence_on_unhealthy_backends = var.connection_tracking_policy.persistence_on_unhealthy_backends
     }
   }
 

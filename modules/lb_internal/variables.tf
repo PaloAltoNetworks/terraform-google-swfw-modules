@@ -94,15 +94,27 @@ variable "session_affinity" {
 
 variable "connection_tracking_policy" {
   description = <<-EOF
-  Connection tracking policy settings. Following options are available:
+  Connection tracking policy settings, only available for backend service based rules. Following options are available:
   - `mode`                              - (Optional|string) `PER_CONNECTION` (default) or `PER_SESSION`
-  - `idle_timeout_sec`                  - (Optional|number) Defaults to 600 seconds, can only be modified in specific conditions (see link below)
   - `persistence_on_unhealthy_backends` - (Optional|string) `DEFAULT_FOR_PROTOCOL` (default), `ALWAYS_PERSIST` or `NEVER_PERSIST`
+  - `idle_timeout_sec` - (Optional|string) Specifies how long to keep a Connection Tracking entry while there is no matching traffic (in seconds) Minimum (default) is 10 minutes and maximum is 16 hours.
 
-  More information about supported configurations in conjunction with `session_affinity` is available in [Internal TCP/UDP Load Balancing](https://cloud.google.com/load-balancing/docs/internal#connection-tracking) documentation.
+  More information about supported configurations in conjunction with `session_affinity` is available in [Backend service-based external Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-tracking) documentation.
   EOF
-  default     = null
-  type        = map(any)
+
+  default = null
+  type = object(
+    {
+      mode                              = optional(string, "PER_CONNECTION"),
+      persistence_on_unhealthy_backends = optional(string, "DEFAULT_FOR_PROTOCOL")
+      idle_timeout_sec                  = optional(number, 600)
+    }
+  )
+
+  validation {
+    condition     = var.connection_tracking_policy == null ? true : (var.connection_tracking_policy.idle_timeout_sec >= 600 && var.connection_tracking_policy.idle_timeout_sec <= 57600 ? true : false)
+    error_message = "idle_timeout_sec should be bigger than 600 seconds (10 min) and less than 57600 seconds (16 hours)."
+  }
 }
 
 variable "timeout_sec" {
