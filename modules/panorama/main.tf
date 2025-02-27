@@ -11,7 +11,7 @@ resource "google_compute_address" "private" {
   project      = var.project
   region       = var.region
   subnetwork   = var.subnet
-  address      = try(var.private_static_ip, null)
+  address      = var.private_static_ip
   address_type = "INTERNAL"
 }
 
