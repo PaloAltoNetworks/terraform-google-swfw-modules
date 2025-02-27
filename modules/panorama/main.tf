@@ -22,7 +22,7 @@ resource "google_compute_address" "public" {
   name    = "${var.name}-public"
   project = var.project
   region  = var.region
-  address = try(var.public_static_ip, null)
+  address = var.public_static_ip
 }
 
 resource "google_compute_disk" "this" {
