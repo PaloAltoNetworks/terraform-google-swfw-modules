@@ -77,6 +77,7 @@ variable "connection_tracking_policy" {
 
   More information about supported configurations in conjunction with `session_affinity` is available in [Backend service-based external Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-tracking) documentation.
   EOF
+
   default     = {}
   type = object(
     {
