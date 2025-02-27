@@ -57,12 +57,12 @@ resource "google_compute_forwarding_rule" "rule" {
   #   If false set value to the value of `port_range`. If `port_range` isn't specified, then set the value to `null`.
   port_range = lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? null : lookup(each.value, "port_range", null)
 
-  ip_address = try(each.value.ip_address, try(each.value.ip_version, "IPV4") == "IPV4" ? (
+  ip_address = each.value.ip_address != "" ? each.value.ip_address : (each.value.ip_version == "IPV4" ? (
     google_compute_address.this[each.key].address
     ) : (
     "${google_compute_address.this[each.key].address}/${google_compute_address.this[each.key].prefix_length}"
   ))
-  ip_protocol = lookup(each.value, "ip_protocol", "TCP")
+  ip_protocol = each.value
   # Provider recreates resource if `ip_version` changes.
   # Use `null` as a default value to prevent existing LB re-creation when `ip_version` parameter is introduced.
   ip_version   = lookup(each.value, "ip_version", null)
