@@ -127,6 +127,7 @@ resource "google_compute_region_backend_service" "this" {
     }
   }
 
+  # This feature requires beta provider as of 2023-03-16
   dynamic "connection_tracking_policy" {
     for_each = var.connection_tracking_policy != null ? ["this"] : []
     content {
