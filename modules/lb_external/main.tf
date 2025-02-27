@@ -50,7 +50,7 @@ resource "google_compute_forwarding_rule" "rule" {
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) == `L3_DEFAULT`.
   #   If true then set `all_ports` to `true`.
   #   If false set value to the value of `all_ports`. If `all_ports` isn't specified, then set the value to `null`.
-  all_ports = lookup(each.value, "all_ports", null) != null ? (lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? true : null ) : null
+  all_ports = lookup(each.value, "all_ports", null) != null ? (lookup(each.value, "ip_protocol", "TCP") == "L3_DEFAULT" ? true : null) : null
 
   # Check if `ip_protocol` is specified (if not assume default of `TCP`) == `L3_DEFAULT`.
   #   If true then set `port_range` to `null`.
@@ -108,8 +108,6 @@ resource "google_compute_http_health_check" "this" {
 # Create `google_compute_region_backend_service` if require by `var.rules`
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_backend_service
 resource "google_compute_region_backend_service" "this" {
-  provider = google-beta
-
   count = local.backend_service_needed ? 1 : 0
 
   name    = var.name
@@ -117,7 +115,7 @@ resource "google_compute_region_backend_service" "this" {
   region  = local.region
 
   load_balancing_scheme = "EXTERNAL"
-  health_checks         = var.create_health_check ? [google_compute_region_health_check.this[0].self_link] : []
+  health_checks         = var.create_health_check ? [google_compute_region_health_check.this[0].self_link] : null
   protocol              = "UNSPECIFIED"
   session_affinity      = var.session_affinity
 
@@ -129,13 +127,12 @@ resource "google_compute_region_backend_service" "this" {
     }
   }
 
-  # This feature requires beta provider as of 2023-03-16
   dynamic "connection_tracking_policy" {
     for_each = var.connection_tracking_policy != null ? ["this"] : []
     content {
-      tracking_mode                                = try(var.connection_tracking_policy.mode, null)
-      idle_timeout_sec                             = try(var.connection_tracking_policy.idle_timeout_sec, null)
-      connection_persistence_on_unhealthy_backends = try(var.connection_tracking_policy.persistence_on_unhealthy_backends, null)
+      tracking_mode                                = var.connection_tracking_policy.mode
+      idle_timeout_sec                             = var.connection_tracking_policy.idle_timeout_sec
+      connection_persistence_on_unhealthy_backends = var.connection_tracking_policy.persistence_on_unhealthy_backends
     }
   }
 }

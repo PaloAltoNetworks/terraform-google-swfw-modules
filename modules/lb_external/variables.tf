@@ -73,6 +73,7 @@ variable "connection_tracking_policy" {
   Connection tracking policy settings, only available for backend service based rules. Following options are available:
   - `mode`                              - (Optional|string) `PER_CONNECTION` (default) or `PER_SESSION`
   - `persistence_on_unhealthy_backends` - (Optional|string) `DEFAULT_FOR_PROTOCOL` (default), `ALWAYS_PERSIST` or `NEVER_PERSIST`
+  - `idle_timeout_sec` - (Optional|string) Specifies how long to keep a Connection Tracking entry while there is no matching traffic (in seconds) Minimum (default) is 10 minutes and maximum is 16 hours.
 
   More information about supported configurations in conjunction with `session_affinity` is available in [Backend service-based external Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-tracking) documentation.
   EOF
@@ -81,6 +82,7 @@ variable "connection_tracking_policy" {
     {
       mode                              = optional(string, "PER_CONNECTION"),
       persistence_on_unhealthy_backends = optional(string, "DEFAULT_FOR_PROTOCOL")
+      idle_timeout_sec                  = optional(number, 600)
     }
   )
 }
