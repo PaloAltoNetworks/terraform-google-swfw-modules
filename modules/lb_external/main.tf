@@ -22,9 +22,9 @@ resource "google_compute_address" "this" {
   address_type       = "EXTERNAL"
   region             = var.region
   project            = var.project
-  ip_version         = try(each.value.ip_version, null)
-  ipv6_endpoint_type = try(each.value.ip_version, "IPV4") == "IPV6" ? "NETLB" : null
-  subnetwork         = try(each.value.ip_version, "IPV4") == "IPV6" ? var.subnetwork : null
+  ip_version         = each.value.ip_version
+  ipv6_endpoint_type = each.value.ip_version == "IPV6" ? "NETLB" : null
+  subnetwork         = each.value.ip_version == "IPV6" ? var.subnetwork : null
   network_tier       = var.network_tier
 }
 
