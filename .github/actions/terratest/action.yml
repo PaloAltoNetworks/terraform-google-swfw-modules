@@ -44,7 +44,7 @@ runs:
 
     - name: Install beta gcloud components
       shell: bash
-      run: yes | gcloud components install beta
+      run: gcloud components install beta --quiet
 
     - name: Elevate permissions
       shell: bash
