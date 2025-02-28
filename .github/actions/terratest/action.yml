@@ -40,11 +40,11 @@ runs:
     - name: Set up Cloud SDK
       uses: "google-github-actions/setup-gcloud@v2"
       with:
-        version: "469.0.0"
+        version: "512.0.0"
 
     - name: Install beta gcloud components
       shell: bash
-      run: gcloud components install beta pam --quiet
+      run: gcloud components install beta --quiet
 
     - name: Elevate permissions
       shell: bash
