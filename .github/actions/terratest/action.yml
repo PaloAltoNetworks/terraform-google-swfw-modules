@@ -42,6 +42,10 @@ runs:
       with:
         version: "469.0.0"
 
+    - name: Install beta gcloud components
+      shell: bash
+      run: yes | gcloud components install beta
+
     - name: Elevate permissions
       shell: bash
       env:
