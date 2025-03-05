@@ -82,3 +82,4 @@ runs:
         ORG_ID: ${{ env.ORG_ID }}
       run: |
         gcloud beta pam grants revoke $GRANT_ID --reason "Finished example Idempotence test on repo ${{ github.repository }} test for PR - (#${{ github.event.inputs.pr-id }}) ${{ github.event.inputs.pr-title }}"
+      if: ${{ failure() }} || ${{ success() }}
