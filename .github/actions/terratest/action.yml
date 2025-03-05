@@ -48,6 +48,7 @@ runs:
 
     - name: Elevate permissions
       shell: bash
+      id: elevate_permissions
       env:
         ORG_ID: ${{ env.ORG_ID }}
       run: |
@@ -64,7 +65,7 @@ runs:
         GRANT_ID=$(echo "$OUTPUT" | sed -n 's/Created \[\(.*\)\]/\1/p' | sed 's/\.$//')
         echo "GRANT_ID=$GRANT_ID"
 
-        echo "GRANT_ID=$GRANT_ID" >> "$GITHUB_ENV"
+        echo "GRANT_ID=$GRANT_ID" >> $GITHUB_OUTPUT
 
     - name: ${{ inputs.terratest_action }} infrastructure
       env:
@@ -81,5 +82,5 @@ runs:
       env:
         ORG_ID: ${{ env.ORG_ID }}
       run: |
-        gcloud beta pam grants revoke ${{ GRANT_ID }} --reason "Finished example Idempotence test on repo ${{ github.repository }} test for PR - (#${{ github.event.inputs.pr-id }}) ${{ github.event.inputs.pr-title }}"
+        gcloud beta pam grants revoke ${{ steps.elevate_permissions.outputs.GRANT_ID }} --reason "Finished example Idempotence test on repo ${{ github.repository }} test for PR - (#${{ github.event.inputs.pr-id }}) ${{ github.event.inputs.pr-title }}"
       if: ${{ failure() }} || ${{ success() }}
