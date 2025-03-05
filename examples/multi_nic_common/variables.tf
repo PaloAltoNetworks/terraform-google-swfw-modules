@@ -48,7 +48,6 @@ variable "service_accounts" {
 }
 
 # Bootstrap bucket
-
 variable "bootstrap_buckets" {
   description = <<-EOF
   A map containing each bootstrap bucket setting.
@@ -75,7 +74,6 @@ variable "bootstrap_buckets" {
 }
 
 # VPC
-
 variable "networks" {
   description = <<-EOF
   A map containing each network setting.
@@ -175,8 +173,33 @@ variable "routes" {
 }
 
 # VM-Series
-
 variable "vmseries_common" {
+  type = object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+  default     = {}
   description = <<-EOF
   A map containing common vmseries settings.
 
@@ -198,11 +221,45 @@ variable "vmseries_common" {
 
   Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
   EOF
-  type        = any
-  default     = {}
 }
 
 variable "vmseries" {
+  type = map(object({
+    name = string
+    zone = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  }))
+  default     = null
   description = <<-EOF
   A map containing each individual vmseries setting.
 
@@ -275,12 +332,9 @@ variable "vmseries" {
   Multiple keys can be added and will be deployed by the code.
 
   EOF
-  type        = any
-  default     = {}
 }
 
 # Load Balancers
-
 variable "lbs_internal" {
   description = <<-EOF
   A map containing each internal loadbalancer setting.
@@ -337,7 +391,6 @@ variable "lbs_external" {
 }
 
 # Spoke VPCs Linux VMs
-
 variable "linux_vms" {
   description = <<-EOF
   A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
