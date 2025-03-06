@@ -5,7 +5,13 @@ show_in_hub: false
 
 A Terraform module example for deploying a VM-Series NGFW in GCP using the [metadata](https://docs.paloaltonetworks.com/vm-series/10-2/vm-series-deployment/bootstrap-the-vm-series-firewall/choose-a-bootstrap-method#idf6412176-e973-488e-9d7a-c568fe1e33a9) bootstrap method.
 
-This example can be used to familarize oneself with both the VM-Series NGFW and Terraform - it creates a single instance of virtualized firewall in a Security VPC with a management-only interface and lacks any traffic inspection.
+This example can be used to familarize oneself with both the VM-Series NGFW and Terraform - by default the deployment creates a single instance of virtualized firewall in a Security VPC with a management-only interface and lacks any traffic inspection.
+
+## Bootstrap
+
+By default, only basic bootstrap parameters are enabled. The example also provides sample settings that can be used to register the firewall to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections in `bootstrap_options` parameter.
+
+> SCM bootstrap is supported on PAN-OS version 11.0 and above.
 
 ## Reference
 

@@ -24,7 +24,7 @@ resource "google_compute_instance_template" "main" {
       subnetwork = network_interface.value.subnetwork
 
       dynamic "access_config" {
-        for_each = try(network_interface.value.create_public_ip, false) ? ["one"] : []
+        for_each = coalesce(network_interface.value.create_public_ip, false) ? ["one"] : []
         content {}
       }
     }
@@ -162,8 +162,8 @@ resource "google_compute_region_autoscaler" "regional" {
       for_each = var.autoscaler_metrics
       content {
         name   = metric.key
-        type   = try(metric.value.type, "GAUGE")
         target = metric.value.target
+        type   = coalesce(metric.value.type, "GAUGE")
         filter = try(metric.value.filter, null)
       }
     }
