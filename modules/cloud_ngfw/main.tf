@@ -88,7 +88,7 @@ resource "google_compute_network_firewall_policy_rule" "this" {
   firewall_policy         = google_compute_network_firewall_policy.this.name
   priority                = each.value.priority
   action                  = each.value.action
-  security_profile_group  = each.value.action == "apply_security_profile_group" ? google_network_security_security_profile_group.this[each.value.security_group_key].id : null
+  security_profile_group  = each.value.action == "apply_security_profile_group" ? "${"//networksecurity.googleapis.com/"}${google_network_security_security_profile_group.this[each.value.security_group_key].id}" : null
   target_service_accounts = each.value.target_service_accounts
   disabled                = each.value.disabled
   dynamic "target_secure_tags" {
