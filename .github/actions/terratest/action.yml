@@ -37,23 +37,6 @@ runs:
         workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ env.GCP_SERVICE_ACCOUNT}}
 
-    - name: Set up Cloud SDK
-      uses: "google-github-actions/setup-gcloud@v2"
-      with:
-        version: "469.0.0"
-
-    - name: Elevate permissions
-      shell: bash
-      env:
-        ORG_ID: ${{ env.ORG_ID }}
-      run: |
-        gcloud beta pam grants create \
-          --entitlement=custom-network-security-endpoint-admin-auto \
-          --location=global \
-          --organization="$ORG_ID" \
-          --requested-duration=3600s \
-          --justification="On demand Idempotence on ${{ github.repository }} test for PR - (#${{ github.event.inputs.pr-id }}) ${{ github.event.inputs.pr-title }}"
-
     - name: ${{ inputs.terratest_action }} infrastructure
       env:
         TPATH: ${{ inputs.path }}
