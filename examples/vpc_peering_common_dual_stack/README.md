@@ -77,14 +77,6 @@ The following steps should be followed before deploying the Terraform code prese
 2. Configure the Terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
 3. Install `gcloud` beta components: `gcloud components install beta`
 
-## Bootstrap
-
-With default settings, firewall instances will get the initial configuration from generated `init-cfg.txt` and `bootstrap.xml` files placed in Cloud Storage.
-
-The `example.tfvars` file also contains commented out sample settings that can be used to register the firewalls to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections and adjust `vmseries_common.bootstrap_options` and `vmseries.<fw-name>.bootstrap_options` parameters accordingly.
-
-> SCM bootstrap is supported on PAN-OS version 11.0 and above.
-
 ## Usage
 
 1. Access Google Cloud Shell or any other environment that has access to your GCP project
@@ -290,8 +282,6 @@ Name | Type | Description
 --- | --- | ---
 [`networks`](#networks) | `any` | A map containing each network setting.
 [`policy_routes_trust_vpc_network_key`](#policy_routes_trust_vpc_network_key) | `string` | Trust VPC network_key that is used to configure a DEFAULT_ROUTING PBR that prevents network loops.
-[`vmseries_common`](#vmseries_common) | `any` | A map containing common vmseries setting.
-[`vmseries`](#vmseries) | `any` | A map containing each individual vmseries setting.
 
 ### Optional Inputs
 
@@ -305,6 +295,8 @@ Name | Type | Description
 [`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
 [`policy_routes`](#policy_routes) | `map` | A map containing Policy-Based Routes that are used to route outgoing IPv6 traffic to ILB.
+[`vmseries_common`](#vmseries_common) | `object` | A map containing common vmseries settings.
+[`vmseries`](#vmseries) | `map` | A map containing each individual vmseries setting.
 [`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
 [`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
 [`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
@@ -372,111 +364,6 @@ Type: any
 Trust VPC network_key that is used to configure a DEFAULT_ROUTING PBR that prevents network loops.
 
 Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### vmseries_common
-
-A map containing common vmseries setting.
-
-Example of variable deployment :
-
-```
-vmseries_common = {
-  ssh_keys            = "admin:AAAABBBB..."
-  vmseries_image      = "vmseries-flex-byol-10210h9"
-  machine_type        = "n2-standard-4"
-  min_cpu_platform    = "Intel Cascade Lake"
-  service_account_key = "sa-vmseries-01"
-  bootstrap_options = {
-    type                = "dhcp-client"
-    mgmt-interface-swap = "enable"
-  }
-}
-``` 
-
-Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
-
-
-Type: any
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### vmseries
-
-A map containing each individual vmseries setting.
-
-Example of variable deployment :
-
-```
-vmseries = {
-  "fw-vmseries-01" = {
-    name             = "fw-vmseries-01"
-    zone             = "us-east1-b"
-    machine_type     = "n2-standard-4"
-    min_cpu_platform = "Intel Cascade Lake"
-    tags                 = ["vmseries"]
-    service_account_key  = "sa-vmseries-01"
-    scopes = [
-      "https://www.googleapis.com/auth/compute.readonly",
-      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
-    ]
-    bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
-    bootstrap_options = {
-      panorama-server = "1.1.1.1"
-      dns-primary     = "8.8.8.8"
-      dns-secondary   = "8.8.4.4"
-    }
-    bootstrap_template_map = {
-      trust_gcp_router_ip   = "10.10.12.1"
-      untrust_gcp_router_ip = "10.10.11.1"
-      private_network_cidr  = "192.168.0.0/16"
-      untrust_loopback_ip   = "1.1.1.1/32" #This is placeholder IP - you must replace it on the vmseries config with the LB public IP address after the infrastructure is deployed
-      trust_loopback_ip     = "10.10.12.5/32"
-    }
-    named_ports = [
-      {
-        name = "http"
-        port = 80
-      },
-      {
-        name = "https"
-        port = 443
-      }
-    ]
-    network_interfaces = [
-      {
-        vpc_network_key  = "fw-untrust-vpc"
-        subnetwork_key       = "fw-untrust-sub"
-        private_ip       = "10.10.11.2"
-        create_public_ip = true
-      },
-      {
-        vpc_network_key  = "fw-mgmt-vpc"
-        subnetwork_key       = "fw-mgmt-sub"
-        private_ip       = "10.10.10.2"
-        create_public_ip = true
-      },
-      {
-        vpc_network_key = "fw-trust-vpc"
-        subnetwork_key = "fw-trust-sub"
-        private_ip = "10.10.12.2"
-      },
-    ]
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vmseries#inputs)
-
-The bootstrap_template_map contains variables that will be applied to the bootstrap template. Each firewall Day 0 bootstrap will be parametrised based on these inputs.
-Multiple keys can be added and will be deployed by the code.
-
-
-
-Type: any
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
@@ -661,6 +548,183 @@ Multiple keys can be added and will be deployed by the code.
 
 
 Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries_common
+
+A map containing common vmseries settings.
+
+Example of variable deployment :
+
+```
+vmseries_common = {
+  ssh_keys            = "admin:AAAABBBB..."
+  vmseries_image      = "vmseries-flex-byol-10210h9"
+  machine_type        = "n2-standard-4"
+  min_cpu_platform    = "Intel Cascade Lake"
+  service_account_key = "sa-vmseries-01"
+  bootstrap_options = {
+    type                = "dhcp-client"
+    mgmt-interface-swap = "enable"
+  }
+}
+``` 
+
+Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+```
+
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries
+
+A map containing each individual vmseries setting.
+
+Example of variable deployment :
+
+```
+vmseries = {
+  "fw-vmseries-01" = {
+    name             = "fw-vmseries-01"
+    zone             = "us-east1-b"
+    machine_type     = "n2-standard-4"
+    min_cpu_platform = "Intel Cascade Lake"
+    tags                 = ["vmseries"]
+    service_account_key  = "sa-vmseries-01"
+    scopes = [
+      "https://www.googleapis.com/auth/compute.readonly",
+      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring.write",
+    ]
+    bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
+    bootstrap_options = {
+      panorama-server = "1.1.1.1"
+      dns-primary     = "8.8.8.8"
+      dns-secondary   = "8.8.4.4"
+    }
+    bootstrap_template_map = {
+      trust_gcp_router_ip   = "10.10.12.1"
+      untrust_gcp_router_ip = "10.10.11.1"
+      private_network_cidr  = "192.168.0.0/16"
+      untrust_loopback_ip   = "1.1.1.1/32" #This is placeholder IP - you must replace it on the vmseries config with the LB public IP address after the infrastructure is deployed
+      trust_loopback_ip     = "10.10.12.5/32"
+    }
+    named_ports = [
+      {
+        name = "http"
+        port = 80
+      },
+      {
+        name = "https"
+        port = 443
+      }
+    ]
+    network_interfaces = [
+      {
+        vpc_network_key  = "fw-untrust-vpc"
+        subnetwork_key       = "fw-untrust-sub"
+        private_ip       = "10.10.11.2"
+        create_public_ip = true
+      },
+      {
+        vpc_network_key  = "fw-mgmt-vpc"
+        subnetwork_key       = "fw-mgmt-sub"
+        private_ip       = "10.10.10.2"
+        create_public_ip = true
+      },
+      {
+        vpc_network_key = "fw-trust-vpc"
+        subnetwork_key = "fw-trust-sub"
+        private_ip = "10.10.12.2"
+      },
+    ]
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vmseries#inputs)
+
+The bootstrap_template_map contains variables that will be applied to the bootstrap template. Each firewall Day 0 bootstrap will be parametrised based on these inputs.
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: 
+
+```hcl
+map(object({
+    name = string
+    zone = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  }))
+```
+
 
 Default value: `map[]`
 

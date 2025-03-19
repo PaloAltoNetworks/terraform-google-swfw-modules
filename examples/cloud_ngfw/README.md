@@ -443,6 +443,7 @@ object({
       policy_association_name = string
       vpc_network_key         = string
     }))
+    create_firewall_policy = bool
     rules = map(object({
       rule_name               = string
       description             = optional(string, null)

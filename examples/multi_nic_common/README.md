@@ -29,14 +29,6 @@ The following steps should be followed before deploying the Terraform code prese
 1. Prepare [VM-Series licenses](https://support.paloaltonetworks.com/)
 2. Configure the terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
 
-## Bootstrap
-
-With default settings, firewall instances will get the initial configuration from generated `init-cfg.txt` and `bootstrap.xml` files placed in Cloud Storage.
-
-The `example.tfvars` file also contains commented out sample settings that can be used to register the firewalls to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections and adjust `vmseries_common.bootstrap_options` and `vmseries.<fw-name>.bootstrap_options` parameters accordingly.
-
-> SCM bootstrap is supported on PAN-OS version 11.0 and above.
-
 ## Usage
 
 1. Access Google Cloud Shell or any other environment that has access to your GCP project
@@ -67,10 +59,10 @@ terraform apply
 
 4. Check the output plan and confirm the apply.
 
-5. Check the successful application and outputs of the resulting infrastructure (number of resources can vary based on how many instances are defined in tfvars):
+5. Check the successful application and outputs of the resulting infrastructure:
 
 ```
-Apply complete! Resources: 77 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 77 added, 0 changed, 0 destroyed. (Number of resources can vary based on how many instances you push through tfvars)
 
 Outputs:
 
@@ -218,8 +210,8 @@ Name | Type | Description
 [`networks`](#networks) | `any` | A map containing each network setting.
 [`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
-[`vmseries_common`](#vmseries_common) | `any` | A map containing common vmseries settings.
-[`vmseries`](#vmseries) | `any` | A map containing each individual vmseries setting.
+[`vmseries_common`](#vmseries_common) | `object` | A map containing common vmseries settings.
+[`vmseries`](#vmseries) | `map` | A map containing each individual vmseries setting.
 [`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
 [`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
 [`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
@@ -458,7 +450,36 @@ vmseries_common = {
 Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
 
 
-Type: any
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+```
+
 
 Default value: `map[]`
 
@@ -538,9 +559,48 @@ Multiple keys can be added and will be deployed by the code.
 
 
 
-Type: any
+Type: 
 
-Default value: `map[]`
+```hcl
+map(object({
+    name = string
+    zone = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  }))
+```
+
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 

@@ -136,6 +136,7 @@ A map containing the creation of a single network policies and it's associated r
 Following properties are available:
 
 - `policy_name`              - (`string`, required) The name of the network policy.
+- `create_firewall_policy`   - (`bool`, optional, default: `true`) Whether to create the firewall policy.
 - `description`              - (`string`, optional) The description of the network policy.
 - `project_id`               - (`string`, required) The project ID where the network policy will be created.
 - `network_associations`     - (`map(object)`, required) A map of network associations for the network policy. Each object has the following properties:
@@ -149,7 +150,8 @@ Following properties are available:
   - `tls_inspect`             - (`bool`, optional, default: `false`) Whether to enable TLS inspection for the network policy rule.
   - `priority`                - (`number`, optional, default: `100`) The priority of the network policy rule.
   - `action`                  - (`string`, required) The action to take for the network policy rule, either "ALLOW" or "DENY".
-  - `security_group_key`      - (`string`, optional) The key of the security group to apply the network policy rule to.
+  - `security_group_key`      - (`string`, optional) The key of the security group to apply the network policy rule to. Either this or `security_group_id` must be set.
+  - `security_group_id`       - (`string`, optional) The ID of the security group to apply the network policy rule to. Either this or `security_group_key` must be set.
   - `target_service_accounts` - (`list(string)`, optional) The list of service account emails to apply the network policy rule to.
   - `disabled`                - (`bool`, optional, defaults to `false`) Whether to disable the network policy rule.
   - `target_secure_tags`      - (`map(object)`, optional) A map of secure tags to apply to the network policy rule. Each object has the following properties:
@@ -182,6 +184,7 @@ object({
       policy_association_name = string
       network_id              = string
     }))
+    create_firewall_policy = bool
     rules = map(object({
       rule_name               = string
       description             = optional(string, null)
@@ -191,6 +194,7 @@ object({
       priority                = optional(number, 100)
       action                  = string
       security_group_key      = optional(string)
+      security_group_id       = optional(string)
       target_service_accounts = optional(list(string))
       disabled                = optional(bool, false)
       target_secure_tags = optional(map(object({

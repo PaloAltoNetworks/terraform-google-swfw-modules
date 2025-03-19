@@ -42,14 +42,6 @@ The following steps should be followed before deploying the Terraform code prese
 1. Prepare [VM-Series licenses](https://support.paloaltonetworks.com/)
 2. Configure the terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
 
-## Bootstrap
-
-With default settings, firewall instances will get the initial configuration from generated `init-cfg.txt` and `bootstrap.xml` files placed in Cloud Storage.
-
-The `example.tfvars` file also contains commented out sample settings that can be used to register the firewalls to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections and adjust `vmseries_common.bootstrap_options` and `vmseries.<fw-name>.bootstrap_options` parameters accordingly.
-
-> SCM bootstrap is supported on PAN-OS version 11.0 and above.
-
 ## Usage
 
 1. Access Google Cloud Shell or any other environment that has access to your GCP project
@@ -203,8 +195,8 @@ Name | Type | Description
 [`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
 [`autoscale_regional_mig`](#autoscale_regional_mig) | `bool` | Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
-[`autoscale_common`](#autoscale_common) | `any` | A map containing common vmseries autoscale setting.
-[`autoscale`](#autoscale) | `any` | A map containing each vmseries autoscale setting.
+[`autoscale_common`](#autoscale_common) | `object` | A map containing common vmseries autoscale settings.
+[`autoscale`](#autoscale) | `map` | A map containing each vmseries autoscale setting.
 [`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
 [`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
 [`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
@@ -406,8 +398,7 @@ Default value: `true`
 
 #### autoscale_common
 
-A map containing common vmseries autoscale setting.
-Majority of settings can be moved between this common and individual autoscale setup (ie. `var.autoscale`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+A map containing common vmseries autoscale settings.
 
 Example of variable deployment :
 
@@ -434,7 +425,53 @@ autoscale_common = {
 ``` 
 
 
-Type: any
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    image               = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    disk_type           = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    named_ports = optional(list(object({
+      name = string
+      port = number
+    })))
+    min_vmseries_replicas            = optional(number)
+    max_vmseries_replicas            = optional(number)
+    update_policy_type               = optional(string)
+    cooldown_period                  = optional(number)
+    scale_in_control_replicas_fixed  = optional(number)
+    scale_in_control_time_window_sec = optional(number)
+    autoscaler_metrics = optional(map(object({
+      target = optional(string)
+      type   = optional(string)
+      filter = optional(string)
+    })))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+    create_pubsub_topic = optional(bool)
+  })
+```
+
 
 Default value: `map[]`
 
@@ -443,7 +480,7 @@ Default value: `map[]`
 #### autoscale
 
 A map containing each vmseries autoscale setting.
-Zonal or regional managed instance group type is controolled from the `autoscale_regional_mig` variable for all autoscale instances.
+Zonal or regional managed instance group type is controlled from the `autoscale_regional_mig` variable for all autoscale instances.
 
 Example of variable deployment :
 
@@ -508,7 +545,61 @@ autoscale = {
 ``` 
 
 
-Type: any
+Type: 
+
+```hcl
+map(object({
+    name                             = string
+    zones                            = optional(map(string))
+    ssh_keys                         = optional(string)
+    image                            = optional(string)
+    machine_type                     = optional(string)
+    min_cpu_platform                 = optional(string)
+    disk_type                        = optional(string)
+    tags                             = optional(list(string))
+    service_account_key              = optional(string)
+    scopes                           = optional(list(string))
+    min_vmseries_replicas            = optional(number)
+    max_vmseries_replicas            = optional(number)
+    update_policy_type               = optional(string)
+    cooldown_period                  = optional(number)
+    scale_in_control_replicas_fixed  = optional(number)
+    scale_in_control_time_window_sec = optional(number)
+    autoscaler_metrics = optional(map(object({
+      target = optional(string)
+      type   = optional(string)
+      filter = optional(string)
+    })))
+    network_interfaces = list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      create_public_ip = optional(bool)
+      public_ip        = optional(string)
+    }))
+    named_ports = optional(list(object({
+      name = string
+      port = number
+    })))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+    create_pubsub_topic = optional(bool)
+  }))
+```
+
 
 Default value: `map[]`
 

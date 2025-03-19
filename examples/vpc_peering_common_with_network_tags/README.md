@@ -36,14 +36,6 @@ With default variable values the topology consists of :
 
 2. Configure the terraform [google provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication-configuration)
 
-## Bootstrap
-
-With default settings, firewall instances will get the initial configuration from generated `init-cfg.txt` and `bootstrap.xml` files placed in Cloud Storage.
-
-The `example.tfvars` file also contains commented out sample settings that can be used to register the firewalls to either Panorama or Strata Cloud Manager (SCM) and complete the configuration. To enable this, uncomment one of the sections and adjust `vmseries_common.bootstrap_options` and `vmseries.<fw-name>.bootstrap_options` parameters accordingly.
-
-> SCM bootstrap is supported on PAN-OS version 11.0 and above.
-
 ## Build
 
 1. Access Google Cloud Shell or any other environment which has access to your GCP project
@@ -73,10 +65,10 @@ terraform apply -var-file=example.tfvars
 
 4. Check the output plan and confirm the apply.
 
-5. Check the successful application and outputs of the resulting infrastructure (number of resources can vary based on how many instances are defined in tfvars):
+5. Check the successful application and outputs of the resulting infrastructure:
 
 ```
-Apply complete! Resources: 115 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 115 added, 0 changed, 0 destroyed. (Number of resources can vary based on how many instances you push through tfvars)
 
 Outputs:
 
@@ -242,8 +234,6 @@ Name | Version | Source | Description
 Name | Type | Description
 --- | --- | ---
 [`networks`](#networks) | `any` | A map containing each network setting.
-[`vmseries_common`](#vmseries_common) | `any` | A map containing common vmseries setting.
-[`vmseries`](#vmseries) | `any` | A map containing each individual vmseries setting for vmseries instances.
 
 ### Optional Inputs
 
@@ -255,6 +245,8 @@ Name | Type | Description
 [`bootstrap_buckets`](#bootstrap_buckets) | `map` | A map containing each bootstrap bucket setting.
 [`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
+[`vmseries_common`](#vmseries_common) | `object` | A map containing common vmseries settings.
+[`vmseries`](#vmseries) | `map` | A map containing each individual vmseries setting.
 [`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting .
 [`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting .
 [`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration in region_1 that will be placed in spoke VPC network for testing purposes.
@@ -309,109 +301,6 @@ networks = {
 For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
 
 Multiple keys can be added and will be deployed by the code.
-
-
-Type: any
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### vmseries_common
-
-A map containing common vmseries setting.
-
-Example of variable deployment :
-
-```
-vmseries_common = {
-  ssh_keys            = "admin:AAABBB..."
-  vmseries_image      = "vmseries-flex-byol-10210h9"
-  machine_type        = "n2-standard-4"
-  min_cpu_platform    = "Intel Cascade Lake"
-  service_account_key = "sa-vmseries-01"
-  bootstrap_options = {
-    type                = "dhcp-client"
-    mgmt-interface-swap = "enable"
-  }
-}
-``` 
-
-Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
-
-
-Type: any
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### vmseries
-
-A map containing each individual vmseries setting for vmseries instances.
-
-Example of variable deployment :
-
-```
-vmseries = {
-  fw-vmseries-01 = {
-    name   = "fw-vmseries-01"
-    region = "us-east1"
-    zone   = "us-east1-b"
-    tags   = ["vmseries"]
-    scopes = [
-      "https://www.googleapis.com/auth/compute.readonly",
-      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
-    ]
-    bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
-    bootstrap_options = {
-      panorama-server = "1.1.1.1" # Modify this value as per deployment requirements
-      dns-primary     = "8.8.8.8" # Modify this value as per deployment requirements
-      dns-secondary   = "8.8.4.4" # Modify this value as per deployment requirements
-    }
-    bootstrap_template_map = {
-      trust_gcp_router_ip   = "10.10.12.1"
-      untrust_gcp_router_ip = "10.10.11.1"
-      private_network_cidr  = "192.168.0.0/16"
-      untrust_loopback_ip   = "1.1.1.1/32" # This is placeholder IP - you must replace it on the vmseries config with the LB public IP address (Region-1) after the infrastructure is deployed
-      trust_loopback_ip     = "10.10.12.5/32"
-    }
-    named_ports = [
-      {
-        name = "http"
-        port = 80
-      },
-      {
-        name = "https"
-        port = 443
-      }
-    ]
-    network_interfaces = [
-      {
-        vpc_network_key  = "fw-untrust-vpc"
-        subnetwork_key   = "fw-untrust-sub-region-1"
-        private_ip       = "10.10.11.2"
-        create_public_ip = true
-      },
-      {
-        vpc_network_key  = "fw-mgmt-vpc"
-        subnetwork_key   = "fw-mgmt-sub-region-1"
-        private_ip       = "10.10.10.2"
-        create_public_ip = true
-      },
-      {
-        vpc_network_key = "fw-trust-vpc"
-        subnetwork_key  = "fw-trust-sub-region-1"
-        private_ip      = "10.10.12.2"
-      }
-    ]
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vmseries#inputs)
-
-The bootstrap_template_map contains variables that will be applied to the bootstrap template. Each firewall Day 0 bootstrap will be parametrised based on these inputs.
-Multiple keys can be added and will be deployed by the code.
-
 
 
 Type: any
@@ -567,6 +456,182 @@ Multiple keys can be added and will be deployed by the code.
 
 
 Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries_common
+
+A map containing common vmseries settings.
+
+Example of variable deployment :
+
+```
+vmseries_common = {
+  ssh_keys            = "admin:AAABBB..."
+  vmseries_image      = "vmseries-flex-byol-10210h9"
+  machine_type        = "n2-standard-4"
+  min_cpu_platform    = "Intel Cascade Lake"
+  service_account_key = "sa-vmseries-01"
+  bootstrap_options = {
+    type                = "dhcp-client"
+    mgmt-interface-swap = "enable"
+  }
+}
+``` 
+
+Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+```
+
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries
+
+A map containing each individual vmseries setting.
+
+Example of variable deployment :
+
+```
+vmseries = {
+  fw-vmseries-01 = {
+    name   = "fw-vmseries-01"
+    region = "us-east1"
+    zone   = "us-east1-b"
+    tags   = ["vmseries"]
+    scopes = [
+      "https://www.googleapis.com/auth/compute.readonly",
+      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring.write",
+    ]
+    bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
+    bootstrap_options = {
+      panorama-server = "1.1.1.1"
+      dns-primary     = "8.8.8.8"
+      dns-secondary   = "8.8.4.4"
+    }
+    bootstrap_template_map = {
+      trust_gcp_router_ip   = "10.10.12.1"
+      untrust_gcp_router_ip = "10.10.11.1"
+      private_network_cidr  = "192.168.0.0/16"
+      untrust_loopback_ip   = "1.1.1.1/32" # This is placeholder IP - you must replace it on the vmseries config with the LB public IP address after the infrastructure is deployed
+      trust_loopback_ip     = "10.10.12.5/32"
+    }
+    named_ports = [
+      {
+        name = "http"
+        port = 80
+      },
+      {
+        name = "https"
+        port = 443
+      }
+    ]
+    network_interfaces = [
+      {
+        vpc_network_key  = "fw-untrust-vpc"
+        subnetwork_key   = "fw-untrust-sub-region-1"
+        private_ip       = "10.10.11.2"
+        create_public_ip = true
+      },
+      {
+        vpc_network_key  = "fw-mgmt-vpc"
+        subnetwork_key   = "fw-mgmt-sub-region-1"
+        private_ip       = "10.10.10.2"
+        create_public_ip = true
+      },
+      {
+        vpc_network_key = "fw-trust-vpc"
+        subnetwork_key  = "fw-trust-sub-region-1"
+        private_ip      = "10.10.12.2"
+      }
+    ]
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vmseries#inputs)
+
+The bootstrap_template_map contains variables that will be applied to the bootstrap template. Each firewall Day 0 bootstrap will be parametrised based on these inputs.
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: 
+
+```hcl
+map(object({
+    name   = string
+    region = string
+    zone   = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  }))
+```
+
 
 Default value: `map[]`
 
