@@ -126,8 +126,9 @@ network_security_profiles = {
 }
 
 network_policies = {
-  policy_name = "main-network-policy"
-  description = "This is a network policy for the ngfw project"
+  policy_name            = "main-network-policy"
+  description            = "This is a network policy for the ngfw project"
+  create_firewall_policy = true
   network_associations = {
     assoc-1 = {
       policy_association_name = "network-policy-a-assoc"

@@ -70,6 +70,8 @@ resource "google_network_security_security_profile_group" "this" {
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_firewall_policy
 resource "google_compute_network_firewall_policy" "this" {
 
+  count = var.network_policies.create_firewall_policy ? 1 : 0
+
   name        = "${var.name_prefix}${var.network_policies.policy_name}"
   description = var.network_policies.description
   project     = var.network_policies.project_id
@@ -85,10 +87,10 @@ resource "google_compute_network_firewall_policy_rule" "this" {
   direction               = each.value.direction
   enable_logging          = each.value.enable_logging
   tls_inspect             = each.value.tls_inspect
-  firewall_policy         = google_compute_network_firewall_policy.this.name
+  firewall_policy         = try(google_compute_network_firewall_policy.this[0].name, var.network_policies.policy_name)
   priority                = each.value.priority
   action                  = each.value.action
-  security_profile_group  = each.value.action == "apply_security_profile_group" ? "${"//networksecurity.googleapis.com/"}${google_network_security_security_profile_group.this[each.value.security_group_key].id}" : null
+  security_profile_group  = each.value.action == "apply_security_profile_group" ? try("${"//networksecurity.googleapis.com/"}${google_network_security_security_profile_group.this[each.value.security_group_key].id}", "${"//networksecurity.googleapis.com/"}${each.value.security_group_id}") : null
   target_service_accounts = each.value.target_service_accounts
   disabled                = each.value.disabled
   dynamic "target_secure_tags" {
@@ -130,6 +132,6 @@ resource "google_compute_network_firewall_policy_association" "this" {
 
   name              = "${var.name_prefix}${each.value.policy_association_name}"
   attachment_target = each.value.network_id
-  firewall_policy   = google_compute_network_firewall_policy.this.name
+  firewall_policy   = google_compute_network_firewall_policy.this[0].name
   project           = var.network_policies.project_id
 }
