@@ -184,6 +184,7 @@ variable "autoscaler_metrics" {
       {
         target = number
         type   = optional(string, "GAUGE")
+        filter = oprional(string, null)
       }
     )
   )
@@ -191,10 +192,12 @@ variable "autoscaler_metrics" {
     "custom.googleapis.com/VMSeries/panSessionUtilization" = {
       target = 70,
       type   = "GAUGE"
+      filter = null
     }
     "custom.googleapis.com/VMSeries/panSessionThroughputKbps" = {
       target = 700000,
       type   = "GAUGE"
+      filter = null
     }
   }
 }

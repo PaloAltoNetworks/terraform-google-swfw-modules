@@ -170,8 +170,8 @@ resource "google_compute_region_autoscaler" "regional" {
       content {
         name   = metric.key
         target = metric.value.target
-        type   = coalesce(metric.value.type, "GAUGE")
-        filter = try(metric.value.filter, null)
+        type   = metric.value.type
+        filter = metric.value.filter
       }
     }
 
