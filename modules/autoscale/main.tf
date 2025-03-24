@@ -1,8 +1,10 @@
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/app_engine_default_service_account
 data "google_compute_default_service_account" "main" {
   project = var.project_id
 }
 
 # Instance template
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance_template
 resource "google_compute_instance_template" "main" {
   project          = var.project_id
   name_prefix      = var.name
@@ -43,6 +45,7 @@ resource "google_compute_instance_template" "main" {
 }
 
 # Zonal managed instance group and autoscaler
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance_group_manager
 resource "google_compute_instance_group_manager" "zonal" {
   for_each = var.regional_mig ? {} : var.zones
 
@@ -78,6 +81,7 @@ resource "google_compute_instance_group_manager" "zonal" {
   }
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_autoscaler
 resource "google_compute_autoscaler" "zonal" {
   for_each = var.regional_mig ? {} : var.zones
 
@@ -110,6 +114,7 @@ resource "google_compute_autoscaler" "zonal" {
 }
 
 # Regional managed instance group and autoscaler
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_zones
 data "google_compute_zones" "main" {
   count = var.regional_mig ? 1 : 0
 
@@ -117,6 +122,7 @@ data "google_compute_zones" "main" {
   region  = var.region
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_instance_group_manager
 resource "google_compute_region_instance_group_manager" "regional" {
   count = var.regional_mig ? 1 : 0
 
@@ -145,6 +151,7 @@ resource "google_compute_region_instance_group_manager" "regional" {
   }
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_autoscaler
 resource "google_compute_region_autoscaler" "regional" {
   count = var.regional_mig ? 1 : 0
 
@@ -178,6 +185,7 @@ resource "google_compute_region_autoscaler" "regional" {
 }
 
 # Pub/Sub for Panorama Plugin
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic.html
 resource "google_pubsub_topic" "main" {
   count = var.create_pubsub_topic ? 1 : 0
 
@@ -185,6 +193,7 @@ resource "google_pubsub_topic" "main" {
   name    = "${var.name}-mig"
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription
 resource "google_pubsub_subscription" "main" {
   count = var.create_pubsub_topic ? 1 : 0
 
@@ -193,6 +202,7 @@ resource "google_pubsub_subscription" "main" {
   topic   = google_pubsub_topic.main[0].id
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription_iam
 resource "google_pubsub_subscription_iam_member" "main" {
   count = var.create_pubsub_topic ? 1 : 0
 
@@ -237,6 +247,7 @@ locals {
 
 # Secret to store Panorama credentials.
 # Credentials itself are set manually after secret store is created by Terraform.
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/secret_manager_secret
 resource "google_secret_manager_secret" "delicensing_cfn_pano_creds" {
   count     = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project   = var.project_id
@@ -247,6 +258,7 @@ resource "google_secret_manager_secret" "delicensing_cfn_pano_creds" {
 }
 
 # Create a log sink to match the delete of a VM from a Managed Instance group during the initial phase
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/logging_project_sink
 resource "google_logging_project_sink" "delicensing_cfn" {
   count                  = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project                = var.project_id
@@ -257,6 +269,7 @@ resource "google_logging_project_sink" "delicensing_cfn" {
 }
 
 # Create a pub/sub topic for messaging log sink events
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic.html
 resource "google_pubsub_topic" "delicensing_cfn" {
   count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project = var.project_id
@@ -264,6 +277,7 @@ resource "google_pubsub_topic" "delicensing_cfn" {
 }
 
 # Allow log router writer identity to publish to pub/sub
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam
 resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
   count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project = var.project_id
@@ -273,6 +287,7 @@ resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
 }
 
 # VPC Connector required for Cloud Function to access local Panorama instance
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vpc_access_connector
 resource "google_vpc_access_connector" "delicensing_cfn" {
   count         = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project       = var.project_id
@@ -283,6 +298,7 @@ resource "google_vpc_access_connector" "delicensing_cfn" {
 }
 
 # Cloud Function code storage bucket
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket
 resource "google_storage_bucket" "delicensing_cfn" {
   count                       = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project                     = var.project_id
@@ -302,6 +318,7 @@ data "archive_file" "delicensing_cfn" {
   output_path = "/tmp/${local.delicensing_cfn.zip_file_name}.zip"
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "delicensing_cfn" {
   count  = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   name   = "${local.delicensing_cfn.zip_file_name}.${lower(replace(data.archive_file.delicensing_cfn[0].output_base64sha256, "=", ""))}.zip"
@@ -314,6 +331,7 @@ resource "google_storage_bucket_object" "delicensing_cfn" {
 }
 
 # Cloud Function Service Account
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account
 resource "google_service_account" "delicensing_cfn" {
   count        = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project      = var.project_id
@@ -322,6 +340,7 @@ resource "google_service_account" "delicensing_cfn" {
 }
 
 # Granting required roles to Cloud Function SA
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam
 resource "google_project_iam_member" "delicensing_cfn" {
   for_each = try(var.delicensing_cloud_function_config, null) != null ? toset(local.delicensing_cfn.runtime_sa_roles) : []
   project  = var.project_id
@@ -329,6 +348,7 @@ resource "google_project_iam_member" "delicensing_cfn" {
   member   = "serviceAccount:${google_service_account.delicensing_cfn[0].email}"
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions2_function
 resource "google_cloudfunctions2_function" "delicensing_cfn" {
   count       = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project     = var.project_id
@@ -370,6 +390,7 @@ resource "google_cloudfunctions2_function" "delicensing_cfn" {
 }
 
 # Allow Cloud Function invocation from pub/sub
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam
 resource "google_project_iam_member" "delicensing_cfn_invoker" {
   count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
   project = var.project_id
