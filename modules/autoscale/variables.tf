@@ -184,7 +184,7 @@ variable "autoscaler_metrics" {
       {
         target = number
         type   = optional(string, "GAUGE")
-        filter = oprional(string, null)
+        filter = optional(string, null)
       }
     )
   )
@@ -235,7 +235,6 @@ variable "delicensing_cloud_function_config" {
   The variable contains the following configuration parameters that are related to Cloud Function:
   - `name_prefix`           - Resource name prefix
   - `function_name`         - Cloud Function base name
-  - `region`                - Cloud Function region
   - `bucket_location`       - Cloud Function source code bucket location 
   - `panorama_address`      - Panorama IP address/FQDN
   - `panorama2_address`     - Panorama 2 IP address/FQDN. Set if Panorama is in HA mode
@@ -250,7 +249,6 @@ variable "delicensing_cloud_function_config" {
   {
     name_prefix           = "abc-"
     function_name         = "delicensing-cfn"
-    region                = "europe-central1"
     bucket_location       = "EU"
     panorama_address      = "1.1.1.1"
     panorama2_address     = ""
@@ -260,12 +258,11 @@ variable "delicensing_cloud_function_config" {
   ```
   EOF
   type = object({
-    name_prefix           = string
-    function_name         = string
-    region                = string
+    name_prefix           = optional(string, "")
+    function_name         = optional(string, "delicensing-cfn")
     bucket_location       = string
-    panorama_address      = string
-    panorama2_address     = string
+    panorama_address      = optional(string, "")
+    panorama2_address     = optional(string, "")
     vpc_connector_network = string
     vpc_connector_cidr    = string
   })

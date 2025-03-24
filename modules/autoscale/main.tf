@@ -219,37 +219,11 @@ resource "random_id" "postfix" {
   byte_length = 2
 }
 
-locals {
-  name_prefix   = try(var.delicensing_cloud_function_config.name_prefix, "")
-  function_name = coalesce(try(var.delicensing_cloud_function_config.function_name, "delicensing-cfn"), "delicensing-cfn")
-  delicensing_cfn = {
-    panorama_address        = try(var.delicensing_cloud_function_config.panorama_address, "")
-    panorama2_address       = try(var.delicensing_cloud_function_config.panorama2_address, "")
-    function_name           = "${local.name_prefix}${local.function_name}-${random_id.postfix.hex}"
-    bucket_name             = "${local.name_prefix}${local.function_name}-${random_id.postfix.hex}"
-    source_dir              = "${path.module}/src"
-    zip_file_name           = local.function_name
-    runtime_sa_account_id   = "${local.name_prefix}${local.function_name}-sa-${random_id.postfix.hex}"
-    runtime_sa_display_name = "Delicensing Cloud Function runtime SA"
-    runtime_sa_roles = [
-      "roles/secretmanager.secretAccessor",
-      "roles/compute.viewer",
-    ]
-    topic_name         = "${local.name_prefix}${local.function_name}_topic-${random_id.postfix.hex}"
-    log_sink_name      = "${local.name_prefix}${local.function_name}_logsink-${random_id.postfix.hex}"
-    entry_point        = "autoscale_delete_event"
-    description        = "Cloud Function to delicense firewalls in Panorama on scale-in events"
-    subscription_name  = "${local.name_prefix}${local.function_name}_subscription"
-    secret_name        = "${local.name_prefix}${local.function_name}_pano_creds-${random_id.postfix.hex}"
-    vpc_connector_name = "${local.name_prefix}${local.function_name}-${random_id.postfix.hex}"
-  }
-}
-
 # Secret to store Panorama credentials.
 # Credentials itself are set manually after secret store is created by Terraform.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/secret_manager_secret
 resource "google_secret_manager_secret" "delicensing_cfn_pano_creds" {
-  count     = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count     = local.delicensing_enabled ? 1 : 0
   project   = var.project_id
   secret_id = local.delicensing_cfn.secret_name
   replication {
@@ -260,7 +234,7 @@ resource "google_secret_manager_secret" "delicensing_cfn_pano_creds" {
 # Create a log sink to match the delete of a VM from a Managed Instance group during the initial phase
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/logging_project_sink
 resource "google_logging_project_sink" "delicensing_cfn" {
-  count                  = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count                  = local.delicensing_enabled ? 1 : 0
   project                = var.project_id
   destination            = "pubsub.googleapis.com/${google_pubsub_topic.delicensing_cfn[0].id}"
   name                   = local.delicensing_cfn.log_sink_name
@@ -271,7 +245,7 @@ resource "google_logging_project_sink" "delicensing_cfn" {
 # Create a pub/sub topic for messaging log sink events
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic.html
 resource "google_pubsub_topic" "delicensing_cfn" {
-  count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count   = local.delicensing_enabled ? 1 : 0
   project = var.project_id
   name    = local.delicensing_cfn.topic_name
 }
@@ -279,7 +253,7 @@ resource "google_pubsub_topic" "delicensing_cfn" {
 # Allow log router writer identity to publish to pub/sub
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam
 resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
-  count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count   = local.delicensing_enabled ? 1 : 0
   project = var.project_id
   topic   = local.delicensing_cfn.topic_name
   role    = "roles/pubsub.publisher"
@@ -289,10 +263,10 @@ resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
 # VPC Connector required for Cloud Function to access local Panorama instance
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vpc_access_connector
 resource "google_vpc_access_connector" "delicensing_cfn" {
-  count         = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count         = local.delicensing_enabled ? 1 : 0
   project       = var.project_id
   name          = local.delicensing_cfn.vpc_connector_name
-  region        = var.delicensing_cloud_function_config.region
+  region        = var.region
   ip_cidr_range = var.delicensing_cloud_function_config.vpc_connector_cidr
   network       = var.delicensing_cloud_function_config.vpc_connector_network
 }
@@ -300,7 +274,7 @@ resource "google_vpc_access_connector" "delicensing_cfn" {
 # Cloud Function code storage bucket
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket
 resource "google_storage_bucket" "delicensing_cfn" {
-  count                       = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count                       = local.delicensing_enabled ? 1 : 0
   project                     = var.project_id
   name                        = local.delicensing_cfn.bucket_name
   location                    = var.delicensing_cloud_function_config.bucket_location
@@ -312,7 +286,7 @@ resource "google_storage_bucket" "delicensing_cfn" {
 }
 
 data "archive_file" "delicensing_cfn" {
-  count       = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count       = local.delicensing_enabled ? 1 : 0
   type        = "zip"
   source_dir  = local.delicensing_cfn.source_dir
   output_path = "/tmp/${local.delicensing_cfn.zip_file_name}.zip"
@@ -320,7 +294,7 @@ data "archive_file" "delicensing_cfn" {
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object
 resource "google_storage_bucket_object" "delicensing_cfn" {
-  count  = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count  = local.delicensing_enabled ? 1 : 0
   name   = "${local.delicensing_cfn.zip_file_name}.${lower(replace(data.archive_file.delicensing_cfn[0].output_base64sha256, "=", ""))}.zip"
   bucket = local.delicensing_cfn.bucket_name
   source = "/tmp/${local.delicensing_cfn.zip_file_name}.zip"
@@ -333,7 +307,7 @@ resource "google_storage_bucket_object" "delicensing_cfn" {
 # Cloud Function Service Account
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account
 resource "google_service_account" "delicensing_cfn" {
-  count        = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count        = local.delicensing_enabled ? 1 : 0
   project      = var.project_id
   account_id   = local.delicensing_cfn.runtime_sa_account_id
   display_name = local.delicensing_cfn.runtime_sa_display_name
@@ -342,7 +316,7 @@ resource "google_service_account" "delicensing_cfn" {
 # Granting required roles to Cloud Function SA
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam
 resource "google_project_iam_member" "delicensing_cfn" {
-  for_each = try(var.delicensing_cloud_function_config, null) != null ? toset(local.delicensing_cfn.runtime_sa_roles) : []
+  for_each = local.delicensing_enabled ? toset(local.delicensing_cfn.runtime_sa_roles) : []
   project  = var.project_id
   role     = each.key
   member   = "serviceAccount:${google_service_account.delicensing_cfn[0].email}"
@@ -350,11 +324,11 @@ resource "google_project_iam_member" "delicensing_cfn" {
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions2_function
 resource "google_cloudfunctions2_function" "delicensing_cfn" {
-  count       = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count       = local.delicensing_enabled ? 1 : 0
   project     = var.project_id
   name        = local.delicensing_cfn.function_name
   description = local.delicensing_cfn.description
-  location    = var.delicensing_cloud_function_config.region
+  location    = var.region
   build_config {
     runtime     = "python310"
     entry_point = local.delicensing_cfn.entry_point
@@ -384,7 +358,7 @@ resource "google_cloudfunctions2_function" "delicensing_cfn" {
     event_type     = "google.cloud.pubsub.topic.v1.messagePublished"
     pubsub_topic   = google_pubsub_topic.delicensing_cfn[0].id
     retry_policy   = "RETRY_POLICY_DO_NOT_RETRY"
-    trigger_region = var.delicensing_cloud_function_config.region
+    trigger_region = var.region
   }
   depends_on = [google_storage_bucket_object.delicensing_cfn]
 }
@@ -392,7 +366,7 @@ resource "google_cloudfunctions2_function" "delicensing_cfn" {
 # Allow Cloud Function invocation from pub/sub
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam
 resource "google_project_iam_member" "delicensing_cfn_invoker" {
-  count   = try(var.delicensing_cloud_function_config, null) != null ? 1 : 0
+  count   = local.delicensing_enabled ? 1 : 0
   project = var.project_id
   role    = "roles/run.invoker"
   member  = "serviceAccount:${data.google_compute_default_service_account.main.email}"
