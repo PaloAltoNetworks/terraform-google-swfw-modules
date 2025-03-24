@@ -99,7 +99,7 @@ resource "google_compute_autoscaler" "zonal" {
       for_each = var.autoscaler_metrics
       content {
         name   = metric.key
-        type   = try(metric.value.type, "GAUGE")
+        type   = metric.value.type
         target = metric.value.target
       }
     }
