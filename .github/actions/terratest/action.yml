@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1 #v2
       with:
         terraform_version: ${{ inputs.tf_version }}
         terraform_wrapper: false
@@ -32,10 +32,27 @@ runs:
         go-version: "1.20"
 
     - name: login to GCP
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@3a3c4c57d294ef65efaaee4ff17b22fa88dd3c69 #v1
       with:
         workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ env.GCP_SERVICE_ACCOUNT}}
+
+    - name: Set up Cloud SDK
+      uses: "google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a" #v2
+      with:
+        version: "469.0.0"
+
+    - name: Elevate permissions
+      shell: bash
+      env:
+        ORG_ID: ${{ env.ORG_ID }}
+      run: |
+        gcloud beta pam grants create \
+          --entitlement=custom-network-security-endpoint-admin-auto \
+          --location=global \
+          --organization="$ORG_ID" \
+          --requested-duration=3600s \
+          --justification="On demand Idempotence on ${{ github.repository }} test for PR - (#${{ github.event.inputs.pr-id }}) ${{ github.event.inputs.pr-title }}"
 
     - name: ${{ inputs.terratest_action }} infrastructure
       env:
