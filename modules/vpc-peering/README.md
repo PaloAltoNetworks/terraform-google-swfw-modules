@@ -5,51 +5,185 @@ The module allows to create VPC peering between two networks in both directions.
 By default, no routes are exported/imported for each direction, every option has to be explicitely enabled by setting appropriate value to `true`.
 
 ## Reference
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ### Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3, < 2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.54 |
+- `terraform`, version: >= 1.3, < 2.0
+- `google`, version: >= 4.54
 
 ### Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 4.54 |
+- `google`, version: >= 4.54
 
-### Modules
 
-No modules.
 
 ### Resources
 
-| Name | Type |
-|------|------|
-| [google_compute_network_peering.local](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_peering) | resource |
-| [google_compute_network_peering.peer](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_peering) | resource |
+- `compute_network_peering` (managed)
+- `compute_network_peering` (managed)
 
-### Inputs
+### Required Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_local_export_custom_routes"></a> [local\_export\_custom\_routes](#input\_local\_export\_custom\_routes) | Export custom routes setting for 'local->peer' direction. | `bool` | `false` | no |
-| <a name="input_local_export_subnet_routes_with_public_ip"></a> [local\_export\_subnet\_routes\_with\_public\_ip](#input\_local\_export\_subnet\_routes\_with\_public\_ip) | Export subnet routes with public IP setting for 'local->peer' direction. | `bool` | `false` | no |
-| <a name="input_local_import_custom_routes"></a> [local\_import\_custom\_routes](#input\_local\_import\_custom\_routes) | Import custom routes setting for 'local->peer' direction. | `bool` | `false` | no |
-| <a name="input_local_import_subnet_routes_with_public_ip"></a> [local\_import\_subnet\_routes\_with\_public\_ip](#input\_local\_import\_subnet\_routes\_with\_public\_ip) | Import subnet routes with public IP setting for 'local->peer' direction. | `bool` | `false` | no |
-| <a name="input_local_network"></a> [local\_network](#input\_local\_network) | Self-link or id of the first network (local) in pair. | `string` | n/a | yes |
-| <a name="input_local_peering_name"></a> [local\_peering\_name](#input\_local\_peering\_name) | Name for 'local->peer' direction peering resource. If not specified defaults to `<name_prefix><local network name>-<peer network name>`. | `string` | `null` | no |
-| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Optional prefix for auto-generated peering resource names. | `string` | `""` | no |
-| <a name="input_peer_export_custom_routes"></a> [peer\_export\_custom\_routes](#input\_peer\_export\_custom\_routes) | Export custom routes setting for 'peer->local' direction. | `bool` | `false` | no |
-| <a name="input_peer_export_subnet_routes_with_public_ip"></a> [peer\_export\_subnet\_routes\_with\_public\_ip](#input\_peer\_export\_subnet\_routes\_with\_public\_ip) | Export subnet routes with public IP setting for 'peer->local' direction. | `bool` | `false` | no |
-| <a name="input_peer_import_custom_routes"></a> [peer\_import\_custom\_routes](#input\_peer\_import\_custom\_routes) | Import custom routes setting for 'peer->local' direction. | `bool` | `false` | no |
-| <a name="input_peer_import_subnet_routes_with_public_ip"></a> [peer\_import\_subnet\_routes\_with\_public\_ip](#input\_peer\_import\_subnet\_routes\_with\_public\_ip) | Import subnet routes with public IP setting for 'peer->local' direction. | `bool` | `false` | no |
-| <a name="input_peer_network"></a> [peer\_network](#input\_peer\_network) | Self-link or id of the second network (peer) in pair. | `string` | n/a | yes |
-| <a name="input_peer_peering_name"></a> [peer\_peering\_name](#input\_peer\_peering\_name) | Name for 'peer->local' direction peering resource. If not specified defaults to `<name_prefix><peer network name>-<local network name>`. | `string` | `null` | no |
-| <a name="input_stack_type"></a> [stack\_type](#input\_stack\_type) | Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`. | `string` | `null` | no |
+Name | Type | Description
+--- | --- | ---
+[`local_network`](#local_network) | `string` | Self-link or id of the first network (local) in pair.
+[`peer_network`](#peer_network) | `string` | Self-link or id of the second network (peer) in pair.
 
-### Outputs
+### Optional Inputs
 
-No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+Name | Type | Description
+--- | --- | ---
+[`local_peering_name`](#local_peering_name) | `string` | Name for 'local->peer' direction peering resource.
+[`peer_peering_name`](#peer_peering_name) | `string` | Name for 'peer->local' direction peering resource.
+[`name_prefix`](#name_prefix) | `string` | Optional prefix for auto-generated peering resource names.
+[`stack_type`](#stack_type) | `string` | Which IP version(s) or routes are allowed to be imported or exported between peer networks.
+[`local_export_custom_routes`](#local_export_custom_routes) | `bool` | Export custom routes setting for 'local->peer' direction.
+[`local_import_custom_routes`](#local_import_custom_routes) | `bool` | Import custom routes setting for 'local->peer' direction.
+[`local_export_subnet_routes_with_public_ip`](#local_export_subnet_routes_with_public_ip) | `bool` | Export subnet routes with public IP setting for 'local->peer' direction.
+[`local_import_subnet_routes_with_public_ip`](#local_import_subnet_routes_with_public_ip) | `bool` | Import subnet routes with public IP setting for 'local->peer' direction.
+[`peer_export_custom_routes`](#peer_export_custom_routes) | `bool` | Export custom routes setting for 'peer->local' direction.
+[`peer_import_custom_routes`](#peer_import_custom_routes) | `bool` | Import custom routes setting for 'peer->local' direction.
+[`peer_export_subnet_routes_with_public_ip`](#peer_export_subnet_routes_with_public_ip) | `bool` | Export subnet routes with public IP setting for 'peer->local' direction.
+[`peer_import_subnet_routes_with_public_ip`](#peer_import_subnet_routes_with_public_ip) | `bool` | Import subnet routes with public IP setting for 'peer->local' direction.
+
+
+
+### Required Inputs details
+
+#### local_network
+
+Self-link or id of the first network (local) in pair.
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### peer_network
+
+Self-link or id of the second network (peer) in pair.
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+### Optional Inputs details
+
+#### local_peering_name
+
+Name for 'local->peer' direction peering resource. If not specified defaults to `<name_prefix><local network name>-<peer network name>`.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_peering_name
+
+Name for 'peer->local' direction peering resource. If not specified defaults to `<name_prefix><peer network name>-<local network name>`.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### name_prefix
+
+Optional prefix for auto-generated peering resource names.
+
+Type: string
+
+Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### stack_type
+
+Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### local_export_custom_routes
+
+Export custom routes setting for 'local->peer' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### local_import_custom_routes
+
+Import custom routes setting for 'local->peer' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### local_export_subnet_routes_with_public_ip
+
+Export subnet routes with public IP setting for 'local->peer' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### local_import_subnet_routes_with_public_ip
+
+Import subnet routes with public IP setting for 'local->peer' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_export_custom_routes
+
+Export custom routes setting for 'peer->local' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_import_custom_routes
+
+Import custom routes setting for 'peer->local' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_export_subnet_routes_with_public_ip
+
+Export subnet routes with public IP setting for 'peer->local' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_import_subnet_routes_with_public_ip
+
+Import subnet routes with public IP setting for 'peer->local' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>

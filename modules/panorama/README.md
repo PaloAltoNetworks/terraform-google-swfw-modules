@@ -4,68 +4,318 @@ A Terraform module for deploying a Panorama instance in the Google Cloud Platfor
 
 ## Usage
 
-For usage, check the "examples" folder in the root of the repository. 
+For usage, check the "examples" folder in the root of the repository.
 
 ## Reference
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ### Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3, < 2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.54 |
+- `terraform`, version: >= 1.3, < 2.0
+- `google`, version: >= 4.54
 
 ### Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 4.54 |
+- `google`, version: >= 4.54
 
-### Modules
 
-No modules.
 
 ### Resources
 
-| Name | Type |
-|------|------|
-| [google_compute_address.private](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
-| [google_compute_address.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | resource |
-| [google_compute_disk.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | resource |
-| [google_compute_instance.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
-| [google_compute_image.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_image) | data source |
+- `compute_address` (managed)
+- `compute_address` (managed)
+- `compute_disk` (managed)
+- `compute_instance` (managed)
+- `compute_image` (data)
 
-### Inputs
+### Required Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_attach_public_ip"></a> [attach\_public\_ip](#input\_attach\_public\_ip) | Determines if a Public IP should be assigned to Panorama. Set by the API if the `public_static_ip` variable is not defined. | `bool` | `false` | no |
-| <a name="input_custom_image"></a> [custom\_image](#input\_custom\_image) | Custom image for your Panorama instances. Custom images are available only to your Cloud project. <br>You can create a custom image from boot disks and other images. <br>For more information, please check the provider [documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#image)<br>as well as the [Panorama Administrator's Guide](https://docs.paloaltonetworks.com/panorama/10-2/panorama-admin/set-up-panorama/set-up-the-panorama-virtual-appliance/install-the-panorama-virtual-appliance/install-panorama-on-gcp.html).<br><br>If a `custom_image` is not specified, `image_project` and `image_family` are used to determine a Public image to use for Panorama. | `string` | `null` | no |
-| <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enable deletion protection on the instance. | `bool` | `false` | no |
-| <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | Size of boot disk in gigabytes. Default is the same as the OS image. | `string` | `null` | no |
-| <a name="input_disk_type"></a> [disk\_type](#input\_disk\_type) | Type of boot disk. For available options, check the providers [documentation](https://cloud.google.com/compute/docs/disks#disk-types). | `string` | `"pd-ssd"` | no |
-| <a name="input_labels"></a> [labels](#input\_labels) | See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | `map(any)` | `{}` | no |
-| <a name="input_log_disks"></a> [log\_disks](#input\_log\_disks) | List of disks to create and attach to Panorama to store traffic logs.<br>Available options:<br>- `name`              (Required) Name of the resource. The name must be 1-63 characters long, and comply with [`RFC1035`](https://datatracker.ietf.org/doc/html/rfc1035).<br>- `type`              (Optional) Disk type resource describing which disk type to use to create the disk. For available options, check the providers [documentation](https://cloud.google.com/compute/docs/disks#disk-types).<br>- `size`              (Optional) Size of the disk for Panorama logs (Gigabytes).<br><br>Example:<pre>log_disks = [<br>  {<br>    name = "example-disk-1"<br>    type = "pd-ssd"<br>    size = "2000"<br>  },<br>  {<br>    name = "example-disk-2"<br>    type = "pd-ssd"<br>    size = "3000"<br>  },<br>]</pre> | `list` | `[]` | no |
-| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | `string` | `"n1-standard-16"` | no |
-| <a name="input_metadata"></a> [metadata](#input\_metadata) | See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | `map(string)` | `{}` | no |
-| <a name="input_min_cpu_platform"></a> [min\_cpu\_platform](#input\_min\_cpu\_platform) | See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | `string` | `"Intel Broadwell"` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the Panorama instance. | `string` | `"panorama"` | no |
-| <a name="input_panorama_version"></a> [panorama\_version](#input\_panorama\_version) | Panorama version - based on the name of the Panorama public image - allows to specify which Panorama version will be deployed.<br>  For more details regarding available Panorama versions in the Google Cloud Platform, please run the following command:<br>  `gcloud compute images list --filter="name ~ .*panorama.*" --project paloaltonetworksgcp-public --no-standard-images` | `string` | `"panorama-byol-1000"` | no |
-| <a name="input_private_static_ip"></a> [private\_static\_ip](#input\_private\_static\_ip) | The static private IP address for Panorama. Only IPv4 is supported. An address may only be specified for INTERNAL address types.<br>  The IP address must be inside the specified subnetwork, if any. Set by the API if undefined. | `string` | `null` | no |
-| <a name="input_project"></a> [project](#input\_project) | The ID of the project in which the resource belongs. If it is not provided, the provider project is used. | `string` | `null` | no |
-| <a name="input_public_static_ip"></a> [public\_static\_ip](#input\_public\_static\_ip) | The static external IP address for Panorama instance. Only IPv4 is supported. Set by the API if undefined. | `string` | `null` | no |
-| <a name="input_region"></a> [region](#input\_region) | Google Cloud region to deploy the resources into. | `string` | n/a | yes |
-| <a name="input_scopes"></a> [scopes](#input\_scopes) | Access scopes for the compute instance - both OAuth2 URLs and gcloud short names are supported | `list(string)` | `[]` | no |
-| <a name="input_service_account"></a> [service\_account](#input\_service\_account) | IAM Service Account for running Panorama instance (just the email) | `string` | `null` | no |
-| <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | In order to connect via SSH to Panorama, provide your SSH public key here.<br>  Remember to add the `admin` prefix before you insert your public SSH key.<br>  More than one key can be added.<br><br>  Example:<br>  `ssh_keys = "admin:ssh-rsa AAAAB4NzaC5yc9EAACABBACBgQDAcjYw6xa2zUZ6reqHqDp9bYDLTu7Rnk5Sa3hthIsIsFaKenFLe4w3mm5eF3ebsfAAnuzI9ua9g7aB/ThIsIsAlSoFaKeN2VhUMDmlBYO5m1D4ip6eugS6uM="` | `string` | n/a | yes |
-| <a name="input_subnet"></a> [subnet](#input\_subnet) | A regional resource, defining a range of IPv4 addresses. In Google Cloud, the terms subnet and subnetwork are synonymous. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | `list(string)` | `[]` | no |
-| <a name="input_zone"></a> [zone](#input\_zone) | Deployment area for Google Cloud resources within a region. | `string` | n/a | yes |
+Name | Type | Description
+--- | --- | ---
+[`region`](#region) | `string` | Google Cloud region to deploy the resources into.
+[`zone`](#zone) | `string` | Deployment area for Google Cloud resources within a region.
+[`subnet`](#subnet) | `string` | A regional resource, defining a range of IPv4 addresses.
+[`ssh_keys`](#ssh_keys) | `string` |   In order to connect via SSH to Panorama, provide your SSH public key here.
+
+### Optional Inputs
+
+Name | Type | Description
+--- | --- | ---
+[`project`](#project) | `string` | The ID of the project in which the resource belongs.
+[`name`](#name) | `string` | Name of the Panorama instance.
+[`private_static_ip`](#private_static_ip) | `string` |   The static private IP address for Panorama.
+[`attach_public_ip`](#attach_public_ip) | `bool` | Determines if a Public IP should be assigned to Panorama.
+[`public_static_ip`](#public_static_ip) | `string` | The static external IP address for Panorama instance.
+[`log_disks`](#log_disks) | `list` | List of disks to create and attach to Panorama to store traffic logs.
+[`machine_type`](#machine_type) | `string` | See the [Terraform manual](https://registry.
+[`min_cpu_platform`](#min_cpu_platform) | `string` | See the [Terraform manual](https://registry.
+[`deletion_protection`](#deletion_protection) | `bool` | Enable deletion protection on the instance.
+[`labels`](#labels) | `map` | See the [Terraform manual](https://registry.
+[`tags`](#tags) | `list` | See the [Terraform manual](https://registry.
+[`disk_type`](#disk_type) | `string` | Type of boot disk.
+[`disk_size`](#disk_size) | `string` | Size of boot disk in gigabytes.
+[`panorama_version`](#panorama_version) | `string` |   Panorama version - based on the name of the Panorama public image - allows to specify which Panorama version will be deployed.
+[`custom_image`](#custom_image) | `string` | Custom image for your Panorama instances.
+[`metadata`](#metadata) | `map` | See the [Terraform manual](https://registry.
+[`service_account`](#service_account) | `string` | IAM Service Account for running Panorama instance (just the email).
+[`scopes`](#scopes) | `list` | Access scopes for the compute instance - both OAuth2 URLs and gcloud short names are supported.
 
 ### Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_panorama_private_ip"></a> [panorama\_private\_ip](#output\_panorama\_private\_ip) | Public IP address of the Panorama instance. |
-| <a name="output_panorama_public_ip"></a> [panorama\_public\_ip](#output\_panorama\_public\_ip) | Private IP address of the Panorama instance. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+Name |  Description
+--- | ---
+`panorama_public_ip` | Private IP address of the Panorama instance.
+`panorama_private_ip` | Public IP address of the Panorama instance.
+
+### Required Inputs details
+
+#### region
+
+Google Cloud region to deploy the resources into.
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### zone
+
+Deployment area for Google Cloud resources within a region.
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### subnet
+
+A regional resource, defining a range of IPv4 addresses. In Google Cloud, the terms subnet and subnetwork are synonymous.
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### ssh_keys
+
+  In order to connect via SSH to Panorama, provide your SSH public key here.
+  Remember to add the `admin` prefix before you insert your public SSH key.
+  More than one key can be added.
+
+  Example:
+  `ssh_keys = "admin:ssh-rsa AAAAB4NzaC5yc9EAACABBACBgQDAcjYw6xa2zUZ6reqHqDp9bYDLTu7Rnk5Sa3hthIsIsFaKenFLe4w3mm5eF3ebsfAAnuzI9ua9g7aB/ThIsIsAlSoFaKeN2VhUMDmlBYO5m1D4ip6eugS6uM="`
+
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+### Optional Inputs details
+
+#### project
+
+The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### name
+
+Name of the Panorama instance.
+
+Type: string
+
+Default value: `panorama`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### private_static_ip
+
+  The static private IP address for Panorama. Only IPv4 is supported. An address may only be specified for INTERNAL address types.
+  The IP address must be inside the specified subnetwork, if any. Set by the API if undefined.
+
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### attach_public_ip
+
+Determines if a Public IP should be assigned to Panorama. Set by the API if the `public_static_ip` variable is not defined.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### public_static_ip
+
+The static external IP address for Panorama instance. Only IPv4 is supported. Set by the API if undefined.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### log_disks
+
+List of disks to create and attach to Panorama to store traffic logs.
+Available options:
+- `name`              (Required) Name of the resource. The name must be 1-63 characters long, and comply with [`RFC1035`](https://datatracker.ietf.org/doc/html/rfc1035).
+- `type`              (Optional) Disk type resource describing which disk type to use to create the disk. For available options, check the providers [documentation](https://cloud.google.com/compute/docs/disks#disk-types).
+- `size`              (Optional) Size of the disk for Panorama logs (Gigabytes).
+
+Example:
+```
+log_disks = [
+  {
+    name = "example-disk-1"
+    type = "pd-ssd"
+    size = "2000"
+  },
+  {
+    name = "example-disk-2"
+    type = "pd-ssd"
+    size = "3000"
+  },
+]
+```
+
+
+Type: list
+
+Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### machine_type
+
+See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+
+Type: string
+
+Default value: `n1-standard-16`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### min_cpu_platform
+
+See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+
+Type: string
+
+Default value: `Intel Broadwell`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### deletion_protection
+
+Enable deletion protection on the instance.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### labels
+
+See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### tags
+
+See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+
+Type: list(string)
+
+Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### disk_type
+
+Type of boot disk. For available options, check the providers [documentation](https://cloud.google.com/compute/docs/disks#disk-types).
+
+Type: string
+
+Default value: `pd-ssd`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### disk_size
+
+Size of boot disk in gigabytes. Default is the same as the OS image.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### panorama_version
+
+  Panorama version - based on the name of the Panorama public image - allows to specify which Panorama version will be deployed.
+  For more details regarding available Panorama versions in the Google Cloud Platform, please run the following command:
+  `gcloud compute images list --filter="name ~ .*panorama.*" --project paloaltonetworksgcp-public --no-standard-images`
+
+
+Type: string
+
+Default value: `panorama-byol-1000`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### custom_image
+
+Custom image for your Panorama instances. Custom images are available only to your Cloud project. 
+You can create a custom image from boot disks and other images. 
+For more information, please check the provider [documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#image)
+as well as the [Panorama Administrator's Guide](https://docs.paloaltonetworks.com/panorama/10-2/panorama-admin/set-up-panorama/set-up-the-panorama-virtual-appliance/install-the-panorama-virtual-appliance/install-panorama-on-gcp.html).
+  
+If a `custom_image` is not specified, `image_project` and `image_family` are used to determine a Public image to use for Panorama.
+
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### metadata
+
+See the [Terraform manual](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+
+Type: map(string)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_account
+
+IAM Service Account for running Panorama instance (just the email)
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### scopes
+
+Access scopes for the compute instance - both OAuth2 URLs and gcloud short names are supported
+
+Type: list(string)
+
+Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
