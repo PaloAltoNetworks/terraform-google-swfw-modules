@@ -216,7 +216,7 @@ variable "autoscale_common" {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     tags               = ["vmseries-autoscale"]
     update_policy_type = "OPPORTUNISTIC"
@@ -426,7 +426,7 @@ variable "linux_vms" {
         "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
         "https://www.googleapis.com/auth/devstorage.read_only",
         "https://www.googleapis.com/auth/logging.write",
-        "https://www.googleapis.com/auth/monitoring.write",
+        "https://www.googleapis.com/auth/monitoring",
       ]
       service_account_key = "sa-linux-01"
     }

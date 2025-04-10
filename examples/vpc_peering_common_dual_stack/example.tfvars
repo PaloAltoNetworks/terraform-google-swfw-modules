@@ -303,7 +303,7 @@ vmseries = {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
     bootstrap_options = {
@@ -362,7 +362,7 @@ vmseries = {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     bootstrap_bucket_key = "vmseries-bootstrap-bucket-01"
     bootstrap_options = {
@@ -429,7 +429,7 @@ linux_vms = {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     service_account_key = "sa-linux-01"
   },
@@ -446,7 +446,7 @@ linux_vms = {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     service_account_key = "sa-linux-01"
   }

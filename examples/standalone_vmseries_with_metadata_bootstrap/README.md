@@ -111,7 +111,7 @@ Example of variable deployment :
         "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
         "https://www.googleapis.com/auth/devstorage.read_only",
         "https://www.googleapis.com/auth/logging.write",
-        "https://www.googleapis.com/auth/monitoring.write",
+        "https://www.googleapis.com/auth/monitoring",
       ]
       bootstrap_options = {
         panorama-server = "1.1.1.1" # Modify this value as per deployment requirements
