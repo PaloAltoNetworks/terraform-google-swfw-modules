@@ -42,7 +42,7 @@ vmseries = {
       "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
     bootstrap_options = {
       # TODO: Modify the values below as per deployment requirements
