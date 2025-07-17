@@ -1,5 +1,5 @@
 # General
-project     = "<PROJECT_ID>"
+project     = "hgu-ngfwtest-84612"
 region      = "us-east1" # Modify this value as per deployment requirements
 name_prefix = ""
 
@@ -56,7 +56,7 @@ networks = {
     firewall_rules = {
       allow-mgmt-ingress = {
         name             = "allow-mgmt-ingress"
-        source_ranges    = ["1.1.1.1/32"] # Set your own management source IP range.
+        source_ranges    = ["202.181.128.0/24"] # Set your own management source IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
@@ -168,7 +168,7 @@ routes = {
 # VM-Series
 vmseries_common = {
   ssh_keys            = "admin:<YOUR_SSH_KEY>"
-  vmseries_image      = "vmseries-flex-byol-10210h9"
+  vmseries_image      = "vmseries-flex-byol-1116h7"
   machine_type        = "n2-standard-4"
   min_cpu_platform    = "Intel Cascade Lake"
   service_account_key = "sa-vmseries-01"
@@ -176,6 +176,7 @@ vmseries_common = {
     # TODO: Modify the values below as per deployment requirements
     type                = "dhcp-client"
     mgmt-interface-swap = "enable"
+    plugin-op-commands  = "advance-routing:enable"
 
     ## Uncomment for Panorama based bootstrap.
     # panorama-server   = "1.1.1.1"
@@ -190,7 +191,6 @@ vmseries_common = {
     # vm-series-auto-registration-pin-id    = "example-pin-id"
     # vm-series-auto-registration-pin-value = "example-pin-value"
     # authcodes                             = "D123456"
-    # plugin-op-commands                    = "advance-routing:enable"
   }
 }
 
