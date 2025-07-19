@@ -230,7 +230,7 @@ routes = {
 # VM-Series
 vmseries_common = {
   ssh_keys            = "admin:<YOUR_SSH_KEY>"
-  vmseries_image      = "vmseries-flex-byol-10210h9"
+  vmseries_image      = "vmseries-flex-byol-1116h7"
   machine_type        = "n2-standard-4"
   min_cpu_platform    = "Intel Cascade Lake"
   service_account_key = "sa-vmseries-01"
@@ -238,6 +238,7 @@ vmseries_common = {
     # TODO: Modify the values below as per deployment requirements
     type                = "dhcp-client"
     mgmt-interface-swap = "enable"
+    plugin-op-commands  = "advance-routing:enable"
 
     ## Uncomment for Panorama based bootstrap.
     # panorama-server   = "1.1.1.1"
@@ -252,7 +253,6 @@ vmseries_common = {
     # vm-series-auto-registration-pin-id    = "example-pin-id"
     # vm-series-auto-registration-pin-value = "example-pin-value"
     # authcodes                             = "D123456"
-    # plugin-op-commands                    = "advance-routing:enable"
   }
 }
 
