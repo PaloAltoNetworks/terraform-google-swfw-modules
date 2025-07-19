@@ -1,5 +1,5 @@
 # General
-project     = "hgu-ngfwtest-84612"
+project     = "<PROJECT_ID>"
 region      = "us-east1" # Modify this value as per deployment requirements
 name_prefix = ""
 
