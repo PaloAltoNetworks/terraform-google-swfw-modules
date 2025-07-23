@@ -38,7 +38,11 @@ resource "local_sensitive_file" "init_cfg" {
   filename = "files/${each.key}/config/init-cfg.txt"
   content = templatefile(
     "templates/init-cfg.tmpl",
-    { bootstrap_options = merge(var.vmseries_common.bootstrap_options, each.value.bootstrap_options) }
+    { bootstrap_options = merge(
+      { for k, v in var.vmseries_common.bootstrap_options : k => v if v != null },
+      { for k, v in each.value.bootstrap_options : k => v if v != null }
+      )
+    }
   )
 }
 
