@@ -17,8 +17,8 @@ This module creates an Internal Regional Passthrough Network Load Balancer that 
 
 ### Providers
 
-- `google-beta`
 - `google`, version: >= 4.54
+- `google-beta`
 
 
 
