@@ -200,7 +200,7 @@ routes = {
 
 # VM-Series
 vmseries_common = {
-  ssh_keys            = "admin:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDFmnSmvG05A5NZW8weDwXaMGlGhgZdnKCi5XI6rMFm66J71frgAfgu3u3jihGb8MzJKRP5hiVN/7R305Br7/UskLd/kMkEsRPATdhZ6QdCLekBZkv845xJjByik9WYWQSDlGbnC9PKVTwXZwthtXbGIBkrdz9f4uVNre4zEfAgwUMS27JRE94v5KBrWjNW5N49ag9Xb4kE2MVMoSPFKr5a5P2ky2k9tcauUrVim6duS5WIWQH9YqZ4MtdOmwSea+gMfN09WBi5RXlLJe+p2YPE3S5E0AeL4z6uFQS1LP7DDw2YEe/pznt7rTQsR70JmZITUWwfmOKiPlIp8bd7itJGDp3rmpTyxhUyyV/znXNIgFS+zLDn/yIX9C83n4v5uP+LiThyjubhTjIv5HqPX3Z6+FqclE6Zpy5vAXGtkCCPMG7c3yVwGU6QbKMYQflcFV8/bOUYs5jM81Az9UuscqSnMlL28lPR0KVMn49VIHPtRXbx9/sr5Pa1pytzdATyo30wZPZWlZWVV2TCGBERPPkBzR/Exqe9erZNHTTQdilvHQDoyvfy4DvdeJbngHStEKr8aFqQ1hOzmeZLhORps0AxmbMbFjSjcYVPeJS/rzOsN8jhvWDNctPGNHMPPYJxhZrx7A+4xy2kmseIyUtu5/uWFURoHr69L2Q8W30Q2U71Ow== hgunica@M-KY9YLWR7JP"
+  ssh_keys            = "admin:<YOUR_SSH_KEY>"
   vmseries_image      = "vmseries-flex-byol-1116h7"
   machine_type        = "n2-standard-4"
   min_cpu_platform    = "Intel Cascade Lake"
