@@ -359,17 +359,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/1</interface>
                         <metric>10</metric>
                         <destination>35.191.0.0/16</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-1-eth2">
                         <nexthop>
@@ -378,17 +370,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/2</interface>
                         <metric>10</metric>
                         <destination>35.191.0.0/16</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-2-eth1">
                         <nexthop>
@@ -397,17 +381,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/1</interface>
                         <metric>10</metric>
                         <destination>209.85.152.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-2-eth2">
                         <nexthop>
@@ -416,17 +392,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/2</interface>
                         <metric>10</metric>
                         <destination>209.85.152.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-3-eth1">
                         <nexthop>
@@ -435,17 +403,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/1</interface>
                         <metric>10</metric>
                         <destination>209.85.204.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-3-eth2">
                         <nexthop>
@@ -454,17 +414,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/2</interface>
                         <metric>10</metric>
                         <destination>209.85.204.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-4-eth1">
                         <nexthop>
@@ -473,17 +425,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/1</interface>
                         <metric>10</metric>
                         <destination>130.211.0.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="lb_health_check-4-eth2">
                         <nexthop>
@@ -492,17 +436,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/2</interface>
                         <metric>10</metric>
                         <destination>130.211.0.0/22</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="internet">
                         <nexthop>
@@ -511,17 +447,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/1</interface>
                         <metric>10</metric>
                         <destination>0.0.0.0/0</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     <entry name="intranet">
                         <nexthop>
@@ -530,17 +458,9 @@
                         <bfd>
                         <profile>None</profile>
                         </bfd>
-                        <path-monitor>
-                        <enable>no</enable>
-                        <failure-condition>any</failure-condition>
-                        <hold-time>2</hold-time>
-                        </path-monitor>
                         <interface>ethernet1/2</interface>
                         <metric>10</metric>
                         <destination>${private_network_cidr}</destination>
-                        <route-table>
-                        <unicast/>
-                        </route-table>
                     </entry>
                     </static-route>
                   </ip>
