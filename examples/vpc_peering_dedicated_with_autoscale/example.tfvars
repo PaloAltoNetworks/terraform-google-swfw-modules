@@ -199,7 +199,7 @@ routes = {
 autoscale_regional_mig = true
 
 autoscale_common = {
-  image            = "vmseries-flex-byol-1114h7"
+  image            = "vmseries-flex-byol-1116h7"
   machine_type     = "n2-standard-4"
   min_cpu_platform = "Intel Cascade Lake"
   disk_type        = "pd-ssd"
@@ -257,6 +257,7 @@ autoscale = {
       dhcp-accept-server-domain   = "yes"
       mgmt-interface-swap         = "enable"
       ssh-keys                    = "admin:<your_ssh_key>" # Replace this value with client data
+      plugin-op-commands          = "advance-routing:enable"
 
       # Uncomment for Panorama based bootstrap.
       panorama-server   = "1.1.1.1"
@@ -271,7 +272,6 @@ autoscale = {
       # vm-series-auto-registration-pin-id    = "example-pin-id"
       # vm-series-auto-registration-pin-value = "example-pin-value"
       # authcodes                             = "D123456"
-      # plugin-op-commands                    = "advance-routing:enable"
     }
     network_interfaces = [
       {
@@ -325,6 +325,7 @@ autoscale = {
       mgmt-interface-swap         = "enable"
       panorama-server             = "1.1.1.1"
       ssh-keys                    = "admin:<your_ssh_key>" # Replace this value with client data
+      plugin-op-commands          = "advance-routing:enable"
     }
     network_interfaces = [
       {
