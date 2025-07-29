@@ -242,10 +242,10 @@ variable "vmseries" {
     scopes               = optional(list(string))
     bootstrap_bucket_key = optional(string)
     bootstrap_template_map = optional(object({
-      trust_gcp_router_ip   = optional(string)
+      trust_gcp_router_ip   = optional(string, "")
       untrust_gcp_router_ip = optional(string)
       private_network_cidr  = optional(string)
-      trust_loopback_ip     = optional(string)
+      trust_loopback_ip     = optional(string, "")
     }))
     named_ports = optional(list(object({
       name = optional(string)

@@ -1,5 +1,5 @@
 # General
-project     = "hgu-ngfwtest-84612"
+project     = "<PROJECT_ID>"
 name_prefix = ""
 
 # Service accounts
@@ -61,7 +61,7 @@ networks = {
     firewall_rules = {
       allow-mgmt-ingress = {
         name             = "allow-mgmt-ingress"
-        source_ranges    = ["202.181.128.0/24"] # Set your own management source IP range.
+        source_ranges    = ["1.1.1.1/32"] # Set your own management source IP range.
         priority         = "1000"
         allowed_protocol = "all"
         allowed_ports    = []
