@@ -261,20 +261,27 @@ variable "vmseries" {
     name = string
     zone = string
     network_interfaces = optional(list(object({
-      vpc_network_key  = string
-      subnetwork_key   = string
-      private_ip       = string
-      create_public_ip = optional(bool, false)
-      public_ip        = optional(string)
+      vpc_network_key    = string
+      subnetwork_key     = string
+      private_ip         = string
+      create_public_ip   = optional(bool, false)
+      public_ip          = optional(string)
+      stack_type         = optional(string)
+      create_public_ipv6 = optional(bool, false)
     })))
-    ssh_keys            = optional(string)
-    vmseries_image      = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    service_account     = optional(string)
-    scopes              = optional(list(string))
+    ssh_keys             = optional(string)
+    vmseries_image       = optional(string)
+    machine_type         = optional(string)
+    min_cpu_platform     = optional(string)
+    tags                 = optional(list(string))
+    service_account_key  = optional(string)
+    service_account      = optional(string)
+    scopes               = optional(list(string))
+    bootstrap_bucket_key = optional(string)
+    named_ports = optional(list(object({
+      name = optional(string)
+      port = optional(number)
+    })))
     bootstrap_options = optional(object({
       type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
@@ -290,6 +297,17 @@ variable "vmseries" {
       authcodes                             = optional(string)
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
+      dns-primary                           = optional(string)
+      dns-secondary                         = optional(string)
+    }))
+    bootstrap_template_map = optional(object({
+      trust_gcp_router_ip   = optional(string)
+      untrust_gcp_router_ip = optional(string)
+      private_network_cidr  = optional(string)
+      untrust_loopback_ip   = optional(string)
+      trust_loopback_ip     = optional(string)
+      untrust_loopback_ipv6 = optional(string)
+      trust_loopback_ipv6   = optional(string)
     }))
   }))
   default     = {}

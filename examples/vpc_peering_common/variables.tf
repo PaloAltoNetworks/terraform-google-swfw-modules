@@ -195,6 +195,8 @@ variable "vmseries_common" {
       authcodes                             = optional(string)
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
+      dns-primary                           = optional(string)
+      dns-secondary                         = optional(string)
     }))
   })
   default     = {}
@@ -240,6 +242,11 @@ variable "vmseries" {
     service_account_key = optional(string)
     service_account     = optional(string)
     scopes              = optional(list(string))
+    named_ports = optional(list(object({
+      name = optional(string)
+      port = optional(number)
+    })))
+    bootstrap_bucket_key = optional(string)
     bootstrap_options = optional(object({
       type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
@@ -255,6 +262,15 @@ variable "vmseries" {
       authcodes                             = optional(string)
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
+      dns-primary                           = optional(string)
+      dns-secondary                         = optional(string)
+    }))
+    bootstrap_template_map = optional(object({
+      trust_gcp_router_ip   = optional(string)
+      untrust_gcp_router_ip = optional(string)
+      private_network_cidr  = optional(string)
+      untrust_loopback_ip   = optional(string)
+      trust_loopback_ip     = optional(string)
     }))
   }))
   default     = {}

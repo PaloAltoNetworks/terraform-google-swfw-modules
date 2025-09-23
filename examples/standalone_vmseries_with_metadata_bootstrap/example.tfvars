@@ -32,7 +32,7 @@ vmseries = {
   "fw-vmseries-01" = {
     name             = "fw-vmseries-01"
     zone             = "us-central1-b"
-    vmseries_image   = "vmseries-flex-byol-10210h9"
+    vmseries_image   = "vmseries-flex-byol-1116h7"
     ssh_keys         = "admin:<YOUR_SSH_KEY>"
     machine_type     = "n2-standard-4"
     min_cpu_platform = "Intel Cascade Lake"
@@ -53,6 +53,7 @@ vmseries = {
       dhcp-send-client-id         = "yes"
       dns-primary                 = "8.8.8.8"
       dns-secondary               = "8.8.4.4"
+      plugin-op-commands          = "advance-routing:enable"
 
       ## Uncomment for Panorama based bootstrap.
       # panorama-server   = "1.1.1.1"
@@ -67,7 +68,6 @@ vmseries = {
       # vm-series-auto-registration-pin-id    = "example-pin-id"
       # vm-series-auto-registration-pin-value = "example-pin-value"
       # authcodes                             = "D123456"
-      # plugin-op-commands                    = "advance-routing:enable"
     }
     named_ports = [
       {
