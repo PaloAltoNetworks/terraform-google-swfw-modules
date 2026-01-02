@@ -85,7 +85,7 @@ resource "google_compute_address" "public_ipv6" {
   ipv6_endpoint_type = "VM"
   subnetwork         = each.value.subnetwork
   project            = var.project
-  region             = data.google_compute_subnetwork.this[each.key].region
+  region             = try(each.value.public_ip_region, null)
 }
 
 resource "google_compute_instance" "this" {
