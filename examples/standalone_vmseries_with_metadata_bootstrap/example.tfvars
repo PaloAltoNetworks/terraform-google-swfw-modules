@@ -1,5 +1,6 @@
 project     = "<PROJECT_ID>"
 name_prefix = ""
+region      = "us-central1"
 
 networks = {
   "vmseries-vpc" = {

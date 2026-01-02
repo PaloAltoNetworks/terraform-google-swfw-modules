@@ -268,12 +268,14 @@ vmseries = {
         vpc_network_key  = "fw-untrust-vpc"
         subnetwork_key   = "fw-untrust-sub-region-1"
         private_ip       = "10.10.11.2"
+        public_ip_region = "us-east1"
         create_public_ip = true
       },
       {
         vpc_network_key  = "fw-mgmt-vpc"
         subnetwork_key   = "fw-mgmt-sub-region-1"
         private_ip       = "10.10.10.2"
+        public_ip_region = "us-east1"
         create_public_ip = true
       },
       {
@@ -323,12 +325,14 @@ vmseries = {
         vpc_network_key  = "fw-untrust-vpc"
         subnetwork_key   = "fw-untrust-sub-region-1"
         private_ip       = "10.10.11.3"
+        public_ip_region = "us-east1"
         create_public_ip = true
       },
       {
         vpc_network_key  = "fw-mgmt-vpc"
         subnetwork_key   = "fw-mgmt-sub-region-1"
         private_ip       = "10.10.10.3"
+        public_ip_region = "us-east1"
         create_public_ip = true
       },
       {
@@ -378,12 +382,14 @@ vmseries = {
         vpc_network_key  = "fw-untrust-vpc"
         subnetwork_key   = "fw-untrust-sub-region-2"
         private_ip       = "10.20.11.2"
+        public_ip_region = "us-west1"
         create_public_ip = true
       },
       {
         vpc_network_key  = "fw-mgmt-vpc"
         subnetwork_key   = "fw-mgmt-sub-region-2"
         private_ip       = "10.20.10.2"
+        public_ip_region = "us-west1"
         create_public_ip = true
       },
       {

@@ -35,6 +35,7 @@ Name | Type | Description
 Name | Type | Description
 --- | --- | ---
 [`project`](#project) | `string` | The project name to deploy the infrastructure in to.
+[`region`](#region) | `string` | The region into which to deploy the infrastructure in to.
 [`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
 [`vmseries_common`](#vmseries_common) | `map` | A map containing common vmseries setting.
 
@@ -162,6 +163,16 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
+#### region
+
+The region into which to deploy the infrastructure in to.
+
+Type: string
+
+Default value: `us-central1`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### name_prefix
 
 A string to prefix resource namings
@@ -190,7 +201,7 @@ vmseries_common = {
     mgmt-interface-swap = "enable"
   }
 }
-``` 
+```
 
 Bootstrap options can be moved between vmseries individual instance variable (`vmseries`) and this common vmserie variable (`vmseries_common`).
 

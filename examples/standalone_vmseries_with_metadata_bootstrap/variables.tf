@@ -5,6 +5,12 @@ variable "project" {
   default     = null
 }
 
+variable "region" {
+  description = "The region into which to deploy the infrastructure in to."
+  type        = string
+  default     = "us-central1"
+}
+
 variable "name_prefix" {
   description = "A string to prefix resource namings"
   type        = string
@@ -127,7 +133,7 @@ variable "vmseries_common" {
       mgmt-interface-swap = "enable"
     }
   }
-  ``` 
+  ```
 
   Bootstrap options can be moved between vmseries individual instance variable (`vmseries`) and this common vmserie variable (`vmseries_common`).
   EOF
