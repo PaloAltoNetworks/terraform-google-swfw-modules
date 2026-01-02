@@ -260,7 +260,7 @@ variable "vmseries" {
       vm-series-auto-registration-pin-value = optional(string)
     }))
   }))
-  default     = null
+  default     = {}
   description = <<-EOF
   A map containing each individual vmseries setting.
 
