@@ -511,39 +511,6 @@ service_accounts = {
   }
 }
 ```
-
-Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
-
-
-Type: 
-
-```hcl
-object({
-    ssh_keys            = optional(string)
-    vmseries_image      = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    scopes              = optional(list(string))
-    bootstrap_options = optional(object({
-      type                                  = optional(string)
-      mgmt-interface-swap                   = optional(string)
-      plugin-op-commands                    = optional(string)
-      panorama-server                       = optional(string)
-      auth-key                              = optional(string)
-      dgname                                = optional(string)
-      tplname                               = optional(string)
-      dhcp-send-hostname                    = optional(string)
-      dhcp-send-client-id                   = optional(string)
-      dhcp-accept-server-hostname           = optional(string)
-      dhcp-accept-server-domain             = optional(string)
-      authcodes                             = optional(string)
-      vm-series-auto-registration-pin-id    = optional(string)
-      vm-series-auto-registration-pin-value = optional(string)
-    }))
-  })
-```
 For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
 
 Multiple keys can be added and will be deployed by the code.
