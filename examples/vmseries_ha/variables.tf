@@ -257,6 +257,12 @@ variable "vmseries" {
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
     }))
+    bootstrap_bucket_key   = optional(string)
+    bootstrap_template_map = optional(map(any))
+    named_ports = optional(list(object({
+      name = string
+      port = number
+    })))
   }))
   default     = {}
   description = <<-EOF
