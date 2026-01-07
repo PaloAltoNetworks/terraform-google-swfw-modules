@@ -231,14 +231,6 @@ variable "vmseries" {
     name   = string
     region = string
     zone   = string
-    network_interfaces = optional(list(object({
-      vpc_network_key  = string
-      subnetwork_key   = string
-      private_ip       = string
-      create_public_ip = optional(bool, false)
-      public_ip        = optional(string)
-      public_ip_region = optional(string)
-    })))
     ssh_keys            = optional(string)
     vmseries_image      = optional(string)
     machine_type        = optional(string)
@@ -247,6 +239,7 @@ variable "vmseries" {
     service_account_key = optional(string)
     service_account     = optional(string)
     scopes              = optional(list(string))
+    bootstrap_bucket_key = optional(string)
     bootstrap_options = optional(object({
       type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
@@ -263,11 +256,17 @@ variable "vmseries" {
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
     }))
-    bootstrap_bucket_key   = optional(string)
     bootstrap_template_map = optional(map(any))
     named_ports = optional(list(object({
       name = string
       port = number
+    })))
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
     })))
   }))
   default     = {}
