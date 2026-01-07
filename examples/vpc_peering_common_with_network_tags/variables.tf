@@ -228,17 +228,17 @@ variable "vmseries_common" {
 
 variable "vmseries" {
   type = map(object({
-    name   = string
-    region = string
-    zone   = string
-    ssh_keys            = optional(string)
-    vmseries_image      = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    service_account     = optional(string)
-    scopes              = optional(list(string))
+    name                 = string
+    region               = string
+    zone                 = string
+    ssh_keys             = optional(string)
+    vmseries_image       = optional(string)
+    machine_type         = optional(string)
+    min_cpu_platform     = optional(string)
+    tags                 = optional(list(string))
+    service_account_key  = optional(string)
+    service_account      = optional(string)
+    scopes               = optional(list(string))
     bootstrap_bucket_key = optional(string)
     bootstrap_options = optional(object({
       type                                  = optional(string)
