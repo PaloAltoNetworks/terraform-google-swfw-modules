@@ -253,8 +253,8 @@ please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the
 
 - `google`
 - `local`
-- `null`
 - `google`
+- `null`
 
 ### Modules
 Name | Version | Source | Description
