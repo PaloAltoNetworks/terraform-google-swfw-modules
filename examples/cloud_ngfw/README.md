@@ -1,7 +1,7 @@
 ---
 short_title: GCP Cloud NGFW
 type: example
-show_in_hub:false
+show_in_hub: true
 ---
 # Reference architecture with Terraform : GCP Cloud Next-Generation Firewall
 
