@@ -130,8 +130,8 @@ Use a web browser to access https://localhost:4443 and login with admin and your
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
-`vpc` | - | ../../modules/vpc | 
 `panorama` | - | ../../modules/panorama | 
+`vpc` | - | ../../modules/vpc | 
 
 
 
@@ -146,9 +146,9 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
+[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
 [`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`region`](#region) | `string` | The region into which to deploy the infrastructure in to.
-[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
 
 ### Outputs
 
@@ -233,6 +233,16 @@ Type: any
 
 ### Optional Inputs details
 
+#### name_prefix
+
+A string to prefix resource namings
+
+Type: string
+
+Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### project
 
 The project name to deploy the infrastructure in to.
@@ -250,15 +260,5 @@ The region into which to deploy the infrastructure in to
 Type: string
 
 Default value: `us-central1`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### name_prefix
-
-A string to prefix resource namings
-
-Type: string
-
-Default value: ``
 
 <sup>[back to list](#modules-optional-inputs)</sup>

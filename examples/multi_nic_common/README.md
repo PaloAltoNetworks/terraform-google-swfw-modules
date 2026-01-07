@@ -171,19 +171,19 @@ please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the
 
 ### Providers
 
-- `local`
 - `google`
+- `local`
 
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
-`iam_service_account` | - | ../../modules/iam_service_account | 
 `bootstrap` | - | ../../modules/bootstrap | 
+`iam_service_account` | - | ../../modules/iam_service_account | 
+`lb_external` | - | ../../modules/lb_external | 
+`lb_internal` | - | ../../modules/lb_internal | 
+`vmseries` | - | ../../modules/vmseries | 
 `vpc` | - | ../../modules/vpc | 
 `vpc_peering` | - | ../../modules/vpc-peering | 
-`vmseries` | - | ../../modules/vmseries | 
-`lb_internal` | - | ../../modules/lb_internal | 
-`lb_external` | - | ../../modules/lb_external | 
 
 ### Resources
 
@@ -202,95 +202,33 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
+[`bootstrap_buckets`](#bootstrap_buckets) | `map` | A map containing each bootstrap bucket setting.
+[`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
+[`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
+[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
+[`networks`](#networks) | `any` | A map containing each network setting.
 [`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`region`](#region) | `string` | The region into which to deploy the infrastructure in to.
-[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
-[`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
-[`bootstrap_buckets`](#bootstrap_buckets) | `map` | A map containing each bootstrap bucket setting.
-[`networks`](#networks) | `any` | A map containing each network setting.
-[`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
-[`vmseries_common`](#vmseries_common) | `object` | A map containing common vmseries settings.
+[`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
 [`vmseries`](#vmseries) | `map` | A map containing each individual vmseries setting.
-[`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
-[`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
-[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+[`vmseries_common`](#vmseries_common) | `object` | A map containing common vmseries settings.
+[`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 
 ### Outputs
 
 Name |  Description
 --- | ---
+`lbs_external_ips` | Public IP addresses of external network loadbalancers.
+`lbs_internal_ips` | Private IP addresses of internal network loadbalancers.
+`linux_vm_ips` | Private IP addresses of Linux VMs.
 `vmseries_private_ips` | Private IP addresses of the vmseries instances.
 `vmseries_public_ips` | Public IP addresses of the vmseries instances.
-`lbs_internal_ips` | Private IP addresses of internal network loadbalancers.
-`lbs_external_ips` | Public IP addresses of external network loadbalancers.
-`linux_vm_ips` | Private IP addresses of Linux VMs.
 
 ### Required Inputs details
 
 ### Optional Inputs details
-
-#### project
-
-The project name to deploy the infrastructure in to.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### region
-
-The region into which to deploy the infrastructure in to.
-
-Type: string
-
-Default value: `us-central1`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### name_prefix
-
-A string to prefix resource namings.
-
-Type: string
-
-Default value: `example-`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### service_accounts
-
-A map containing each service account setting.
-
-Example of variable deployment :
-  ```
-service_accounts = {
-  "sa-vmseries-01" = {
-    service_account_id = "sa-vmseries-01"
-    display_name       = "VM-Series SA"
-    roles = [
-      "roles/compute.networkViewer",
-      "roles/logging.logWriter",
-      "roles/monitoring.metricWriter",
-      "roles/monitoring.viewer",
-      "roles/viewer"
-    ]
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
-
-Multiple keys can be added and will be deployed by the code.
-
-
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
 
 #### bootstrap_buckets
 
@@ -317,6 +255,111 @@ Multiple keys can be added and will be deployed by the code.
 Type: map(any)
 
 Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### lbs_external
+
+A map containing each external loadbalancer setting.
+
+Example of variable deployment :
+
+```
+lbs_external = {
+  "external-lb" = {
+    name     = "external-lb"
+    backends = ["fw-vmseries-01", "fw-vmseries-02"]
+    rules = {
+      "all-ports" = {
+        ip_protocol = "L3_DEFAULT"
+      }
+    }
+    http_health_check_port         = "80"
+    http_health_check_request_path = "/php/login.php"
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_external#inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### lbs_internal
+
+A map containing each internal loadbalancer setting.
+
+Example of variable deployment :
+
+```
+lbs_internal = {
+  "internal-lb" = {
+    name              = "internal-lb"
+    health_check_port = "80"
+    backends          = ["fw-vmseries-01", "fw-vmseries-02"]
+    ip_address        = "10.10.12.5"
+    subnetwork_key    = "fw-trust-sub"
+    vpc_network_key   = "fw-trust-vpc"
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_internal#inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### linux_vms
+
+A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+
+Example of varaible deployment:
+
+```
+linux_vms = {
+  spoke1-vm = {
+    linux_machine_type = "n2-standard-4"
+    zone               = "us-east1-b"
+    linux_disk_size    = "50" # Modify this value as per deployment requirements
+    vpc_network_key    = "fw-spoke1-vpc"
+    subnetwork_key     = "fw-spoke1-sub"
+    private_ip         = "192.168.1.2"
+    scopes = [
+      "https://www.googleapis.com/auth/compute.readonly",
+      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+    service_account_key = "sa-linux-01"
+  }
+}
+```
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### name_prefix
+
+A string to prefix resource namings.
+
+Type: string
+
+Default value: `example-`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -366,38 +409,23 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### vpc_peerings
+#### project
 
-A map containing each VPC peering setting.
+The project name to deploy the infrastructure in to.
 
-Example of variable deployment :
+Type: string
 
-```
-vpc_peerings = {
-  "trust-to-spoke1" = {
-    local_network_key = "fw-trust-vpc"
-    peer_network_key  = "fw-spoke1-vpc"
+Default value: `&{}`
 
-    local_export_custom_routes                = true
-    local_import_custom_routes                = true
-    local_export_subnet_routes_with_public_ip = true
-    local_import_subnet_routes_with_public_ip = true
+<sup>[back to list](#modules-optional-inputs)</sup>
 
-    peer_export_custom_routes                = true
-    peer_import_custom_routes                = true
-    peer_export_subnet_routes_with_public_ip = true
-    peer_import_subnet_routes_with_public_ip = true
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
+#### region
 
-Multiple keys can be added and will be deployed by the code.
+The region into which to deploy the infrastructure in to.
 
+Type: string
 
-Type: map(any)
-
-Default value: `map[]`
+Default value: `us-central1`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -427,59 +455,33 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### vmseries_common
+#### service_accounts
 
-A map containing common vmseries settings.
+A map containing each service account setting.
 
 Example of variable deployment :
-
-```
-vmseries_common = {
-  ssh_keys            = "admin:AAAABBBB..."
-  vmseries_image      = "vmseries-flex-byol-10210h9"
-  machine_type        = "n2-standard-4"
-  min_cpu_platform    = "Intel Cascade Lake"
-  service_account_key = "sa-vmseries-01"
-  bootstrap_options = {
-    type                = "dhcp-client"
-    mgmt-interface-swap = "enable"
+  ```
+service_accounts = {
+  "sa-vmseries-01" = {
+    service_account_id = "sa-vmseries-01"
+    display_name       = "VM-Series SA"
+    roles = [
+      "roles/compute.networkViewer",
+      "roles/logging.logWriter",
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer",
+      "roles/viewer"
+    ]
   }
 }
-``` 
-
-Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
-
-
-Type: 
-
-```hcl
-object({
-    ssh_keys            = optional(string)
-    vmseries_image      = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    scopes              = optional(list(string))
-    bootstrap_options = optional(object({
-      type                                  = optional(string)
-      mgmt-interface-swap                   = optional(string)
-      plugin-op-commands                    = optional(string)
-      panorama-server                       = optional(string)
-      auth-key                              = optional(string)
-      dgname                                = optional(string)
-      tplname                               = optional(string)
-      dhcp-send-hostname                    = optional(string)
-      dhcp-send-client-id                   = optional(string)
-      dhcp-accept-server-hostname           = optional(string)
-      dhcp-accept-server-domain             = optional(string)
-      authcodes                             = optional(string)
-      vm-series-auto-registration-pin-id    = optional(string)
-      vm-series-auto-registration-pin-value = optional(string)
-    }))
-  })
 ```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
 
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: map(any)
 
 Default value: `map[]`
 
@@ -604,93 +606,91 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### lbs_internal
+#### vmseries_common
 
-A map containing each internal loadbalancer setting.
+A map containing common vmseries settings.
 
 Example of variable deployment :
 
 ```
-lbs_internal = {
-  "internal-lb" = {
-    name              = "internal-lb"
-    health_check_port = "80"
-    backends          = ["fw-vmseries-01", "fw-vmseries-02"]
-    ip_address        = "10.10.12.5"
-    subnetwork_key    = "fw-trust-sub"
-    vpc_network_key   = "fw-trust-vpc"
+vmseries_common = {
+  ssh_keys            = "admin:AAAABBBB..."
+  vmseries_image      = "vmseries-flex-byol-10210h9"
+  machine_type        = "n2-standard-4"
+  min_cpu_platform    = "Intel Cascade Lake"
+  service_account_key = "sa-vmseries-01"
+  bootstrap_options = {
+    type                = "dhcp-client"
+    mgmt-interface-swap = "enable"
   }
 }
+``` 
+
+Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
 ```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_internal#inputs)
 
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: map(any)
 
 Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### lbs_external
+#### vpc_peerings
 
-A map containing each external loadbalancer setting.
+A map containing each VPC peering setting.
 
 Example of variable deployment :
 
 ```
-lbs_external = {
-  "external-lb" = {
-    name     = "external-lb"
-    backends = ["fw-vmseries-01", "fw-vmseries-02"]
-    rules = {
-      "all-ports" = {
-        ip_protocol = "L3_DEFAULT"
-      }
-    }
-    http_health_check_port         = "80"
-    http_health_check_request_path = "/php/login.php"
+vpc_peerings = {
+  "trust-to-spoke1" = {
+    local_network_key = "fw-trust-vpc"
+    peer_network_key  = "fw-spoke1-vpc"
+
+    local_export_custom_routes                = true
+    local_import_custom_routes                = true
+    local_export_subnet_routes_with_public_ip = true
+    local_import_subnet_routes_with_public_ip = true
+
+    peer_export_custom_routes                = true
+    peer_import_custom_routes                = true
+    peer_export_subnet_routes_with_public_ip = true
+    peer_import_subnet_routes_with_public_ip = true
   }
 }
 ```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_external#inputs)
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
 
 Multiple keys can be added and will be deployed by the code.
-
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### linux_vms
-
-A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
-
-Example of varaible deployment:
-
-```
-linux_vms = {
-  spoke1-vm = {
-    linux_machine_type = "n2-standard-4"
-    zone               = "us-east1-b"
-    linux_disk_size    = "50" # Modify this value as per deployment requirements
-    vpc_network_key    = "fw-spoke1-vpc"
-    subnetwork_key     = "fw-spoke1-sub"
-    private_ip         = "192.168.1.2"
-    scopes = [
-      "https://www.googleapis.com/auth/compute.readonly",
-      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
-    service_account_key = "sa-linux-01"
-  }
-}
-```
 
 
 Type: map(any)

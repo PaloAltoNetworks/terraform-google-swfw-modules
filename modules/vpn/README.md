@@ -176,50 +176,42 @@ module "vpn" {
 
 Name | Type | Description
 --- | --- | ---
-[`region`](#region) | `string` | Region to deploy VPN gateway in.
-[`vpn_gateway_name`](#vpn_gateway_name) | `string` | VPN gateway name.
 [`network`](#network) | `string` | VPC network ID that should be used for deployment.
+[`region`](#region) | `string` | Region to deploy VPN gateway in.
 [`vpn_config`](#vpn_config) | `any` | VPN configuration from GCP to on-prem or from GCP to GCP.
+[`vpn_gateway_name`](#vpn_gateway_name) | `string` | VPN gateway name.
 
 ### Optional Inputs
 
 Name | Type | Description
 --- | --- | ---
+[`labels`](#labels) | `map` | Labels for VPN components.
 [`project`](#project) | `string` | .
 [`router_name`](#router_name) | `string` | Cloud router name.
-[`labels`](#labels) | `map` | Labels for VPN components.
 
 ### Outputs
 
 Name |  Description
 --- | ---
-`vpn_gw_name` | HA VPN gateway name
-`vpn_gw_self_link` | HA VPN gateway self_link
+`random_secret` | HA VPN IPsec tunnels secret that has been randomly generated
 `vpn_gw_local_address_1` | HA VPN gateway IP address 1
 `vpn_gw_local_address_2` | HA VPN gateway IP address 2
-`random_secret` | HA VPN IPsec tunnels secret that has been randomly generated
+`vpn_gw_name` | HA VPN gateway name
+`vpn_gw_self_link` | HA VPN gateway self_link
 
 ### Required Inputs details
-
-#### region
-
-Region to deploy VPN gateway in
-
-Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### vpn_gateway_name
-
-VPN gateway name. Gateway created by the module
-
-Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
 
 #### network
 
 VPC network ID that should be used for deployment
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### region
+
+Region to deploy VPN gateway in
 
 Type: string
 
@@ -294,7 +286,25 @@ Type: any
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
+#### vpn_gateway_name
+
+VPN gateway name. Gateway created by the module
+
+Type: string
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
 ### Optional Inputs details
+
+#### labels
+
+Labels for VPN components
+
+Type: map(string)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
 
 #### project
 
@@ -313,15 +323,5 @@ Cloud router name. The router is created by the module
 Type: string
 
 Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### labels
-
-Labels for VPN components
-
-Type: map(string)
-
-Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

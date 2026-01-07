@@ -18,8 +18,8 @@ This example can be used to familarize oneself with both the VM-Series NGFW and 
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
-`vpc` | - | ../../modules/vpc | 
 `vmseries` | - | ../../modules/vmseries | 
+`vpc` | - | ../../modules/vpc | 
 
 
 
@@ -34,8 +34,8 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
+[`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`vmseries_common`](#vmseries_common) | `map` | A map containing common vmseries setting.
 
 ### Outputs
@@ -152,16 +152,6 @@ Type: any
 
 ### Optional Inputs details
 
-#### project
-
-The project name to deploy the infrastructure in to.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### name_prefix
 
 A string to prefix resource namings
@@ -169,6 +159,16 @@ A string to prefix resource namings
 Type: string
 
 Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### project
+
+The project name to deploy the infrastructure in to.
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
