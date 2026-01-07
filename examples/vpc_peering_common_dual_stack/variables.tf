@@ -292,17 +292,11 @@ variable "vmseries" {
       vm-series-auto-registration-pin-id    = optional(string)
       vm-series-auto-registration-pin-value = optional(string)
     }))
+    bootstrap_bucket_key   = optional(string)
     bootstrap_template_map = optional(map(any))
     named_ports = optional(list(object({
       name = string
       port = number
-    })))
-    network_interfaces = optional(list(object({
-      vpc_network_key  = string
-      subnetwork_key   = string
-      private_ip       = string
-      create_public_ip = optional(bool, false)
-      public_ip        = optional(string)
     })))
   }))
   default     = {}
