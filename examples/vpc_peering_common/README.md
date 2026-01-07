@@ -580,24 +580,17 @@ Type:
 
 ```hcl
 map(object({
-    name = string
-    zone = string
-    network_interfaces = optional(list(object({
-      vpc_network_key  = string
-      subnetwork_key   = string
-      private_ip       = string
-      create_public_ip = optional(bool, false)
-      public_ip        = optional(string)
-      public_ip_region = optional(string)
-    })))
-    ssh_keys            = optional(string)
-    vmseries_image      = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    service_account     = optional(string)
-    scopes              = optional(list(string))
+    name                 = string
+    zone                 = string
+    ssh_keys             = optional(string)
+    vmseries_image       = optional(string)
+    machine_type         = optional(string)
+    min_cpu_platform     = optional(string)
+    tags                 = optional(list(string))
+    service_account_key  = optional(string)
+    service_account      = optional(string)
+    scopes               = optional(list(string))
+    bootstrap_bucket_key = optional(string)
     bootstrap_options = optional(object({
       type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
