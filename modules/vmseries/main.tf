@@ -160,6 +160,10 @@ resource "google_compute_instance" "this" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [boot_disk.0.initialize_params.0.image]
+  }
+
   depends_on = [
     null_resource.dependency_getter
   ]
