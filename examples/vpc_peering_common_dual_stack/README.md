@@ -751,7 +751,7 @@ vmseries_common = {
     mgmt-interface-swap = "enable"
   }
 }
-``` 
+```
 
 Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
 
