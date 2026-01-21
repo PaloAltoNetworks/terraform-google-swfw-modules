@@ -16,8 +16,8 @@ When troubleshooting you can use this module also with a good ol' Linux image. I
 
 ### Providers
 
-- `null`, version: ~> 3.1
 - `google`, version: >= 4.54
+- `null`, version: ~> 3.1
 
 
 
@@ -38,19 +38,26 @@ When troubleshooting you can use this module also with a good ol' Linux image. I
 Name | Type | Description
 --- | --- | ---
 [`name`](#name) | `string` | Name of the VM-Series instance.
-[`zone`](#zone) | `string` | Zone to deploy instance in.
 [`network_interfaces`](#network_interfaces) | `list` | List of the network interface specifications.
+[`zone`](#zone) | `string` | Zone to deploy instance in.
 
 ### Optional Inputs
 
 Name | Type | Description
 --- | --- | ---
-[`project`](#project) | `string` | .
 [`bootstrap_options`](#bootstrap_options) | `map` | VM-Series bootstrap options to pass using instance metadata.
-[`ssh_keys`](#ssh_keys) | `string` | Public keys to allow SSH access for, separated by newlines.
+[`create_instance_group`](#create_instance_group) | `bool` | Create an instance group, that can be used in a load balancer setup.
+[`custom_image`](#custom_image) | `string` |   The full URI of GCE image resource, as returned in the output of a following command:
+  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
+  Overrides official image specified using `vmseries_image`.
+[`deletion_protection`](#deletion_protection) | `bool` | Enable deletion protection on the instance.
+[`dependencies`](#dependencies) | `list` | .
+[`disk_type`](#disk_type) | `string` | Boot disk type.
+[`labels`](#labels) | `map` | GCP instance lables.
+[`machine_type`](#machine_type) | `string` | Firewall instance machine type, which depends on the license used.
 [`metadata`](#metadata) | `map` | Other, not VM-Series specific, metadata to set for an instance.
 [`metadata_startup_script`](#metadata_startup_script) | `string` | See the [Terraform manual](https://www.
-[`create_instance_group`](#create_instance_group) | `bool` | Create an instance group, that can be used in a load balancer setup.
+[`min_cpu_platform`](#min_cpu_platform) | `string` | Minimum CPU platform for the compute instance.
 [`named_ports`](#named_ports) | `list` | The list of named ports to create in the instance group:
 
 ```
@@ -67,47 +74,32 @@ named_ports = [
 ```
 
 The name identifies the backend port to receive the traffic from the global load balancers.
-[`service_account`](#service_account) | `string` | IAM Service Account for running firewall instance (just the email).
-[`scopes`](#scopes) | `list` | .
-[`vmseries_image`](#vmseries_image) | `string` |   The image name from which to boot an instance, including a license type (bundle/flex) and version.
-[`custom_image`](#custom_image) | `string` |   The full URI of GCE image resource, as returned in the output of a following command:
-  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
-  Overrides official image specified using `vmseries_image`.
-[`machine_type`](#machine_type) | `string` | Firewall instance machine type, which depends on the license used.
-[`min_cpu_platform`](#min_cpu_platform) | `string` | Minimum CPU platform for the compute instance.
-[`deletion_protection`](#deletion_protection) | `bool` | Enable deletion protection on the instance.
-[`disk_type`](#disk_type) | `string` | Boot disk type.
-[`labels`](#labels) | `map` | GCP instance lables.
-[`tags`](#tags) | `list` | GCP instance tags.
+[`project`](#project) | `string` | .
 [`resource_policies`](#resource_policies) | `list` | .
-[`dependencies`](#dependencies) | `list` | .
+[`scopes`](#scopes) | `list` | .
+[`service_account`](#service_account) | `string` | IAM Service Account for running firewall instance (just the email).
+[`ssh_keys`](#ssh_keys) | `string` | Public keys to allow SSH access for, separated by newlines.
+[`tags`](#tags) | `list` | GCP instance tags.
+[`vmseries_image`](#vmseries_image) | `string` |   The image name from which to boot an instance, including a license type (bundle/flex) and version.
 
 ### Outputs
 
 Name |  Description
 --- | ---
 `instance` | 
-`self_link` | 
 `instance_group` | 
 `instance_group_self_link` | 
-`private_ips` | 
 `ipv6_private_ips` | 
-`public_ips` | 
 `ipv6_public_ips` | 
+`private_ips` | 
+`public_ips` | 
+`self_link` | 
 
 ### Required Inputs details
 
 #### name
 
 Name of the VM-Series instance.
-
-Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### zone
-
-Zone to deploy instance in.
 
 Type: string
 
@@ -139,17 +131,15 @@ Type: list(any)
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
-### Optional Inputs details
+#### zone
 
-#### project
-
-
+Zone to deploy instance in.
 
 Type: string
 
-Default value: `&{}`
+<sup>[back to list](#modules-required-inputs)</sup>
 
-<sup>[back to list](#modules-optional-inputs)</sup>
+### Optional Inputs details
 
 #### bootstrap_options
 
@@ -173,13 +163,76 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### ssh_keys
+#### create_instance_group
 
-Public keys to allow SSH access for, separated by newlines.
+Create an instance group, that can be used in a load balancer setup.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### custom_image
+
+  The full URI of GCE image resource, as returned in the output of a following command:
+  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
+  Overrides official image specified using `vmseries_image`."
+
 
 Type: string
 
 Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### deletion_protection
+
+Enable deletion protection on the instance.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### dependencies
+
+
+
+Type: list(string)
+
+Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### disk_type
+
+Boot disk type. See [provider documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#type) for available values.
+
+Type: string
+
+Default value: `pd-standard`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### labels
+
+GCP instance lables.
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### machine_type
+
+Firewall instance machine type, which depends on the license used. See the [Terraform manual](https://www.terraform.io/docs/providers/google/r/compute_instance.html)
+
+Type: string
+
+Default value: `n2-standard-4`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -203,13 +256,13 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### create_instance_group
+#### min_cpu_platform
 
-Create an instance group, that can be used in a load balancer setup.
+Minimum CPU platform for the compute instance. Up to date version can be found [here](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform).
 
-Type: bool
+Type: string
 
-Default value: `false`
+Default value: `Intel Cascade Lake`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -240,109 +293,13 @@ Default value: `[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### service_account
+#### project
 
-IAM Service Account for running firewall instance (just the email)
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### scopes
-
-
-
-Type: list(string)
-
-Default value: `[https://www.googleapis.com/auth/compute.readonly https://www.googleapis.com/auth/cloud.useraccounts.readonly https://www.googleapis.com/auth/devstorage.read_only https://www.googleapis.com/auth/logging.write https://www.googleapis.com/auth/monitoring.write]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### vmseries_image
-
-  The image name from which to boot an instance, including a license type (bundle/flex) and version.
-  To get a list of available official images, please run the following command:
-  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
-
-
-Type: string
-
-Default value: `vmseries-flex-byol-10210h9`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### custom_image
-
-  The full URI of GCE image resource, as returned in the output of a following command:
-  `gcloud compute images list --filter="<filter>" --project <project>  --no-standard-images --uri`
-  Overrides official image specified using `vmseries_image`."
 
 
 Type: string
 
 Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### machine_type
-
-Firewall instance machine type, which depends on the license used. See the [Terraform manual](https://www.terraform.io/docs/providers/google/r/compute_instance.html)
-
-Type: string
-
-Default value: `n2-standard-4`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### min_cpu_platform
-
-Minimum CPU platform for the compute instance. Up to date version can be found [here](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform).
-
-Type: string
-
-Default value: `Intel Cascade Lake`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### deletion_protection
-
-Enable deletion protection on the instance.
-
-Type: bool
-
-Default value: `false`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### disk_type
-
-Boot disk type. See [provider documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#type) for available values.
-
-Type: string
-
-Default value: `pd-standard`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### labels
-
-GCP instance lables.
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### tags
-
-GCP instance tags.
-
-Type: list(string)
-
-Default value: `[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -356,12 +313,55 @@ Default value: `[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### dependencies
+#### scopes
 
 
 
 Type: list(string)
 
+Default value: `[https://www.googleapis.com/auth/compute.readonly https://www.googleapis.com/auth/cloud.useraccounts.readonly https://www.googleapis.com/auth/devstorage.read_only https://www.googleapis.com/auth/logging.write https://www.googleapis.com/auth/monitoring.write]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_account
+
+IAM Service Account for running firewall instance (just the email)
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### ssh_keys
+
+Public keys to allow SSH access for, separated by newlines.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### tags
+
+GCP instance tags.
+
+Type: list(string)
+
 Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries_image
+
+  The image name from which to boot an instance, including a license type (bundle/flex) and version.
+  To get a list of available official images, please run the following command:
+  `gcloud compute images list --filter="family ~ vmseries" --project paloaltonetworksgcp-public --no-standard-images`
+
+
+Type: string
+
+Default value: `vmseries-flex-byol-10210h9`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

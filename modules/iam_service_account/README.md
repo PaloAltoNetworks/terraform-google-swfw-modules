@@ -35,9 +35,9 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`service_account_id`](#service_account_id) | `string` | .
 [`display_name`](#display_name) | `string` | .
 [`roles`](#roles) | `set` | List of IAM role names, such as ["roles/compute.
+[`service_account_id`](#service_account_id) | `string` | .
 
 ### Outputs
 
@@ -57,16 +57,6 @@ Type: string
 
 ### Optional Inputs details
 
-#### service_account_id
-
-
-
-Type: string
-
-Default value: `The google_service_account.account_id of the created IAM account, unique string per project.`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### display_name
 
 
@@ -84,5 +74,15 @@ List of IAM role names, such as ["roles/compute.viewer"] or ["project/A/roles/B"
 Type: set(string)
 
 Default value: `[roles/compute.networkViewer roles/logging.logWriter roles/monitoring.metricWriter roles/monitoring.viewer roles/viewer roles/stackdriver.accounts.viewer roles/stackdriver.resourceMetadata.writer]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_account_id
+
+
+
+Type: string
+
+Default value: `The google_service_account.account_id of the created IAM account, unique string per project.`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

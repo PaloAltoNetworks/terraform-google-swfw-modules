@@ -165,12 +165,12 @@ please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
+`autoscale` | - | ../../modules/autoscale/ | 
 `iam_service_account` | - | ../../modules/iam_service_account | 
+`lb_external` | - | ../../modules/lb_external | 
+`lb_internal` | - | ../../modules/lb_internal | 
 `vpc` | - | ../../modules/vpc | 
 `vpc_peering` | - | ../../modules/vpc-peering | 
-`autoscale` | - | ../../modules/autoscale/ | 
-`lb_internal` | - | ../../modules/lb_internal | 
-`lb_external` | - | ../../modules/lb_external | 
 
 ### Resources
 
@@ -187,295 +187,33 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
+[`autoscale`](#autoscale) | `map` | A map containing each vmseries autoscale setting.
+[`autoscale_common`](#autoscale_common) | `object` | A map containing common vmseries autoscale settings.
+[`autoscale_regional_mig`](#autoscale_regional_mig) | `bool` | Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
+[`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
+[`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
+[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
+[`networks`](#networks) | `any` | A map containing each network setting.
 [`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`region`](#region) | `string` | The region into which to deploy the infrastructure in to.
-[`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
-[`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
-[`networks`](#networks) | `any` | A map containing each network setting.
-[`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 [`routes`](#routes) | `map` | A map containing each route setting.
-[`autoscale_regional_mig`](#autoscale_regional_mig) | `bool` | Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
-[`autoscale_common`](#autoscale_common) | `object` | A map containing common vmseries autoscale settings.
-[`autoscale`](#autoscale) | `map` | A map containing each vmseries autoscale setting.
-[`lbs_internal`](#lbs_internal) | `map` | A map containing each internal loadbalancer setting.
-[`lbs_external`](#lbs_external) | `map` | A map containing each external loadbalancer setting.
-[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+[`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
+[`vpc_peerings`](#vpc_peerings) | `map` | A map containing each VPC peering setting.
 
 ### Outputs
 
 Name |  Description
 --- | ---
-`pubsub_topic_id` | The resource ID of the Pub/Sub Topic.
-`pubsub_subscription_id` | The resource ID of the Pub/Sub Subscription.
-`lbs_internal_ips` | Private IP addresses of internal network loadbalancers.
 `lbs_external_ips` | Public IP addresses of external network loadbalancers.
+`lbs_internal_ips` | Private IP addresses of internal network loadbalancers.
 `linux_vm_ips` | Private IP addresses of Linux VMs.
+`pubsub_subscription_id` | The resource ID of the Pub/Sub Subscription.
+`pubsub_topic_id` | The resource ID of the Pub/Sub Topic.
 
 ### Required Inputs details
 
 ### Optional Inputs details
-
-#### project
-
-The project name to deploy the infrastructure in to.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### region
-
-The region into which to deploy the infrastructure in to.
-
-Type: string
-
-Default value: `us-central1`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### name_prefix
-
-A string to prefix resource namings.
-
-Type: string
-
-Default value: `example-`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### service_accounts
-
-A map containing each service account setting.
-
-Example of variable deployment :
-  ```
-service_accounts = {
-  "sa-vmseries-01" = {
-    service_account_id = "sa-vmseries-01"
-    display_name       = "VM-Series SA"
-    roles = [
-      "roles/compute.networkViewer",
-      "roles/logging.logWriter",
-      "roles/monitoring.metricWriter",
-      "roles/monitoring.viewer",
-      "roles/viewer"
-    ]
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
-
-Multiple keys can be added and will be deployed by the code.
-
-
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### networks
-
-A map containing each network setting.
-
-Example of variable deployment :
-
-```
-networks = {
-  fw-mgmt-vpc = {
-    vpc_name = "fw-mgmt-vpc"
-    create_network = true
-    delete_default_routes_on_create = false
-    mtu = "1460"
-    routing_mode = "REGIONAL"
-    subnetworks = {
-      fw-mgmt-sub = {
-        name = "fw-mgmt-sub"
-        create_subnetwork = true
-        ip_cidr_range = "10.10.10.0/28"
-        region = "us-east1"
-      }
-    }
-    firewall_rules = {
-      allow-mgmt-ingress = {
-        name = "allow-mgmt-ingress"
-        source_ranges = ["10.10.10.0/24"]
-        priority = "1000"
-        allowed_protocol = "all"
-        allowed_ports = []
-      }
-    }
-  }
-}
-```
-
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
-
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: any
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### vpc_peerings
-
-A map containing each VPC peering setting.
-
-Example of variable deployment :
-
-```
-vpc_peerings = {
-  "trust-to-spoke1" = {
-    local_network_key = "fw-trust-vpc"
-    peer_network_key  = "fw-spoke1-vpc"
-
-    local_export_custom_routes                = true
-    local_import_custom_routes                = true
-    local_export_subnet_routes_with_public_ip = true
-    local_import_subnet_routes_with_public_ip = true
-
-    peer_export_custom_routes                = true
-    peer_import_custom_routes                = true
-    peer_export_subnet_routes_with_public_ip = true
-    peer_import_subnet_routes_with_public_ip = true
-  }
-}
-```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
-
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### routes
-
-A map containing each route setting. Note that you can only add routes using a next-hop type of internal load-balance rule.
-
-Example of variable deployment :
-
-```
-routes = {
-  "default-route-trust" = {
-    name = "fw-default-trust"
-    destination_range = "0.0.0.0/0"
-    vpc_network_key = "fw-trust-vpc"
-    lb_internal_name = "internal-lb"
-  }
-}
-```
-
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: map(any)
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### autoscale_regional_mig
-
-Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
-For more information please see [About regional MIGs](https://cloud.google.com/compute/docs/instance-groups/regional-migs#why_choose_regional_managed_instance_groups).
-
-
-Type: bool
-
-Default value: `true`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### autoscale_common
-
-A map containing common vmseries autoscale settings.
-
-Example of variable deployment :
-
-```
-autoscale_common = {
-  image            = "vmseries-flex-byol-1114h7"
-  machine_type     = "n2-standard-4"
-  min_cpu_platform = "Intel Cascade Lake"
-  disk_type        = "pd-ssd"
-  scopes = [
-    "https://www.googleapis.com/auth/compute.readonly",
-    "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
-    "https://www.googleapis.com/auth/devstorage.read_only",
-    "https://www.googleapis.com/auth/logging.write",
-    "https://www.googleapis.com/auth/monitoring",
-  ]
-  tags               = ["vmseries-autoscale"]
-  update_policy_type = "OPPORTUNISTIC"
-  cooldown_period    = 480
-  bootstrap_options  = [
-    panorama_server  = "1.1.1.1"
-  ]
-}
-``` 
-
-
-Type: 
-
-```hcl
-object({
-    ssh_keys            = optional(string)
-    image               = optional(string)
-    machine_type        = optional(string)
-    min_cpu_platform    = optional(string)
-    disk_type           = optional(string)
-    tags                = optional(list(string))
-    service_account_key = optional(string)
-    scopes              = optional(list(string))
-    named_ports = optional(list(object({
-      name = string
-      port = number
-    })))
-    min_vmseries_replicas            = optional(number)
-    max_vmseries_replicas            = optional(number)
-    update_policy_type               = optional(string)
-    cooldown_period                  = optional(number)
-    scale_in_control_replicas_fixed  = optional(number)
-    scale_in_control_time_window_sec = optional(number)
-    autoscaler_metrics = optional(map(object({
-      target = optional(string)
-      type   = optional(string)
-      filter = optional(string)
-    })))
-    bootstrap_options = optional(object({
-      type                                  = optional(string)
-      mgmt-interface-swap                   = optional(string)
-      plugin-op-commands                    = optional(string)
-      panorama-server                       = optional(string)
-      auth-key                              = optional(string)
-      dgname                                = optional(string)
-      tplname                               = optional(string)
-      dhcp-send-hostname                    = optional(string)
-      dhcp-send-client-id                   = optional(string)
-      dhcp-accept-server-hostname           = optional(string)
-      dhcp-accept-server-domain             = optional(string)
-      authcodes                             = optional(string)
-      vm-series-auto-registration-pin-id    = optional(string)
-      vm-series-auto-registration-pin-value = optional(string)
-    }))
-    create_pubsub_topic = optional(bool)
-  })
-```
-
-
-Default value: `map[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
 
 #### autoscale
 
@@ -605,32 +343,96 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### lbs_internal
+#### autoscale_common
 
-A map containing each internal loadbalancer setting.
-Note : private IP reservation is not by default within the example as it may overlap with autoscale IP allocation.
+A map containing common vmseries autoscale settings.
 
 Example of variable deployment :
 
 ```
-lbs_internal = {
-  "internal-lb" = {
-    name              = "internal-lb"
-    health_check_port = "80"
-    backends          = ["fw-vmseries-01", "fw-vmseries-02"]
-    subnetwork_key    = "fw-trust-sub"
-    vpc_network_key   = "fw-trust-vpc"
-  }
+autoscale_common = {
+  image            = "vmseries-flex-byol-1114h7"
+  machine_type     = "n2-standard-4"
+  min_cpu_platform = "Intel Cascade Lake"
+  disk_type        = "pd-ssd"
+  scopes = [
+    "https://www.googleapis.com/auth/compute.readonly",
+    "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+    "https://www.googleapis.com/auth/devstorage.read_only",
+    "https://www.googleapis.com/auth/logging.write",
+    "https://www.googleapis.com/auth/monitoring",
+  ]
+  tags               = ["vmseries-autoscale"]
+  update_policy_type = "OPPORTUNISTIC"
+  cooldown_period    = 480
+  bootstrap_options  = [
+    panorama_server  = "1.1.1.1"
+  ]
 }
+``` 
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    image               = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    disk_type           = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    named_ports = optional(list(object({
+      name = string
+      port = number
+    })))
+    min_vmseries_replicas            = optional(number)
+    max_vmseries_replicas            = optional(number)
+    update_policy_type               = optional(string)
+    cooldown_period                  = optional(number)
+    scale_in_control_replicas_fixed  = optional(number)
+    scale_in_control_time_window_sec = optional(number)
+    autoscaler_metrics = optional(map(object({
+      target = optional(string)
+      type   = optional(string)
+      filter = optional(string)
+    })))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+    create_pubsub_topic = optional(bool)
+  })
 ```
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_internal#inputs)
 
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: map(any)
 
 Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### autoscale_regional_mig
+
+Sets the managed instance group type to either a regional (if `true`) or a zonal (if `false`).
+For more information please see [About regional MIGs](https://cloud.google.com/compute/docs/instance-groups/regional-migs#why_choose_regional_managed_instance_groups).
+
+
+Type: bool
+
+Default value: `true`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -656,6 +458,35 @@ lbs_external = {
 }
 ```
 For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_external#inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### lbs_internal
+
+A map containing each internal loadbalancer setting.
+Note : private IP reservation is not by default within the example as it may overlap with autoscale IP allocation.
+
+Example of variable deployment :
+
+```
+lbs_internal = {
+  "internal-lb" = {
+    name              = "internal-lb"
+    health_check_port = "80"
+    backends          = ["fw-vmseries-01", "fw-vmseries-02"]
+    subnetwork_key    = "fw-trust-sub"
+    vpc_network_key   = "fw-trust-vpc"
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/lb_internal#inputs)
 
 Multiple keys can be added and will be deployed by the code.
 
@@ -692,6 +523,175 @@ linux_vms = {
   }
 }
 ```
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### name_prefix
+
+A string to prefix resource namings.
+
+Type: string
+
+Default value: `example-`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### networks
+
+A map containing each network setting.
+
+Example of variable deployment :
+
+```
+networks = {
+  fw-mgmt-vpc = {
+    vpc_name = "fw-mgmt-vpc"
+    create_network = true
+    delete_default_routes_on_create = false
+    mtu = "1460"
+    routing_mode = "REGIONAL"
+    subnetworks = {
+      fw-mgmt-sub = {
+        name = "fw-mgmt-sub"
+        create_subnetwork = true
+        ip_cidr_range = "10.10.10.0/28"
+        region = "us-east1"
+      }
+    }
+    firewall_rules = {
+      allow-mgmt-ingress = {
+        name = "allow-mgmt-ingress"
+        source_ranges = ["10.10.10.0/24"]
+        priority = "1000"
+        allowed_protocol = "all"
+        allowed_ports = []
+      }
+    }
+  }
+}
+```
+
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: any
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### project
+
+The project name to deploy the infrastructure in to.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### region
+
+The region into which to deploy the infrastructure in to.
+
+Type: string
+
+Default value: `us-central1`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### routes
+
+A map containing each route setting. Note that you can only add routes using a next-hop type of internal load-balance rule.
+
+Example of variable deployment :
+
+```
+routes = {
+  "default-route-trust" = {
+    name = "fw-default-trust"
+    destination_range = "0.0.0.0/0"
+    vpc_network_key = "fw-trust-vpc"
+    lb_internal_name = "internal-lb"
+  }
+}
+```
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_accounts
+
+A map containing each service account setting.
+
+Example of variable deployment :
+  ```
+service_accounts = {
+  "sa-vmseries-01" = {
+    service_account_id = "sa-vmseries-01"
+    display_name       = "VM-Series SA"
+    roles = [
+      "roles/compute.networkViewer",
+      "roles/logging.logWriter",
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer",
+      "roles/viewer"
+    ]
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/iam_service_account#Inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vpc_peerings
+
+A map containing each VPC peering setting.
+
+Example of variable deployment :
+
+```
+vpc_peerings = {
+  "trust-to-spoke1" = {
+    local_network_key = "fw-trust-vpc"
+    peer_network_key  = "fw-spoke1-vpc"
+
+    local_export_custom_routes                = true
+    local_import_custom_routes                = true
+    local_export_subnet_routes_with_public_ip = true
+    local_import_subnet_routes_with_public_ip = true
+
+    peer_export_custom_routes                = true
+    peer_import_custom_routes                = true
+    peer_export_subnet_routes_with_public_ip = true
+    peer_import_subnet_routes_with_public_ip = true
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
+
+Multiple keys can be added and will be deployed by the code.
 
 
 Type: map(any)
