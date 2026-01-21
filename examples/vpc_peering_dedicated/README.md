@@ -512,6 +512,153 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
+#### bootstrap_buckets
+
+A map containing each bootstrap bucket setting.
+
+Example of variable deployment:
+
+```
+bootstrap_buckets = {
+  vmseries-bootstrap-bucket-01 = {
+    bucket_name_prefix  = "bucket-01-"
+    location            = "us"
+    service_account_key = "sa-vmseries-01"
+  }
+}
+```
+
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/bootstrap#Inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vpc_peerings
+
+A map containing each VPC peering setting.
+
+Example of variable deployment :
+
+```
+vpc_peerings = {
+  "trust-to-spoke1" = {
+    local_network_key = "fw-trust-vpc"
+    peer_network_key  = "fw-spoke1-vpc"
+
+    local_export_custom_routes                = true
+    local_import_custom_routes                = true
+    local_export_subnet_routes_with_public_ip = true
+    local_import_subnet_routes_with_public_ip = true
+
+    peer_export_custom_routes                = true
+    peer_import_custom_routes                = true
+    peer_export_subnet_routes_with_public_ip = true
+    peer_import_subnet_routes_with_public_ip = true
+  }
+}
+```
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc-peering#inputs)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### routes
+
+A map containing each route setting. Note that you can only add routes using a next-hop type of internal load-balance rule.
+
+Example of variable deployment :
+
+```
+routes = {
+  "default-route-trust" = {
+    name = "fw-default-trust"
+    destination_range = "0.0.0.0/0"
+    vpc_network_key = "fw-trust-vpc"
+    lb_internal_name = "internal-lb"
+  }
+}
+```
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: map(any)
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### vmseries_common
+
+A map containing common vmseries settings.
+
+Example of variable deployment :
+
+```
+vmseries_common = {
+  ssh_keys            = "admin:AAABBB..."
+  vmseries_image      = "vmseries-flex-byol-10210h9"
+  machine_type        = "n2-standard-4"
+  min_cpu_platform    = "Intel Cascade Lake"
+  service_account_key = "sa-vmseries-01"
+  bootstrap_options = {
+    type                = "dhcp-client"
+    mgmt-interface-swap = "enable"
+  }
+}
+```
+
+Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
+```
+
+
+Default value: `map[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### vmseries
 
 A map containing each individual vmseries setting.
@@ -590,17 +737,24 @@ Type:
 
 ```hcl
 map(object({
-    name                 = string
-    zone                 = string
-    ssh_keys             = optional(string)
-    vmseries_image       = optional(string)
-    machine_type         = optional(string)
-    min_cpu_platform     = optional(string)
-    tags                 = optional(list(string))
-    service_account_key  = optional(string)
-    service_account      = optional(string)
-    scopes               = optional(list(string))
-    bootstrap_bucket_key = optional(string)
+    name = string
+    zone = string
+    network_interfaces = optional(list(object({
+      vpc_network_key  = string
+      subnetwork_key   = string
+      private_ip       = string
+      create_public_ip = optional(bool, false)
+      public_ip        = optional(string)
+      public_ip_region = optional(string)
+    })))
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    service_account     = optional(string)
+    scopes              = optional(list(string))
     bootstrap_options = optional(object({
       type                                  = optional(string)
       mgmt-interface-swap                   = optional(string)
