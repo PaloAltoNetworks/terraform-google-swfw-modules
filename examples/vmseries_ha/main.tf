@@ -59,7 +59,6 @@ module "bootstrap" {
     { for k, v in var.vmseries : "files/${k}/config/bootstrap.xml" => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
     { for k, v in var.vmseries : "files/${k}/config/init-cfg.txt" => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
   )
-  depends_on = [local_file.bootstrap_xml, local_sensitive_file.init_cfg]
 }
 
 module "vpc" {
@@ -137,6 +136,7 @@ module "vmseries" {
       private_ip       = v.private_ip
       create_public_ip = try(v.create_public_ip, false)
       public_ip        = try(v.public_ip, null)
+      public_ip_region = try(v.public_ip_region, var.region)
     }
   ]
 

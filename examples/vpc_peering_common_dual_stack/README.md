@@ -504,7 +504,7 @@ Default value: `example-`
 
 #### policy_routes
 
-A map containing Policy-Based Routes that are used to route outgoing IPv6 traffic to ILB. 
+A map containing Policy-Based Routes that are used to route outgoing IPv6 traffic to ILB.
 Note that policy routes support ILB only as a next-hop.
 
 Example :
@@ -570,6 +570,39 @@ routes = {
     lb_internal_name = "internal-lb"
   }
 }
+```
+
+Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
+
+
+Type: 
+
+```hcl
+object({
+    ssh_keys            = optional(string)
+    vmseries_image      = optional(string)
+    machine_type        = optional(string)
+    min_cpu_platform    = optional(string)
+    tags                = optional(list(string))
+    service_account_key = optional(string)
+    scopes              = optional(list(string))
+    bootstrap_options = optional(object({
+      type                                  = optional(string)
+      mgmt-interface-swap                   = optional(string)
+      plugin-op-commands                    = optional(string)
+      panorama-server                       = optional(string)
+      auth-key                              = optional(string)
+      dgname                                = optional(string)
+      tplname                               = optional(string)
+      dhcp-send-hostname                    = optional(string)
+      dhcp-send-client-id                   = optional(string)
+      dhcp-accept-server-hostname           = optional(string)
+      dhcp-accept-server-domain             = optional(string)
+      authcodes                             = optional(string)
+      vm-series-auto-registration-pin-id    = optional(string)
+      vm-series-auto-registration-pin-value = optional(string)
+    }))
+  })
 ```
 
 Multiple keys can be added and will be deployed by the code.
@@ -699,6 +732,7 @@ map(object({
       private_ip       = string
       create_public_ip = optional(bool, false)
       public_ip        = optional(string)
+      public_ip_region = optional(string)
     })))
     ssh_keys            = optional(string)
     vmseries_image      = optional(string)
