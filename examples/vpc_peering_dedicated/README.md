@@ -474,7 +474,7 @@ vmseries_common = {
     mgmt-interface-swap = "enable"
   }
 }
-``` 
+```
 
 Majority of settings can be moved between this common and individual instance (ie. `var.vmseries`) variables. If values for the same item are specified in both of them, one from the latter will take precedence.
 
@@ -600,6 +600,7 @@ map(object({
       private_ip       = string
       create_public_ip = optional(bool, false)
       public_ip        = optional(string)
+      public_ip_region = optional(string)
     })))
     ssh_keys            = optional(string)
     vmseries_image      = optional(string)

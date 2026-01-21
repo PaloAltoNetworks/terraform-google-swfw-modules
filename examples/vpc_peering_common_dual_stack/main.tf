@@ -192,6 +192,7 @@ module "vmseries" {
       public_ip          = try(v.public_ip, null)
       create_public_ipv6 = try(v.create_public_ipv6, false)
       public_ipv6        = try(v.public_ipv6, null)
+      public_ip_region   = try(v.public_ip_region, var.region)
     }
   ]
 
