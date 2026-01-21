@@ -16,8 +16,8 @@ When troubleshooting you can use this module also with a good ol' Linux image. I
 
 ### Providers
 
-- `null`, version: ~> 3.1
 - `google`, version: >= 4.54
+- `null`, version: ~> 3.1
 
 
 
