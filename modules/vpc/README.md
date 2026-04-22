@@ -126,15 +126,15 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`project_id`](#project_id) | `string` | Project in which to create or look for VPCs and subnets.
 [`create_network`](#create_network) | `bool` | A flag to indicate the creation or import of a VPC network.
-[`subnetworks`](#subnetworks) | `map` | A map containing subnetworks configuration.
-[`firewall_rules`](#firewall_rules) | `map` | A map containing each firewall rule configuration.
 [`delete_default_routes_on_create`](#delete_default_routes_on_create) | `bool` | A flag to indicate the deletion of the default routes at VPC creation.
-[`mtu`](#mtu) | `number` | MTU value for VPC Network.
-[`routing_mode`](#routing_mode) | `string` | Type of network-wide routing mode to use.
 [`enable_ula_internal_ipv6`](#enable_ula_internal_ipv6) | `bool` | Enable ULA internal IPv6 on this network.
+[`firewall_rules`](#firewall_rules) | `map` | A map containing each firewall rule configuration.
 [`internal_ipv6_range`](#internal_ipv6_range) | `string` | When enabling ULA internal IPv6 you can optionally specify the /48 range.
+[`mtu`](#mtu) | `number` | MTU value for VPC Network.
+[`project_id`](#project_id) | `string` | Project in which to create or look for VPCs and subnets.
+[`routing_mode`](#routing_mode) | `string` | Type of network-wide routing mode to use.
+[`subnetworks`](#subnetworks) | `map` | A map containing subnetworks configuration.
 
 ### Outputs
 
@@ -155,16 +155,6 @@ Type: string
 
 ### Optional Inputs details
 
-#### project_id
-
-Project in which to create or look for VPCs and subnets
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### create_network
 
 A flag to indicate the creation or import of a VPC network.
@@ -178,58 +168,28 @@ Default value: `true`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### subnetworks
+#### delete_default_routes_on_create
 
-A map containing subnetworks configuration. Subnets can belong to different regions.
-List of available attributes of each subnetwork entry:
-- `name` : Name of the subnetwork.
-- `create_subnetwork` : Boolean value to control the creation or reading of the subnetwork. If set to `true` - this will create the subnetwork. If set to `false` - this will read a subnet with provided information.
-- `ip_cidr_range` : A string that contains the subnetwork to create. Only IPv4 format is supported.
-- `region` : Region where to configure or import the subnet.
-- `stack_type` : IP stack type. IPV4_ONLY (default) and IPV4_IPV6 are supported.
-- `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack. Possible values are: EXTERNAL, INTERNAL.
-- `log_config` : (Optional) A map containing the logging configuration for the subnetwork.
-  - `aggregation_interval` : (Optional) The interval at which logs are aggregated for the subnetwork. Possible values are: `INTERVAL_5_SEC`, `INTERVAL_30_SEC`, `INTERVAL_1_MIN`, `INTERVAL_5_MIN`, `INTERVAL_10_MIN`, `INTERVAL_15_MIN`.
-  - `flow_sampling` : (Optional) The value of the field must be in [0, 1]. Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported.
-  - `metadata` : (Optional) Configures whether metadata fields should be added to the reported VPC flow logs. Default value is `INCLUDE_ALL_METADATA`. Possible values are: `EXCLUDE_ALL_METADATA`, `INCLUDE_ALL_METADATA`, `CUSTOM_METADATA`.
-  - `metadata_fields` : (Optional) List of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and `metadata` is set to `CUSTOM_METADATA`.
-  - `filter_expr` : (Optional) Export filter used to define which VPC flow logs should be logged, as as CEL expression.
-
-Example:
-```
-subnetworks = {
-  my-sub = {
-    name = "my-sub"
-    create_subnetwork = true
-    ip_cidr_range = "192.168.0.0/24"
-    region = "us-east1"
-  }
-}
-```
+A flag to indicate the deletion of the default routes at VPC creation.
+Setting this to `true` the default route `0.0.0.0/0` will be deleted upon network creation.
+Setting this to `false` the default route `0.0.0.0/0` will be not be deleted upon network creation.
 
 
-Type: 
+Type: bool
 
-```hcl
-map(object({
-    name              = string
-    create_subnetwork = optional(bool, true)
-    ip_cidr_range     = string
-    region            = string
-    stack_type        = optional(string)
-    ipv6_access_type  = optional(string)
-    log_config = optional(object({
-      aggregation_interval = optional(string)
-      flow_sampling        = optional(string)
-      metadata             = optional(string)
-      metadata_fields      = optional(list(string))
-      filter_expr          = optional(string)
-    }))
-  }))
-```
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### enable_ula_internal_ipv6
+
+Enable ULA internal IPv6 on this network.
+Enabling this feature will assign a /48 subnet from Google defined ULA prefix fd20::/20.
 
 
-Default value: `map[]`
+Type: bool
+
+Default value: `false`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -295,16 +255,16 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### delete_default_routes_on_create
+#### internal_ipv6_range
 
-A flag to indicate the deletion of the default routes at VPC creation.
-Setting this to `true` the default route `0.0.0.0/0` will be deleted upon network creation.
-Setting this to `false` the default route `0.0.0.0/0` will be not be deleted upon network creation.
+When enabling ULA internal IPv6 you can optionally specify the /48 range. 
+The input must be a valid /48 ULA IPv6 address within the range fd20::/20. 
+Operation will fail if the speficied /48 is already in use by another resource.
 
 
-Type: bool
+Type: string
 
-Default value: `false`
+Default value: ``
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -316,6 +276,16 @@ MTU value for VPC Network. Acceptable values are between 1300 and 8896.
 Type: number
 
 Default value: `1460`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### project_id
+
+Project in which to create or look for VPCs and subnets
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -332,27 +302,57 @@ Default value: `REGIONAL`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### enable_ula_internal_ipv6
+#### subnetworks
 
-Enable ULA internal IPv6 on this network.
-Enabling this feature will assign a /48 subnet from Google defined ULA prefix fd20::/20.
+A map containing subnetworks configuration. Subnets can belong to different regions.
+List of available attributes of each subnetwork entry:
+- `name` : Name of the subnetwork.
+- `create_subnetwork` : Boolean value to control the creation or reading of the subnetwork. If set to `true` - this will create the subnetwork. If set to `false` - this will read a subnet with provided information.
+- `ip_cidr_range` : A string that contains the subnetwork to create. Only IPv4 format is supported.
+- `region` : Region where to configure or import the subnet.
+- `stack_type` : IP stack type. IPV4_ONLY (default) and IPV4_IPV6 are supported.
+- `ipv6_access_type` : The access type of IPv6 address. It's immutable and can only be specified during creation or the first time the subnet is updated into IPV4_IPV6 dual stack. Possible values are: EXTERNAL, INTERNAL.
+- `log_config` : (Optional) A map containing the logging configuration for the subnetwork.
+  - `aggregation_interval` : (Optional) The interval at which logs are aggregated for the subnetwork. Possible values are: `INTERVAL_5_SEC`, `INTERVAL_30_SEC`, `INTERVAL_1_MIN`, `INTERVAL_5_MIN`, `INTERVAL_10_MIN`, `INTERVAL_15_MIN`.
+  - `flow_sampling` : (Optional) The value of the field must be in [0, 1]. Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported.
+  - `metadata` : (Optional) Configures whether metadata fields should be added to the reported VPC flow logs. Default value is `INCLUDE_ALL_METADATA`. Possible values are: `EXCLUDE_ALL_METADATA`, `INCLUDE_ALL_METADATA`, `CUSTOM_METADATA`.
+  - `metadata_fields` : (Optional) List of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and `metadata` is set to `CUSTOM_METADATA`.
+  - `filter_expr` : (Optional) Export filter used to define which VPC flow logs should be logged, as as CEL expression.
+
+Example:
+```
+subnetworks = {
+  my-sub = {
+    name = "my-sub"
+    create_subnetwork = true
+    ip_cidr_range = "192.168.0.0/24"
+    region = "us-east1"
+  }
+}
+```
 
 
-Type: bool
+Type: 
 
-Default value: `false`
+```hcl
+map(object({
+    name              = string
+    create_subnetwork = optional(bool, true)
+    ip_cidr_range     = string
+    region            = string
+    stack_type        = optional(string)
+    ipv6_access_type  = optional(string)
+    log_config = optional(object({
+      aggregation_interval = optional(string)
+      flow_sampling        = optional(string)
+      metadata             = optional(string)
+      metadata_fields      = optional(list(string))
+      filter_expr          = optional(string)
+    }))
+  }))
+```
 
-<sup>[back to list](#modules-optional-inputs)</sup>
 
-#### internal_ipv6_range
-
-When enabling ULA internal IPv6 you can optionally specify the /48 range. 
-The input must be a valid /48 ULA IPv6 address within the range fd20::/20. 
-Operation will fail if the speficied /48 is already in use by another resource.
-
-
-Type: string
-
-Default value: ``
+Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

@@ -1,7 +1,7 @@
 ---
 short_title: GCP Cloud NGFW
 type: example
-show_in_hub:false
+show_in_hub: false
 ---
 # Reference architecture with Terraform : GCP Cloud Next-Generation Firewall
 
@@ -115,10 +115,10 @@ Now you can also check the logs in Cloud Console Network Security -> Cloud NGFW 
 ### Modules
 Name | Version | Source | Description
 --- | --- | --- | ---
-`iam_service_account` | - | ../../modules/iam_service_account | 
-`vpc` | - | ../../modules/vpc | 
 `cloud_nat` | 5.3.0 | terraform-google-modules/cloud-nat/google | 
+`iam_service_account` | - | ../../modules/iam_service_account | 
 `ngfw` | - | ../../modules/cloud_ngfw | 
+`vpc` | - | ../../modules/vpc | 
 
 ### Resources
 
@@ -129,120 +129,28 @@ Name | Version | Source | Description
 
 Name | Type | Description
 --- | --- | ---
-[`org_id`](#org_id) | `string` | Organization ID where the Firewall Endpoint will be created.
-[`networks`](#networks) | `map` | A map containing each network setting.
 [`cloud_nats`](#cloud_nats) | `map` | A map containing the Cloud NAT configuration settings.
 [`firewall_endpoints`](#firewall_endpoints) | `map` | 
 A map containing the Cloud Firewall Endpoints configuration settings.
-[`network_security_profiles`](#network_security_profiles) | `map` | 
-A map containing the network security profile configuration settings.
+[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
 [`network_policies`](#network_policies) | `object` | 
 A map containing the network policy configuration settings.
-[`linux_vms`](#linux_vms) | `map` | A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
+[`network_security_profiles`](#network_security_profiles) | `map` | 
+A map containing the network security profile configuration settings.
+[`networks`](#networks) | `map` | A map containing each network setting.
+[`org_id`](#org_id) | `string` | Organization ID where the Firewall Endpoint will be created.
 
 ### Optional Inputs
 
 Name | Type | Description
 --- | --- | ---
-[`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`name_prefix`](#name_prefix) | `string` | A string to prefix resource namings.
+[`project`](#project) | `string` | The project name to deploy the infrastructure in to.
 [`service_accounts`](#service_accounts) | `map` | A map containing each service account setting.
 
 
 
 ### Required Inputs details
-
-#### org_id
-
-Organization ID where the Firewall Endpoint will be created.
-
-Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
-
-#### networks
-
-A map containing each network setting.
-
-Example of variable deployment :
-
-```
-networks = {
-  fw-mgmt-vpc = {
-    vpc_name = "fw-mgmt-vpc"
-    create_network = true
-    delete_default_routes_on_create = false
-    mtu = "1460"
-    routing_mode = "REGIONAL"
-    subnetworks = {
-      fw-mgmt-sub = {
-        name              = "fw-mgmt-sub"
-        create_subnetwork = true
-        ip_cidr_range = "10.10.10.0/28"
-        region = "us-east1"
-      }
-    }
-    firewall_rules = {
-      allow-mgmt-ingress = {
-        name = "allow-mgmt-ingress"
-        source_ranges = ["10.10.10.0/24"]
-        priority = "1000"
-        allowed_protocol = "all"
-        allowed_ports = []
-      }
-    }
-  }
-}
-```
-
-For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
-
-Multiple keys can be added and will be deployed by the code.
-
-
-Type: 
-
-```hcl
-map(object({
-    vpc_name                        = string
-    create_network                  = optional(bool, true)
-    delete_default_routes_on_create = optional(bool, false)
-    enable_ula_internal_ipv6        = optional(bool, false)
-    internal_ipv6_range             = optional(string, "")
-    mtu                             = optional(number, 1460)
-    routing_mode                    = optional(string, "REGIONAL")
-    subnetworks = map(object({
-      name              = string
-      create_subnetwork = optional(bool, true)
-      ip_cidr_range     = string
-      region            = string
-      stack_type        = optional(string)
-      log_config = optional(object({
-        aggregation_interval = optional(string)
-        flow_sampling        = optional(string)
-        metadata             = optional(string)
-        metadata_fields      = optional(list(string))
-        filter_expr          = optional(string)
-      }))
-    }))
-    firewall_rules = optional(map(object({
-      name                    = string
-      source_ranges           = optional(list(string))
-      source_tags             = optional(list(string))
-      source_service_accounts = optional(list(string))
-      allowed_protocol        = string
-      allowed_ports           = list(string)
-      priority                = optional(string)
-      target_service_accounts = optional(list(string))
-      target_tags             = optional(list(string))
-      log_metadata            = optional(string)
-    })))
-    }
-  ))
-```
-
-
-<sup>[back to list](#modules-required-inputs)</sup>
 
 #### cloud_nats
 
@@ -335,25 +243,28 @@ map(object({
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
-#### network_security_profiles
+#### linux_vms
 
+A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
 
-A map containing the network security profile configuration settings.
+Example of varaible deployment:
 
-Example of variable deployment:
 ```
-profile-a = {
-  profile_name              = "profile-a"
-  profile_group_name        = "group-profile-a"
-  org_id                    = "12345"
-  profile_description       = "My Profile"
-  profile_group_description = "My Profile Group"
-  severity_overrides = {
-    "LOW"           = "DENY"
-    "INFORMATIONAL" = "ALERT"
-    "MEDIUM"        = "DENY"
-    "HIGH"          = "DENY"
-    "CRITICAL"      = "DENY"
+linux_vms = {
+  spoke1-vm = {
+    linux_machine_type = "n2-standard-4"
+    zone               = "us-east1-b"
+    linux_disk_size    = "50" # Modify this value as per deployment requirements
+    vpc_network_key    = "fw-spoke1-vpc"
+    subnetwork_key     = "fw-spoke1-sub"
+    private_ip         = "192.168.1.2"
+    scopes = [
+      "https://www.googleapis.com/auth/compute.readonly",
+      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
   }
 }
 ```
@@ -363,14 +274,15 @@ Type:
 
 ```hcl
 map(object({
-    profile_name              = string
-    profile_group_name        = string
-    profile_description       = optional(string, null)
-    profile_group_description = optional(string, null)
-    labels                    = optional(map(string), null)
-    location                  = optional(string, "global")
-    severity_overrides        = optional(map(string), {})
-    threat_overrides          = optional(map(string), {})
+    linux_machine_type      = string
+    zone                    = string
+    linux_disk_size         = string
+    vpc_network_key         = string
+    subnetwork_key          = string
+    private_ip              = string
+    scopes                  = list(string)
+    metadata_startup_script = optional(string, null)
+    service_account_key     = string
   }))
 ```
 
@@ -480,28 +392,25 @@ object({
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
-#### linux_vms
+#### network_security_profiles
 
-A map containing each Linux VM configuration that will be placed in SPOKE VPCs for testing purposes.
 
-Example of varaible deployment:
+A map containing the network security profile configuration settings.
 
+Example of variable deployment:
 ```
-linux_vms = {
-  spoke1-vm = {
-    linux_machine_type = "n2-standard-4"
-    zone               = "us-east1-b"
-    linux_disk_size    = "50" # Modify this value as per deployment requirements
-    vpc_network_key    = "fw-spoke1-vpc"
-    subnetwork_key     = "fw-spoke1-sub"
-    private_ip         = "192.168.1.2"
-    scopes = [
-      "https://www.googleapis.com/auth/compute.readonly",
-      "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
+profile-a = {
+  profile_name              = "profile-a"
+  profile_group_name        = "group-profile-a"
+  org_id                    = "12345"
+  profile_description       = "My Profile"
+  profile_group_description = "My Profile Group"
+  severity_overrides = {
+    "LOW"           = "DENY"
+    "INFORMATIONAL" = "ALERT"
+    "MEDIUM"        = "DENY"
+    "HIGH"          = "DENY"
+    "CRITICAL"      = "DENY"
   }
 }
 ```
@@ -511,32 +420,113 @@ Type:
 
 ```hcl
 map(object({
-    linux_machine_type      = string
-    zone                    = string
-    linux_disk_size         = string
-    vpc_network_key         = string
-    subnetwork_key          = string
-    private_ip              = string
-    scopes                  = list(string)
-    metadata_startup_script = optional(string, null)
-    service_account_key     = string
+    profile_name              = string
+    profile_group_name        = string
+    profile_description       = optional(string, null)
+    profile_group_description = optional(string, null)
+    labels                    = optional(map(string), null)
+    location                  = optional(string, "global")
+    severity_overrides        = optional(map(string), {})
+    threat_overrides          = optional(map(string), {})
   }))
 ```
 
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
-### Optional Inputs details
+#### networks
 
-#### project
+A map containing each network setting.
 
-The project name to deploy the infrastructure in to.
+Example of variable deployment :
+
+```
+networks = {
+  fw-mgmt-vpc = {
+    vpc_name = "fw-mgmt-vpc"
+    create_network = true
+    delete_default_routes_on_create = false
+    mtu = "1460"
+    routing_mode = "REGIONAL"
+    subnetworks = {
+      fw-mgmt-sub = {
+        name              = "fw-mgmt-sub"
+        create_subnetwork = true
+        ip_cidr_range = "10.10.10.0/28"
+        region = "us-east1"
+      }
+    }
+    firewall_rules = {
+      allow-mgmt-ingress = {
+        name = "allow-mgmt-ingress"
+        source_ranges = ["10.10.10.0/24"]
+        priority = "1000"
+        allowed_protocol = "all"
+        allowed_ports = []
+      }
+    }
+  }
+}
+```
+
+For a full list of available configuration items - please refer to [module documentation](https://github.com/PaloAltoNetworks/terraform-google-swfw-modules/tree/main/modules/vpc#input_networks)
+
+Multiple keys can be added and will be deployed by the code.
+
+
+Type: 
+
+```hcl
+map(object({
+    vpc_name                        = string
+    create_network                  = optional(bool, true)
+    delete_default_routes_on_create = optional(bool, false)
+    enable_ula_internal_ipv6        = optional(bool, false)
+    internal_ipv6_range             = optional(string, "")
+    mtu                             = optional(number, 1460)
+    routing_mode                    = optional(string, "REGIONAL")
+    subnetworks = map(object({
+      name              = string
+      create_subnetwork = optional(bool, true)
+      ip_cidr_range     = string
+      region            = string
+      stack_type        = optional(string)
+      log_config = optional(object({
+        aggregation_interval = optional(string)
+        flow_sampling        = optional(string)
+        metadata             = optional(string)
+        metadata_fields      = optional(list(string))
+        filter_expr          = optional(string)
+      }))
+    }))
+    firewall_rules = optional(map(object({
+      name                    = string
+      source_ranges           = optional(list(string))
+      source_tags             = optional(list(string))
+      source_service_accounts = optional(list(string))
+      allowed_protocol        = string
+      allowed_ports           = list(string)
+      priority                = optional(string)
+      target_service_accounts = optional(list(string))
+      target_tags             = optional(list(string))
+      log_metadata            = optional(string)
+    })))
+    }
+  ))
+```
+
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### org_id
+
+Organization ID where the Firewall Endpoint will be created.
 
 Type: string
 
-Default value: `&{}`
+<sup>[back to list](#modules-required-inputs)</sup>
 
-<sup>[back to list](#modules-optional-inputs)</sup>
+### Optional Inputs details
 
 #### name_prefix
 
@@ -545,6 +535,16 @@ A string to prefix resource namings.
 Type: string
 
 Default value: `example-`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### project
+
+The project name to deploy the infrastructure in to.
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 

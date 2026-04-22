@@ -33,18 +33,18 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`local_peering_name`](#local_peering_name) | `string` | Name for 'local->peer' direction peering resource.
-[`peer_peering_name`](#peer_peering_name) | `string` | Name for 'peer->local' direction peering resource.
-[`name_prefix`](#name_prefix) | `string` | Optional prefix for auto-generated peering resource names.
-[`stack_type`](#stack_type) | `string` | Which IP version(s) or routes are allowed to be imported or exported between peer networks.
 [`local_export_custom_routes`](#local_export_custom_routes) | `bool` | Export custom routes setting for 'local->peer' direction.
-[`local_import_custom_routes`](#local_import_custom_routes) | `bool` | Import custom routes setting for 'local->peer' direction.
 [`local_export_subnet_routes_with_public_ip`](#local_export_subnet_routes_with_public_ip) | `bool` | Export subnet routes with public IP setting for 'local->peer' direction.
+[`local_import_custom_routes`](#local_import_custom_routes) | `bool` | Import custom routes setting for 'local->peer' direction.
 [`local_import_subnet_routes_with_public_ip`](#local_import_subnet_routes_with_public_ip) | `bool` | Import subnet routes with public IP setting for 'local->peer' direction.
+[`local_peering_name`](#local_peering_name) | `string` | Name for 'local->peer' direction peering resource.
+[`name_prefix`](#name_prefix) | `string` | Optional prefix for auto-generated peering resource names.
 [`peer_export_custom_routes`](#peer_export_custom_routes) | `bool` | Export custom routes setting for 'peer->local' direction.
-[`peer_import_custom_routes`](#peer_import_custom_routes) | `bool` | Import custom routes setting for 'peer->local' direction.
 [`peer_export_subnet_routes_with_public_ip`](#peer_export_subnet_routes_with_public_ip) | `bool` | Export subnet routes with public IP setting for 'peer->local' direction.
+[`peer_import_custom_routes`](#peer_import_custom_routes) | `bool` | Import custom routes setting for 'peer->local' direction.
 [`peer_import_subnet_routes_with_public_ip`](#peer_import_subnet_routes_with_public_ip) | `bool` | Import subnet routes with public IP setting for 'peer->local' direction.
+[`peer_peering_name`](#peer_peering_name) | `string` | Name for 'peer->local' direction peering resource.
+[`stack_type`](#stack_type) | `string` | Which IP version(s) or routes are allowed to be imported or exported between peer networks.
 
 
 
@@ -68,59 +68,9 @@ Type: string
 
 ### Optional Inputs details
 
-#### local_peering_name
-
-Name for 'local->peer' direction peering resource. If not specified defaults to `<name_prefix><local network name>-<peer network name>`.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### peer_peering_name
-
-Name for 'peer->local' direction peering resource. If not specified defaults to `<name_prefix><peer network name>-<local network name>`.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### name_prefix
-
-Optional prefix for auto-generated peering resource names.
-
-Type: string
-
-Default value: ``
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### stack_type
-
-Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### local_export_custom_routes
 
 Export custom routes setting for 'local->peer' direction.
-
-Type: bool
-
-Default value: `false`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### local_import_custom_routes
-
-Import custom routes setting for 'local->peer' direction.
 
 Type: bool
 
@@ -138,6 +88,16 @@ Default value: `false`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
+#### local_import_custom_routes
+
+Import custom routes setting for 'local->peer' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### local_import_subnet_routes_with_public_ip
 
 Import subnet routes with public IP setting for 'local->peer' direction.
@@ -148,19 +108,29 @@ Default value: `false`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### peer_export_custom_routes
+#### local_peering_name
 
-Export custom routes setting for 'peer->local' direction.
+Name for 'local->peer' direction peering resource. If not specified defaults to `<name_prefix><local network name>-<peer network name>`.
 
-Type: bool
+Type: string
 
-Default value: `false`
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### peer_import_custom_routes
+#### name_prefix
 
-Import custom routes setting for 'peer->local' direction.
+Optional prefix for auto-generated peering resource names.
+
+Type: string
+
+Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_export_custom_routes
+
+Export custom routes setting for 'peer->local' direction.
 
 Type: bool
 
@@ -178,6 +148,16 @@ Default value: `false`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
+#### peer_import_custom_routes
+
+Import custom routes setting for 'peer->local' direction.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### peer_import_subnet_routes_with_public_ip
 
 Import subnet routes with public IP setting for 'peer->local' direction.
@@ -185,5 +165,25 @@ Import subnet routes with public IP setting for 'peer->local' direction.
 Type: bool
 
 Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### peer_peering_name
+
+Name for 'peer->local' direction peering resource. If not specified defaults to `<name_prefix><peer network name>-<local network name>`.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### stack_type
+
+Which IP version(s) or routes are allowed to be imported or exported between peer networks. Possible values: `IPV4_ONLY` (default), `IPV4_IPV6`.
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

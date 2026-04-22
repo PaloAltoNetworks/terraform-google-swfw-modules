@@ -33,24 +33,16 @@ For usage please refer to any reference architecture example.
 
 Name | Type | Description
 --- | --- | ---
-[`name_prefix`](#name_prefix) | `string` | A name prefix that will prepend all resources created.
 [`firewall_endpoints`](#firewall_endpoints) | `map` | A map containing each firewall endpoint and association to create.
-[`network_security_profiles`](#network_security_profiles) | `map` | A map each network security profile and group to create.
+[`name_prefix`](#name_prefix) | `string` | A name prefix that will prepend all resources created.
 [`network_policies`](#network_policies) | `object` | A map containing the creation of a single network policies and it's associated rules.
+[`network_security_profiles`](#network_security_profiles) | `map` | A map each network security profile and group to create.
 
 
 
 
 
 ### Required Inputs details
-
-#### name_prefix
-
-A name prefix that will prepend all resources created.
-
-Type: string
-
-<sup>[back to list](#modules-required-inputs)</sup>
 
 #### firewall_endpoints
 
@@ -92,40 +84,11 @@ map(object({
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
-#### network_security_profiles
+#### name_prefix
 
-A map each network security profile and group to create.
+A name prefix that will prepend all resources created.
 
-Following properties are available:
-
-- `profile_name`              - (`string`, required) The name of the network security profile.
-- `profile_group_name`        - (`string`, required) The name of the network security profile group.
-- `org_id`                    - (`string`, required) The Google Cloud organization ID.
-- `profile_description`       - (`string`, optional) The description of the network security profile.
-- `profile_group_description` - (`string`, optional) The description of the network security profile group.
-- `labels`                    - (`map(string)`, optional) A map of labels to apply to the network security profile and group.
-- `location`                  - (`string`, optional, defaults to`"global"`) The location where the network security profile and group will be created.
-- `severity_overrides`        - (`map(string)`, optional, defaults to empty map) A map of severity overrides for the network security profile.
-- `threat_overrides`          - (`map(string)`, optional, defaults to empty map) A map of threat overrides for the network security profile.
-
-
-
-Type: 
-
-```hcl
-map(object({
-    profile_name              = string
-    profile_group_name        = string
-    org_id                    = string
-    profile_description       = optional(string, null)
-    profile_group_description = optional(string, null)
-    labels                    = optional(map(string), null)
-    location                  = optional(string, "global")
-    severity_overrides        = optional(map(string), {})
-    threat_overrides          = optional(map(string), {})
-  }))
-```
-
+Type: string
 
 <sup>[back to list](#modules-required-inputs)</sup>
 
@@ -217,6 +180,43 @@ object({
       ports                     = optional(list(string))
     }))
   })
+```
+
+
+<sup>[back to list](#modules-required-inputs)</sup>
+
+#### network_security_profiles
+
+A map each network security profile and group to create.
+
+Following properties are available:
+
+- `profile_name`              - (`string`, required) The name of the network security profile.
+- `profile_group_name`        - (`string`, required) The name of the network security profile group.
+- `org_id`                    - (`string`, required) The Google Cloud organization ID.
+- `profile_description`       - (`string`, optional) The description of the network security profile.
+- `profile_group_description` - (`string`, optional) The description of the network security profile group.
+- `labels`                    - (`map(string)`, optional) A map of labels to apply to the network security profile and group.
+- `location`                  - (`string`, optional, defaults to`"global"`) The location where the network security profile and group will be created.
+- `severity_overrides`        - (`map(string)`, optional, defaults to empty map) A map of severity overrides for the network security profile.
+- `threat_overrides`          - (`map(string)`, optional, defaults to empty map) A map of threat overrides for the network security profile.
+
+
+
+Type: 
+
+```hcl
+map(object({
+    profile_name              = string
+    profile_group_name        = string
+    org_id                    = string
+    profile_description       = optional(string, null)
+    profile_group_description = optional(string, null)
+    labels                    = optional(map(string), null)
+    location                  = optional(string, "global")
+    severity_overrides        = optional(map(string), {})
+    threat_overrides          = optional(map(string), {})
+  }))
 ```
 
 

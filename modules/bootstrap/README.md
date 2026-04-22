@@ -9,8 +9,8 @@
 
 ### Providers
 
-- `random`
 - `google`, version: >= 4.54
+- `random`
 
 
 
@@ -36,18 +36,18 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`name_prefix`](#name_prefix) | `string` | Prefix of the name of Google Cloud Storage bucket, followed by 10 random characters.
-[`files`](#files) | `map` | Map of all files to copy to bucket.
-[`service_account`](#service_account) | `string` | Optional IAM Service Account (just an email) that will be granted read-only access to this bucket.
 [`bootstrap_files_dir`](#bootstrap_files_dir) | `string` | Bootstrap file directory.
+[`files`](#files) | `map` | Map of all files to copy to bucket.
 [`folders`](#folders) | `list` | List of folder paths that will be used to create dedicated boostrap package folder sets per firewall or firewall group (for example to distinguish configuration per region, per inbound/obew role, etc) within the created storage bucket.
+[`name_prefix`](#name_prefix) | `string` | Prefix of the name of Google Cloud Storage bucket, followed by 10 random characters.
+[`service_account`](#service_account) | `string` | Optional IAM Service Account (just an email) that will be granted read-only access to this bucket.
 
 ### Outputs
 
 Name |  Description
 --- | ---
-`bucket_name` | 
 `bucket` | 
+`bucket_name` | 
 
 ### Required Inputs details
 
@@ -61,13 +61,15 @@ Type: string
 
 ### Optional Inputs details
 
-#### name_prefix
+#### bootstrap_files_dir
 
-Prefix of the name of Google Cloud Storage bucket, followed by 10 random characters
+Bootstrap file directory. If the variable has a value of `null` (default) - then it will not upload any other files other than the ones specified in the `files` variable.
+More information can be found at https://docs.paloaltonetworks.com/vm-series/9-1/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-package.
+
 
 Type: string
 
-Default value: `paloaltonetworks-firewall-bootstrap-`
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -81,28 +83,6 @@ Default value: `map[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### service_account
-
-Optional IAM Service Account (just an email) that will be granted read-only access to this bucket
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### bootstrap_files_dir
-
-Bootstrap file directory. If the variable has a value of `null` (default) - then it will not upload any other files other than the ones specified in the `files` variable.
-More information can be found at https://docs.paloaltonetworks.com/vm-series/9-1/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-package.
-
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### folders
 
 List of folder paths that will be used to create dedicated boostrap package folder sets per firewall or firewall group (for example to distinguish configuration per region, per inbound/obew role, etc) within the created storage bucket.
@@ -113,5 +93,25 @@ A default value (empty list) will result in the creation of a single bootstrap p
 Type: list(any)
 
 Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### name_prefix
+
+Prefix of the name of Google Cloud Storage bucket, followed by 10 random characters
+
+Type: string
+
+Default value: `paloaltonetworks-firewall-bootstrap-`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### service_account
+
+Optional IAM Service Account (just an email) that will be granted read-only access to this bucket
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

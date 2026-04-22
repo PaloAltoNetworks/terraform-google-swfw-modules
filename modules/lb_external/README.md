@@ -51,32 +51,32 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`project`](#project) | `string` | The project to deploy to.
-[`region`](#region) | `string` | GCP region to deploy to.
-[`subnetwork`](#subnetwork) | `string` | Subnetwork for an IPv6 address creation.
-[`instances`](#instances) | `list` | List of links to the instances.
 [`backend_instance_groups`](#backend_instance_groups) | `list` | List of backend instance groups.
-[`session_affinity`](#session_affinity) | `string` | Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.
 [`connection_tracking_policy`](#connection_tracking_policy) | `map` | Connection tracking policy settings, only available for backend service based rules.
-[`network_tier`](#network_tier) | `string` | The networking tier used for configuring this address.
 [`create_health_check`](#create_health_check) | `bool` | Whether to create a health check on the target pool.
-[`health_check_interval_sec`](#health_check_interval_sec) | `number` | Health check parameter, see [provider doc](https://registry.
 [`health_check_healthy_threshold`](#health_check_healthy_threshold) | `number` | Health check parameter, see [provider doc](https://registry.
-[`health_check_timeout_sec`](#health_check_timeout_sec) | `number` | Health check parameter, see [provider doc](https://registry.
-[`health_check_unhealthy_threshold`](#health_check_unhealthy_threshold) | `number` | Health check parameter, see [provider doc](https://registry.
+[`health_check_http_host`](#health_check_http_host) | `string` | Health check http request host header, with the default adjusted to localhost to be able to check the health of the PAN-OS webui.
 [`health_check_http_port`](#health_check_http_port) | `number` | Health check parameter, see [provider doc](https://registry.
 [`health_check_http_request_path`](#health_check_http_request_path) | `string` | Health check http request path, with the default adjusted to /php/login.
-[`health_check_http_host`](#health_check_http_host) | `string` | Health check http request host header, with the default adjusted to localhost to be able to check the health of the PAN-OS webui.
+[`health_check_interval_sec`](#health_check_interval_sec) | `number` | Health check parameter, see [provider doc](https://registry.
+[`health_check_timeout_sec`](#health_check_timeout_sec) | `number` | Health check parameter, see [provider doc](https://registry.
+[`health_check_unhealthy_threshold`](#health_check_unhealthy_threshold) | `number` | Health check parameter, see [provider doc](https://registry.
+[`instances`](#instances) | `list` | List of links to the instances.
+[`network_tier`](#network_tier) | `string` | The networking tier used for configuring this address.
+[`project`](#project) | `string` | The project to deploy to.
+[`region`](#region) | `string` | GCP region to deploy to.
+[`session_affinity`](#session_affinity) | `string` | Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.
+[`subnetwork`](#subnetwork) | `string` | Subnetwork for an IPv6 address creation.
 
 ### Outputs
 
 Name |  Description
 --- | ---
+`created_google_compute_http_health_check` | The created health check resource. Null if `create_health_check` option was false.
+`created_google_compute_region_health_check` | The created health check resource. Null if `create_health_check` option was false.
 `forwarding_rules` | The map of created forwarding rules.
 `ip_addresses` | The map of IP addresses of the forwarding rules.
 `target_pool` | The self-link of the target pool.
-`created_google_compute_http_health_check` | The created health check resource. Null if `create_health_check` option was false.
-`created_google_compute_region_health_check` | The created health check resource. Null if `create_health_check` option was false.
 
 ### Required Inputs details
 
@@ -108,46 +108,6 @@ Type: any
 
 ### Optional Inputs details
 
-#### project
-
-The project to deploy to. If unset the default provider project is used.
-
-Type: string
-
-Default value: ``
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### region
-
-GCP region to deploy to. If unset the default provider region is used.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### subnetwork
-
-Subnetwork for an IPv6 address creation. Required only for IPv6 load balancer rules.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### instances
-
-List of links to the instances. Expected to be empty when using an autoscaler, as the autoscaler inserts entries to the target pool dynamically. The nic0 of each instance gets the traffic. Even when this list is shifted or re-ordered, it doesn't re-create any resources and such modifications often proceed without any noticeable downtime.
-
-Type: list(string)
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### backend_instance_groups
 
 List of backend instance groups
@@ -155,18 +115,6 @@ List of backend instance groups
 Type: list
 
 Default value: `[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### session_affinity
-
-Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.
-Valid values are: NONE (default), CLIENT_IP, CLIENT_IP_PROTO, CLIENT_IP_PORT_PROTO (only available for backend service based rules).
-
-
-Type: string
-
-Default value: `NONE`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -185,16 +133,6 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### network_tier
-
-The networking tier used for configuring this address. If this field is not specified, it is assumed to be PREMIUM. Possible values are PREMIUM and STANDARD.
-
-Type: string
-
-Default value: `PREMIUM`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### create_health_check
 
 Whether to create a health check on the target pool.
@@ -205,7 +143,7 @@ Default value: `true`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### health_check_interval_sec
+#### health_check_healthy_threshold
 
 Health check parameter, see [provider doc](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_http_health_check)
 
@@ -215,7 +153,37 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### health_check_healthy_threshold
+#### health_check_http_host
+
+Health check http request host header, with the default adjusted to localhost to be able to check the health of the PAN-OS webui.
+
+Type: string
+
+Default value: `localhost`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### health_check_http_port
+
+Health check parameter, see [provider doc](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_http_health_check)
+
+Type: number
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### health_check_http_request_path
+
+Health check http request path, with the default adjusted to /php/login.php to be able to check the health of the PAN-OS webui.
+
+Type: string
+
+Default value: `/php/login.php`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### health_check_interval_sec
 
 Health check parameter, see [provider doc](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_http_health_check)
 
@@ -245,32 +213,64 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### health_check_http_port
+#### instances
 
-Health check parameter, see [provider doc](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_http_health_check)
+List of links to the instances. Expected to be empty when using an autoscaler, as the autoscaler inserts entries to the target pool dynamically. The nic0 of each instance gets the traffic. Even when this list is shifted or re-ordered, it doesn't re-create any resources and such modifications often proceed without any noticeable downtime.
 
-Type: number
+Type: list(string)
 
 Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### health_check_http_request_path
+#### network_tier
 
-Health check http request path, with the default adjusted to /php/login.php to be able to check the health of the PAN-OS webui.
+The networking tier used for configuring this address. If this field is not specified, it is assumed to be PREMIUM. Possible values are PREMIUM and STANDARD.
 
 Type: string
 
-Default value: `/php/login.php`
+Default value: `PREMIUM`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### health_check_http_host
+#### project
 
-Health check http request host header, with the default adjusted to localhost to be able to check the health of the PAN-OS webui.
+The project to deploy to. If unset the default provider project is used.
 
 Type: string
 
-Default value: `localhost`
+Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### region
+
+GCP region to deploy to. If unset the default provider region is used.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### session_affinity
+
+Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.
+Valid values are: NONE (default), CLIENT_IP, CLIENT_IP_PROTO, CLIENT_IP_PORT_PROTO (only available for backend service based rules).
+
+
+Type: string
+
+Default value: `NONE`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### subnetwork
+
+Subnetwork for an IPv6 address creation. Required only for IPv6 load balancer rules.
+
+Type: string
+
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>

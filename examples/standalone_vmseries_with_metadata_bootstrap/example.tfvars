@@ -1,5 +1,6 @@
 project     = "<PROJECT_ID>"
 name_prefix = ""
+region      = "us-central1"
 
 networks = {
   "vmseries-vpc" = {
@@ -85,6 +86,7 @@ vmseries = {
         subnetwork_key   = "vmseries-sub"
         private_ip       = "10.10.10.2"
         create_public_ip = true
+        public_ip_region = "us-central1"
       }
     ]
   }

@@ -25,6 +25,7 @@ variable "network_interfaces" {
   - `public_ip_name`              - (Optional|string) Name for a public IPv4 address to reserve.
   - `public_ip`                   - (Optional|string) Existing public IPv4 address to use.
   - `public_ptr_domain_name`      - (Optional|string) Existing public IPv4 address PTR name to use.
+  - `public_ip_region`            - (Optional|string) Public IP region. If no value is specified - defaults to provider region.
   - `alias_ip_ranges`             - (Optional|list) List of objects that define additional IP ranges for an interface, as specified [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#ip_cidr_range)
   - `create_public_ipv6`          - (Optional|boolean) Whether to reserve public IPv6 address for the interface. Ignored if `public_ipv6` is provided. Defaults to 'false'.
   - `private_ipv6_name`           - (Optional|string) Name for a private IPv6 address to reserve. Is relevant when a VPC has IPv6 ULA range.

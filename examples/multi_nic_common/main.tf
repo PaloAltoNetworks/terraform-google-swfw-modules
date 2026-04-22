@@ -137,6 +137,7 @@ module "vmseries" {
       private_ip       = v.private_ip
       create_public_ip = try(v.create_public_ip, false)
       public_ip        = try(v.public_ip, null)
+      public_ip_region = try(v.public_ip_region, var.region)
     }
   ]
 

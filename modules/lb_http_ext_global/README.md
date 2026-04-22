@@ -77,28 +77,28 @@ Name | Type | Description
 
 Name | Type | Description
 --- | --- | ---
-[`ip_version`](#ip_version) | `string` | IP version for the Global address: IPV4, IPV6 or IPV4_IPV6.
 [`backend_groups`](#backend_groups) | `map` | The map containing the names of instance groups (IGs) or network endpoint groups (NEGs) to serve.
 [`backend_port_name`](#backend_port_name) | `string` | The port_name of the backend groups that this load balancer will serve (default is 'http').
 [`backend_protocol`](#backend_protocol) | `string` | The protocol used to talk to the backend service.
-[`health_check_name`](#health_check_name) | `string` | Name for the health check.
-[`health_check_port`](#health_check_port) | `number` | TCP port to use for health check.
-[`timeout_sec`](#timeout_sec) | `number` | Timeout to consider a connection dead, in seconds (default 30).
 [`balancing_mode`](#balancing_mode) | `string` | .
 [`capacity_scaler`](#capacity_scaler) | `number` | .
+[`cdn`](#cdn) | `bool` | Set to `true` to enable cdn on backend.
+[`certificate`](#certificate) | `string` | Content of the SSL certificate.
+[`custom_request_headers`](#custom_request_headers) | `list` | (Optional) Headers that the HTTP/S load balancer should add to proxied responses.
+[`health_check_name`](#health_check_name) | `string` | Name for the health check.
+[`health_check_port`](#health_check_port) | `number` | TCP port to use for health check.
+[`http_forward`](#http_forward) | `bool` | Set to `false` to disable HTTP port 80 forward.
+[`ip_version`](#ip_version) | `string` | IP version for the Global address: IPV4, IPV6 or IPV4_IPV6.
 [`max_connections_per_instance`](#max_connections_per_instance) | `number` | .
 [`max_rate_per_instance`](#max_rate_per_instance) | `number` | .
 [`max_utilization`](#max_utilization) | `number` | .
-[`url_map`](#url_map) | `string` | The url_map resource to use.
-[`http_forward`](#http_forward) | `bool` | Set to `false` to disable HTTP port 80 forward.
-[`custom_request_headers`](#custom_request_headers) | `list` | (Optional) Headers that the HTTP/S load balancer should add to proxied responses.
-[`ssl`](#ssl) | `bool` | Set to `true` to enable SSL support, requires variable `ssl_certificates` - a list of self_link certs.
 [`private_key`](#private_key) | `string` | Content of the private SSL key.
-[`certificate`](#certificate) | `string` | Content of the SSL certificate.
-[`use_ssl_certificates`](#use_ssl_certificates) | `bool` | If true, use the certificates provided by `ssl_certificates`, otherwise, create cert from `private_key` and `certificate`.
-[`ssl_certificates`](#ssl_certificates) | `list` | SSL cert self_link list.
 [`security_policy`](#security_policy) | `string` | The resource URL for the security policy to associate with the backend service.
-[`cdn`](#cdn) | `bool` | Set to `true` to enable cdn on backend.
+[`ssl`](#ssl) | `bool` | Set to `true` to enable SSL support, requires variable `ssl_certificates` - a list of self_link certs.
+[`ssl_certificates`](#ssl_certificates) | `list` | SSL cert self_link list.
+[`timeout_sec`](#timeout_sec) | `number` | Timeout to consider a connection dead, in seconds (default 30).
+[`url_map`](#url_map) | `string` | The url_map resource to use.
+[`use_ssl_certificates`](#use_ssl_certificates) | `bool` | If true, use the certificates provided by `ssl_certificates`, otherwise, create cert from `private_key` and `certificate`.
 
 ### Outputs
 
@@ -119,16 +119,6 @@ Type: string
 <sup>[back to list](#modules-required-inputs)</sup>
 
 ### Optional Inputs details
-
-#### ip_version
-
-IP version for the Global address: IPV4, IPV6 or IPV4_IPV6. Empty defaults to IPV4
-
-Type: string
-
-Default value: ``
-
-<sup>[back to list](#modules-optional-inputs)</sup>
 
 #### backend_groups
 
@@ -160,6 +150,56 @@ Default value: `HTTP`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
+#### balancing_mode
+
+
+
+Type: string
+
+Default value: `RATE`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### capacity_scaler
+
+
+
+Type: number
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### cdn
+
+Set to `true` to enable cdn on backend.
+
+Type: bool
+
+Default value: `false`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### certificate
+
+Content of the SSL certificate. Required if `ssl` is `true` and `ssl_certificates` is empty.
+
+Type: string
+
+Default value: ``
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### custom_request_headers
+
+(Optional) Headers that the HTTP/S load balancer should add to proxied responses.
+
+Type: list(string)
+
+Default value: `[]`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
 #### health_check_name
 
 Name for the health check. If not provided, defaults to `<var.name>-healthcheck`.
@@ -180,33 +220,23 @@ Default value: `80`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### timeout_sec
+#### http_forward
 
-Timeout to consider a connection dead, in seconds (default 30)
+Set to `false` to disable HTTP port 80 forward
 
-Type: number
+Type: bool
 
-Default value: `&{}`
+Default value: `true`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### balancing_mode
+#### ip_version
 
-
+IP version for the Global address: IPV4, IPV6 or IPV4_IPV6. Empty defaults to IPV4
 
 Type: string
 
-Default value: `RATE`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### capacity_scaler
-
-
-
-Type: number
-
-Default value: `&{}`
+Default value: ``
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
@@ -240,46 +270,6 @@ Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### url_map
-
-The url_map resource to use. Default is to send all traffic to first backend.
-
-Type: string
-
-Default value: `&{}`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### http_forward
-
-Set to `false` to disable HTTP port 80 forward
-
-Type: bool
-
-Default value: `true`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### custom_request_headers
-
-(Optional) Headers that the HTTP/S load balancer should add to proxied responses.
-
-Type: list(string)
-
-Default value: `[]`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
-#### ssl
-
-Set to `true` to enable SSL support, requires variable `ssl_certificates` - a list of self_link certs
-
-Type: bool
-
-Default value: `false`
-
-<sup>[back to list](#modules-optional-inputs)</sup>
-
 #### private_key
 
 Content of the private SSL key. Required if `ssl` is `true` and `ssl_certificates` is empty.
@@ -290,9 +280,9 @@ Default value: ``
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### certificate
+#### security_policy
 
-Content of the SSL certificate. Required if `ssl` is `true` and `ssl_certificates` is empty.
+The resource URL for the security policy to associate with the backend service
 
 Type: string
 
@@ -300,9 +290,9 @@ Default value: ``
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### use_ssl_certificates
+#### ssl
 
-If true, use the certificates provided by `ssl_certificates`, otherwise, create cert from `private_key` and `certificate`
+Set to `true` to enable SSL support, requires variable `ssl_certificates` - a list of self_link certs
 
 Type: bool
 
@@ -320,19 +310,29 @@ Default value: `[]`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### security_policy
+#### timeout_sec
 
-The resource URL for the security policy to associate with the backend service
+Timeout to consider a connection dead, in seconds (default 30)
 
-Type: string
+Type: number
 
-Default value: ``
+Default value: `&{}`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
-#### cdn
+#### url_map
 
-Set to `true` to enable cdn on backend.
+The url_map resource to use. Default is to send all traffic to first backend.
+
+Type: string
+
+Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### use_ssl_certificates
+
+If true, use the certificates provided by `ssl_certificates`, otherwise, create cert from `private_key` and `certificate`
 
 Type: bool
 
