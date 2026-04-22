@@ -55,8 +55,8 @@ module "bootstrap" {
   service_account = module.iam_service_account[each.value.service_account_key].email
   location        = each.value.location
   files = merge(
-    { for k, v in var.vmseries : "files/${k}/config/bootstrap.xml" => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
-    { for k, v in var.vmseries : "files/${k}/config/init-cfg.txt" => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
+    { for k, v in var.vmseries : local_file.bootstrap_xml[k].filename => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
+    { for k, v in var.vmseries : local_sensitive_file.init_cfg[k].filename => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
   )
 }
 
