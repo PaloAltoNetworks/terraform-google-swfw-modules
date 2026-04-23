@@ -41,7 +41,11 @@ resource "local_sensitive_file" "init_cfg" {
   filename = "files/${each.key}/config/init-cfg.txt"
   content = templatefile(
     "templates/init-cfg.tmpl",
-    { bootstrap_options = merge(var.vmseries_common.bootstrap_options, each.value.bootstrap_options) }
+    { bootstrap_options = merge(
+      { for k, v in var.vmseries_common.bootstrap_options : k => v if v != null },
+      { for k, v in each.value.bootstrap_options : k => v if v != null }
+      )
+    }
   )
 }
 
@@ -56,8 +60,8 @@ module "bootstrap" {
   service_account = module.iam_service_account[each.value.service_account_key].email
   location        = each.value.location
   files = merge(
-    { for k, v in var.vmseries : "files/${k}/config/bootstrap.xml" => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
-    { for k, v in var.vmseries : "files/${k}/config/init-cfg.txt" => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
+    { for k, v in var.vmseries : local_file.bootstrap_xml[k].filename => "${k}/config/bootstrap.xml" if can(v.bootstrap_template_map) },
+    { for k, v in var.vmseries : local_sensitive_file.init_cfg[k].filename => "${k}/config/init-cfg.txt" if can(v.bootstrap_template_map) },
   )
 }
 
