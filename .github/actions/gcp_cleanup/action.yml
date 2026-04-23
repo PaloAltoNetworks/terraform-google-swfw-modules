@@ -1,0 +1,27 @@
+name: "GCP Cleanup"
+description: "Cleans up orphaned GCP resources created by CI tests using Cloud Asset Inventory."
+inputs:
+  pr-id:
+    description: "PR number to scope cleanup. When set, only resources matching prefix ghcip{PR_ID} are deleted. When empty, resources matching ghcitt prefix are deleted."
+    type: string
+    default: ""
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: login to GCP
+      uses: google-github-actions/auth@3a3c4c57d294ef65efaaee4ff17b22fa88dd3c69 #v1
+      with:
+        workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+    - name: setup gcloud SDK
+      uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b #v1
+
+    - name: cleanup orphaned resources
+      env:
+        PROJECT_ID: ${{ env.PROJECT_ID }}
+        PR_ID: ${{ inputs.pr-id }}
+      shell: bash
+      run: ${{ github.action_path }}/cleanup.sh
