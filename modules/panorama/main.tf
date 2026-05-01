@@ -77,6 +77,7 @@ resource "google_compute_instance" "this" {
       size  = var.disk_size
       type  = var.disk_type
     }
+    kms_key_self_link = var.cmek_key
   }
 
   dynamic "attached_disk" {
