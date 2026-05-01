@@ -115,6 +115,12 @@ variable "disk_size" {
   default     = null
 }
 
+variable "cmek_key" {
+  description = "CMEK key self-link used to encrypt the Panorama boot disk"
+  type        = string
+  default     = null
+}
+
 variable "ssh_keys" {
   description = <<EOF
   In order to connect via SSH to Panorama, provide your SSH public key here.
