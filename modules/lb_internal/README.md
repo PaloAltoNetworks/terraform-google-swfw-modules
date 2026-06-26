@@ -56,6 +56,7 @@ Name | Type | Description
 [`network`](#network) | `any` | .
 [`ports`](#ports) | `list` | Which port numbers are forwarded to the backends (up to 5 ports).
 [`project`](#project) | `string` | The project to deploy to.
+[`protocol`](#protocol) | `string` | The protocol for the backend service.
 [`region`](#region) | `string` | Region to create ILB in.
 [`session_affinity`](#session_affinity) | `string` | Controls distribution of new connections (or fragmented UDP packets) from clients to the backends, can influence available connection tracking configurations.
 [`timeout_sec`](#timeout_sec) | `number` | (Optional) How many seconds to wait for the backend before dropping the connection.
@@ -261,6 +262,16 @@ The project to deploy to. If unset the default provider project is used.
 Type: string
 
 Default value: `&{}`
+
+<sup>[back to list](#modules-optional-inputs)</sup>
+
+#### protocol
+
+The protocol for the backend service. Must match ip_protocol when using UDP. Valid values are TCP and UDP. Defaults to TCP for backwards compatibility.
+
+Type: string
+
+Default value: `TCP`
 
 <sup>[back to list](#modules-optional-inputs)</sup>
 
