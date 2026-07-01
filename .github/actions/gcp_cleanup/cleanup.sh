@@ -106,6 +106,11 @@ RESOURCES=$(gcloud asset search-all-resources \
   --format="json(name,assetType,displayName,location)" \
   2>/dev/null || echo "[]")
 
+# gcloud may emit an empty result AND a non-zero exit (appending a second "[]"),
+# leaving $RESOURCES with multiple JSON documents. Slurp them into a single array
+# so downstream counts/arithmetic don't receive multi-line values.
+RESOURCES=$(echo "$RESOURCES" | jq -s 'add // []' 2>/dev/null || echo "[]")
+
 RESOURCE_COUNT=$(echo "$RESOURCES" | jq 'length')
 echo "Found ${RESOURCE_COUNT} resources to clean up."
 
