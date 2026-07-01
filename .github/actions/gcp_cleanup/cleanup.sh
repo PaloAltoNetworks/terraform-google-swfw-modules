@@ -1,8 +1,33 @@
 #!/bin/bash
 set -uo pipefail
 
-MAX_RETRIES=5
-RETRY_DELAY=10
+# Cloud Asset Inventory is eventually consistent. Google documents that "almost
+# all asset updates are available in minutes" but with no hard upper bound, and
+# that it "can miss some data updates". Cleanup therefore treats CAI as a signal
+# to drain, not a single source of truth, and copes with lag in BOTH directions:
+#   - creation lag  -> a resource created just before cleanup may not be indexed
+#                      yet, so we keep polling before concluding "nothing here".
+#   - deletion lag  -> a resource we already deleted may keep showing up in CAI
+#                      for a while, so we track what we deleted and ignore it.
+
+# How long to keep polling for the run's resources to first appear in CAI before
+# concluding the project is genuinely empty (seconds), and how often to poll.
+DISCOVERY_TIMEOUT=300
+DISCOVERY_POLL=30
+
+# Wait between deletion rounds, in seconds. Deletions are asynchronous: a VM
+# keeps holding its disk/subnet until it finishes terminating, which can take a
+# couple of minutes, so give slow deletes time before retrying dependents.
+DELETE_DELAY=60
+
+# Once everything seen has been deleted, re-query this many more times (spaced by
+# DELETE_DELAY) confirming nothing new appears, so a resource that indexed late
+# (e.g. from a second example that failed moments before cleanup) is still caught.
+CONFIRM_EMPTY_ROUNDS=2
+
+# Hard safety cap on deletion rounds, so a resource that can never be deleted
+# (e.g. an unmapped service, see get_api_prefix) can't loop us forever.
+MAX_ROUNDS=8
 
 if [[ -n "${PR_ID:-}" ]]; then
   SEARCH_QUERY="displayName:ghcip${PR_ID}*"
@@ -99,50 +124,79 @@ handle_delete_error() {
   return 1
 }
 
-echo "Querying Cloud Asset Inventory..."
-RESOURCES=$(gcloud asset search-all-resources \
-  --scope="projects/${PROJECT_ID}" \
-  --query="${SEARCH_QUERY}" \
-  --format="json(name,assetType,displayName,location)" \
-  2>/dev/null || echo "[]")
+query_resources() {
+  local result
+  result=$(gcloud asset search-all-resources \
+    --scope="projects/${PROJECT_ID}" \
+    --query="${SEARCH_QUERY}" \
+    --format="json(name,assetType,displayName,location)" \
+    2>/dev/null || echo "[]")
 
-# gcloud may emit an empty result AND a non-zero exit (appending a second "[]"),
-# leaving $RESOURCES with multiple JSON documents. Slurp them into a single array
-# so downstream counts/arithmetic don't receive multi-line values.
-RESOURCES=$(echo "$RESOURCES" | jq -s 'add // []' 2>/dev/null || echo "[]")
+  # gcloud may emit an empty result AND a non-zero exit (appending a second "[]"),
+  # leaving the output with multiple JSON documents. Slurp them into a single
+  # array so downstream counts/arithmetic don't receive multi-line values.
+  echo "$result" | jq -s 'add // []' 2>/dev/null || echo "[]"
+}
 
-RESOURCE_COUNT=$(echo "$RESOURCES" | jq 'length')
-echo "Found ${RESOURCE_COUNT} resources to clean up."
-
-if [[ "$RESOURCE_COUNT" -eq 0 ]]; then
-  echo "No orphaned resources found. Exiting."
-  exit 0
-fi
-
-echo "Resources discovered:"
-echo "$RESOURCES" | jq -r '.[] | "  - \(.assetType): \(.displayName) (\(.location))"'
+# Return the entries from a CAI query that we have NOT already deleted. Filtering
+# by our own record of deletions (rather than trusting CAI to drop them) is what
+# stops deletion-side lag from stalling the drain loop below.
+remaining_resources() {
+  query_resources | jq --argjson done "$DELETED_NAMES" \
+    '[.[] | select((.name) as $n | ($done | index($n)) | not)]'
+}
 
 ACCESS_TOKEN=$(gcloud auth print-access-token)
 
+DELETED_NAMES="[]"   # full names we have successfully deleted (or confirmed gone)
+DELETED_COUNT=0
+SEEN_ANY=false       # have we ever seen at least one resource?
+EMPTY_STREAK=0       # consecutive "nothing left" observations (drain confirmation)
+WAITED=0             # seconds spent waiting for resources to first appear
 ROUND=0
-REMAINING_RESOURCES="$RESOURCES"
 
-while [[ "$ROUND" -lt "$MAX_RETRIES" ]]; do
-  ROUND=$((ROUND + 1))
-  CURRENT_COUNT=$(echo "$REMAINING_RESOURCES" | jq 'length')
+echo "Querying Cloud Asset Inventory..."
 
-  if [[ "$CURRENT_COUNT" -eq 0 ]]; then
-    echo "All resources cleaned up successfully."
-    break
+while true; do
+  REMAINING=$(remaining_resources)
+  COUNT=$(echo "$REMAINING" | jq 'length')
+
+  if [[ "$COUNT" -eq 0 ]]; then
+    if [[ "$SEEN_ANY" == false ]]; then
+      # Nothing indexed yet. Keep polling within the discovery window before
+      # concluding the project is really empty (creation-lag tolerance).
+      if [[ "$WAITED" -ge "$DISCOVERY_TIMEOUT" ]]; then
+        echo "No resources found after ${DISCOVERY_TIMEOUT}s. Nothing to clean up."
+        exit 0
+      fi
+      echo "Nothing indexed yet (${WAITED}s/${DISCOVERY_TIMEOUT}s). CAI may still be indexing; re-checking in ${DISCOVERY_POLL}s..."
+      sleep "$DISCOVERY_POLL"
+      WAITED=$((WAITED + DISCOVERY_POLL))
+      continue
+    fi
+
+    # Everything we saw is gone. Confirm it stays empty a few more times so a
+    # late-indexed resource still gets picked up (staggered-indexing tolerance).
+    EMPTY_STREAK=$((EMPTY_STREAK + 1))
+    if [[ "$EMPTY_STREAK" -ge "$CONFIRM_EMPTY_ROUNDS" ]]; then
+      echo "All resources cleaned up (confirmed empty ${CONFIRM_EMPTY_ROUNDS}x)."
+      break
+    fi
+    echo "No resources remaining (confirmation ${EMPTY_STREAK}/${CONFIRM_EMPTY_ROUNDS}); re-checking in ${DELETE_DELAY}s..."
+    sleep "$DELETE_DELAY"
+    continue
   fi
 
+  SEEN_ANY=true
+  EMPTY_STREAK=0
+  ROUND=$((ROUND + 1))
+
   echo ""
-  echo "=== Round ${ROUND}/${MAX_RETRIES} (${CURRENT_COUNT} resources remaining) ==="
+  echo "=== Round ${ROUND} (${COUNT} resource(s) to delete) ==="
+  echo "$REMAINING" | jq -r '.[] | "  - \(.assetType): \(.displayName) (\(.location))"'
 
-  FAILED_RESOURCES="[]"
-
-  for i in $(seq 0 $((CURRENT_COUNT - 1))); do
-    ENTRY=$(echo "$REMAINING_RESOURCES" | jq -c ".[$i]")
+  for i in $(seq 0 $((COUNT - 1))); do
+    ENTRY=$(echo "$REMAINING" | jq -c ".[$i]")
     ASSET_TYPE=$(echo "$ENTRY" | jq -r '.assetType')
     FULL_NAME=$(echo "$ENTRY" | jq -r '.name')
     DISPLAY_NAME=$(echo "$ENTRY" | jq -r '.displayName')
@@ -151,33 +205,34 @@ while [[ "$ROUND" -lt "$MAX_RETRIES" ]]; do
 
     if delete_resource "$FULL_NAME" "$ASSET_TYPE" "$DISPLAY_NAME"; then
       echo "    OK"
+      DELETED_NAMES=$(echo "$DELETED_NAMES" | jq --arg n "$FULL_NAME" '. + [$n]')
+      DELETED_COUNT=$((DELETED_COUNT + 1))
     else
       echo "    FAILED (will retry)"
-      FAILED_RESOURCES=$(echo "$FAILED_RESOURCES" | jq --argjson entry "$ENTRY" '. + [$entry]')
     fi
   done
 
-  REMAINING_RESOURCES="$FAILED_RESOURCES"
-
-  REMAINING_COUNT=$(echo "$REMAINING_RESOURCES" | jq 'length')
-  if [[ "$REMAINING_COUNT" -gt 0 && "$ROUND" -lt "$MAX_RETRIES" ]]; then
-    echo "Waiting ${RETRY_DELAY}s before next round..."
-    sleep "$RETRY_DELAY"
+  if [[ "$ROUND" -ge "$MAX_ROUNDS" ]]; then
+    echo "Reached MAX_ROUNDS (${MAX_ROUNDS}); stopping retries."
+    break
   fi
+
+  echo "Waiting ${DELETE_DELAY}s before next round..."
+  sleep "$DELETE_DELAY"
 done
 
 echo ""
 echo "=== Cleanup Summary ==="
-echo "Total resources discovered: ${RESOURCE_COUNT}"
-FINAL_REMAINING=$(echo "$REMAINING_RESOURCES" | jq 'length')
-DELETED=$((RESOURCE_COUNT - FINAL_REMAINING))
-echo "Successfully deleted: ${DELETED}"
+echo "Successfully deleted: ${DELETED_COUNT}"
+
+FINAL=$(remaining_resources)
+FINAL_REMAINING=$(echo "$FINAL" | jq 'length')
 echo "Failed to delete: ${FINAL_REMAINING}"
 
 if [[ "$FINAL_REMAINING" -gt 0 ]]; then
   echo ""
   echo "Resources that could not be deleted:"
-  echo "$REMAINING_RESOURCES" | jq -r '.[] | "  - \(.assetType): \(.displayName)"'
+  echo "$FINAL" | jq -r '.[] | "  - \(.assetType): \(.displayName)"'
   echo ""
   echo "WARNING: Manual cleanup required for the above resources."
   exit 1
