@@ -64,6 +64,12 @@ variable "ip_protocol" {
   type        = string
 }
 
+variable "protocol" {
+  description = "The protocol for the backend service. Must match ip_protocol when using UDP. Valid values are TCP and UDP. Defaults to TCP for backwards compatibility."
+  default     = "TCP"
+  type        = string
+}
+
 variable "all_ports" {
   description = "Forward all ports of the ip_protocol from the frontend to the backends. Needs to be null if `ports` are provided."
   default     = null

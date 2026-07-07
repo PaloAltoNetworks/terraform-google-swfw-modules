@@ -15,6 +15,7 @@ resource "google_compute_region_backend_service" "this" {
   project = var.project
   region  = var.region
 
+  protocol                        = var.protocol
   health_checks                   = [var.health_check != null ? var.health_check : google_compute_health_check.this.self_link]
   session_affinity                = var.session_affinity
   timeout_sec                     = var.timeout_sec
